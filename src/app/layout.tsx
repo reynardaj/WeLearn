@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-<<<<<<< HEAD
 import { ClerkProvider, SignedIn, SignedOut, SignIn, SignInButton, UserButton } from "@clerk/nextjs";
-=======
 import { Playfair_Display, Open_Sans } from "next/font/google";
->>>>>>> origin/main
+
+
 
 const playfair = Playfair_Display({ weight: "700", subsets: ["latin"] });
 const openSans = Open_Sans({ weight: "400", subsets: ["latin"] });
@@ -20,7 +19,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-<<<<<<< HEAD
     <ClerkProvider>
       <html lang="en">
         <body
@@ -43,14 +41,5 @@ export default function RootLayout({
         </body>
       </html>
     </ClerkProvider>
-=======
-    <html lang="en">
-      <body
-        className={`${playfair.className} ${openSans.className} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
->>>>>>> origin/main
   );
 }
