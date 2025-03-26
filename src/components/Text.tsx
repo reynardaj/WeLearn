@@ -1,40 +1,42 @@
 // components/Text.tsx
 import React from "react";
 import clsx from "clsx";
-import { openSans } from "@/lib/fonts"; // Adjust path based on your project structure
-
-type ElementType = keyof JSX.IntrinsicElements | React.ComponentType<any>;
+import { openSans } from "@/lib/fonts";
 
 interface TextProps {
-  as?: ElementType;
-  variant?: "lg" | "md" | "sm";
   className?: string;
   children: React.ReactNode;
 }
 
-const textVariantClasses: Record<
-  TextProps["variant"],
-  { className: string; font: string }
-> = {
-  lg: { className: "text-2xl", font: openSans.className },
-  md: { className: "text-base", font: openSans.className },
-  sm: { className: "text-xs", font: openSans.className },
-};
-
-export const Text: React.FC<TextProps> = ({
-  variant = "md",
-  as = "p",
-  className,
-  children,
-}) => {
-  const Component = as;
-  const { className: variantClass, font } =
-    textVariantClasses[variant] || textVariantClasses["md"];
+export const TextLg: React.FC<TextProps> = ({ className, children }) => {
   return (
-    <Component
-      className={clsx(font, "text-text font-normal", variantClass, className)}
+    <p
+      className={clsx(openSans.className, "text-text font-normal", className)}
+      style={{ fontSize: "1.5rem" }}
     >
       {children}
-    </Component>
+    </p>
+  );
+};
+
+export const TextMd: React.FC<TextProps> = ({ className, children }) => {
+  return (
+    <p
+      className={clsx(openSans.className, "text-text font-normal", className)}
+      style={{ fontSize: "1rem" }}
+    >
+      {children}
+    </p>
+  );
+};
+
+export const TextSm: React.FC<TextProps> = ({ className, children }) => {
+  return (
+    <p
+      className={clsx(openSans.className, "text-text font-normal", className)}
+      style={{ fontSize: "0.81rem" }}
+    >
+      {children}
+    </p>
   );
 };

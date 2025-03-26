@@ -12,11 +12,8 @@ interface HeadingProps {
 export const Title: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h1
-      className={clsx(
-        playfair.className,
-        "text-text text-6xl font-normal",
-        className
-      )}
+      className={clsx(playfair.className, "text-text font-normal", className)}
+      style={{ fontSize: "4rem" }} // 64px
     >
       {children}
     </h1>
@@ -27,11 +24,8 @@ export const Title: React.FC<HeadingProps> = ({ className, children }) => {
 export const Subtitle: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h2
-      className={clsx(
-        openSans.className,
-        "text-text text-4xl font-normal leading-[54.09px]",
-        className
-      )}
+      className={clsx(openSans.className, "text-text font-normal", className)}
+      style={{ fontSize: "2.5rem", lineHeight: 1.35 }}
     >
       {children}
     </h2>
@@ -42,11 +36,8 @@ export const Subtitle: React.FC<HeadingProps> = ({ className, children }) => {
 export const Heading1: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h1
-      className={clsx(
-        playfair.className,
-        "text-text text-5xl font-normal",
-        className
-      )}
+      className={clsx(playfair.className, "text-text font-normal", className)}
+      style={{ fontSize: "3rem" }} // 48px
     >
       {children}
     </h1>
@@ -57,11 +48,8 @@ export const Heading1: React.FC<HeadingProps> = ({ className, children }) => {
 export const Heading2: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h2
-      className={clsx(
-        playfair.className,
-        "text-text text-4xl font-normal",
-        className
-      )}
+      className={clsx(playfair.className, "text-text font-normal", className)}
+      style={{ fontSize: "2.5rem" }} // 40px
     >
       {children}
     </h2>
@@ -72,11 +60,8 @@ export const Heading2: React.FC<HeadingProps> = ({ className, children }) => {
 export const Heading3: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h3
-      className={clsx(
-        playfair.className,
-        "text-text text-3xl font-normal",
-        className
-      )}
+      className={clsx(playfair.className, "text-text font-normal", className)}
+      style={{ fontSize: "2rem" }} // 32px
     >
       {children}
     </h3>
@@ -87,11 +72,8 @@ export const Heading3: React.FC<HeadingProps> = ({ className, children }) => {
 export const Heading4: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h4
-      className={clsx(
-        playfair.className,
-        "text-text text-xl font-normal",
-        className
-      )}
+      className={clsx(playfair.className, "text-text font-normal", className)}
+      style={{ fontSize: "1.25rem" }} // 20px
     >
       {children}
     </h4>

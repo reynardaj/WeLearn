@@ -1,5 +1,9 @@
-import Image from "next/image";
+import { Title } from "@/components/Heading";
 
 export default function Home() {
-  return <div className="text-2xl text-text bg-background">We learn</div>;
+  return (
+    <div className="p-6">
+      <Title className="!text-primary">Landing Page</Title>
+    </div>
+  );
 }
