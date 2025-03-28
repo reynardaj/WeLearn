@@ -6,14 +6,14 @@ export default function Home() {
     <div className="p-6">
       <Title className="!text-primary">Landing Page</Title>
 
-      <SignedOut>
+      {/* <SignedOut>
         <p>Sign in to access the app</p>
         <SignIn routing="hash" />
       </SignedOut>
 
       <SignedIn>
         <UserButton />
-      </SignedIn>
+      </SignedIn> */}
     </div>
   );
 }
