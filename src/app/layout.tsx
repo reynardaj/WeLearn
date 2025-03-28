@@ -25,9 +25,8 @@ export default function RootLayout({
           // className={`${geistSans.variable} ${geistMono.variable} antialiased flex items-center justify-center min-h-screen`}
           className={`antialiased flex items-center justify-center min-h-screen`}
         >
-          <header>
-          </header>
-          <main>
+        
+          {/* <main>
 
             <SignedOut>
               <SignInButton />
@@ -38,7 +37,7 @@ export default function RootLayout({
               {children}
             </SignedIn>
 
-          </main>
+          </main> */}
         </body>
       </html>
     </ClerkProvider>
