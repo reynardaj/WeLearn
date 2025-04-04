@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/pg": "^8.11.11",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "next": "15.2.3",
     "nextjs-app": "file:",
+    "pg": "^8.14.1",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
