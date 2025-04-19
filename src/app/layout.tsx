@@ -42,7 +42,7 @@ function AuthRedirectWrapper() {
 
   useEffect(() => {
     if (isLoaded && userId) {
-      router.replace("/dashboard"); // ✅ Redirects only once
+      router.replace("/onboarding"); // ✅ Redirects only once
     }
   }, [isLoaded, userId, router]);
 
