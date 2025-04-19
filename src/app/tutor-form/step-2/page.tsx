@@ -193,10 +193,9 @@ export default function SetupProfilePage() {
           />
 
           <CertificatesUpload
-            onCertificatesUpload={(files) =>
-              setFormData((prev) => ({ ...prev, certificates: files }))
+            onFileUpload={(file: File | null) =>
+              setFormData((prev) => ({ ...prev, certificates: file ? [file] : [] }))
             }
-            uploadStatus={uploadStatus}
           />
 
           <div className="flex justify-end">

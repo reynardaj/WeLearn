@@ -28,7 +28,7 @@ const SubjectInput: React.FC<SubjectInputProps> = ({
   return (
     <div className="space-y-2">
       <Label htmlFor="subjects-input" className="text-sm font-medium">
-        <TextMd>Teaching Subjects</TextMd>
+        <TextMd>Subject You Specialize In</TextMd>
       </Label>
       <CreatableSelect
         inputId="subjects-input"
@@ -37,7 +37,7 @@ const SubjectInput: React.FC<SubjectInputProps> = ({
         value={value}
         onChange={(selected) => onChange(selected as Option[])}
         placeholder={
-          <TextSm className="text-muted">
+          <TextSm className="!text-gray-400">
             {placeholder || "Select or create subjects..."}
           </TextSm>
         }
@@ -49,9 +49,7 @@ const SubjectInput: React.FC<SubjectInputProps> = ({
             borderColor: state.isFocused ? "border-primary" : "border-primary",
             boxShadow: state.isFocused ? "0 0 0 1px border-primary" : "none",
             "&:hover": {
-              borderColor: state.isFocused
-                ? "border-primary "
-                : "border-primary",
+              borderColor: "var(--border)",
             },
             borderRadius: "calc(var(--radius) - 2px)",
           }),
