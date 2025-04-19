@@ -13,7 +13,7 @@ import { Option } from "@/components/subject-input";
 import { Upload } from "lucide-react";
 
 interface FormData {
-  profileImage: File | null;
+  profileImage: File | string | null;
   introduction: string;
   experience: string;
   specializedSubjects: Option[];
@@ -30,10 +30,11 @@ export default function SetupProfilePage() {
   });
 
   const [uploadStatus, setUploadStatus] = useState<string>("");
-
+  uploadStatus;
   const router = useRouter();
+  const [uploading, setUploading] = useState(false); // <-- Add this line
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const isValid =
@@ -42,10 +43,43 @@ export default function SetupProfilePage() {
       formData.experience.trim() !== "" &&
       formData.specializedSubjects.length > 0;
 
-    if (isValid) {
-      localStorage.setItem("tutorFormData", JSON.stringify(formData));
-      router.push("/tutor-form/step-3");
+    if (!isValid) return;
+
+    setUploading(true); // <-- Set uploading to true before upload
+    setUploadStatus("");
+
+    let profileImageUrl = formData.profileImage;
+
+    if (formData.profileImage && formData.profileImage instanceof File) {
+      try {
+        const uploadData = new FormData();
+        uploadData.append("file", formData.profileImage);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadData,
+        });
+
+        if (!res.ok) throw new Error("Upload failed");
+
+        const data = await res.json();
+        profileImageUrl = data.url;
+        setUploadStatus("Profile image uploaded!");
+      } catch (err) {
+        setUploadStatus("Image upload failed.");
+        setUploading(false); // <-- Set uploading to false if error
+        return;
+      }
     }
+
+    const finalFormData = {
+      ...formData,
+      profileImage: profileImageUrl,
+    };
+
+    localStorage.setItem("tutorFormData", JSON.stringify(finalFormData));
+    setUploading(false); // <-- Set uploading to false after upload
+    router.push("/tutor-form/step-3");
   };
 
   const handleIntroductionChange = (
@@ -108,10 +142,16 @@ export default function SetupProfilePage() {
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <ProfileImageUpload
-            onImageUpload={(file) =>
+            onImageChange={(file) =>
               setFormData((prev) => ({ ...prev, profileImage: file }))
             }
             uploadStatus={uploadStatus}
+            defaultImageUrl={
+              typeof formData.profileImage === "string"
+                ? formData.profileImage
+                : undefined
+            }
+            loading={uploading} // if you have an uploading state
           />
 
           <div>
