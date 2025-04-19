@@ -1,31 +1,31 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
 
-// Define route matchers
-const isMentorRoute = createRouteMatcher(['/mentor-dashboard(.*)'])
-const isMenteeRoute = createRouteMatcher(['/mentee-dashboard(.*)'])
+// Define route matchers for protected routes
+const isMentorRoute = createRouteMatcher(['/mentor-dashboard(.*)']);
+const isMenteeRoute = createRouteMatcher(['/mentee-dashboard(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims, redirectToSignIn } = await auth()
-
-  // Redirect to sign in if not authenticated
-  if (!userId) {
-    return redirectToSignIn({ returnBackUrl: req.url })
-  }
+  const { userId, sessionClaims, redirectToSignIn } = await auth();
 
   // Protect mentor routes
-  if (isMentorRoute(req) && sessionClaims?.metadata?.role !== 'mentor') {
-    const url = new URL('/', req.url)
-    return NextResponse.redirect(url)
+  if (isMentorRoute(req)) {
+    if (!userId || sessionClaims?.metadata?.role !== 'mentor') {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
   }
 
   // Protect mentee routes
-  if (isMenteeRoute(req) && sessionClaims?.metadata?.role !== 'mentee') {
-    const url = new URL('/', req.url)
-    return NextResponse.redirect(url)
+  if (isMenteeRoute(req)) {
+    if (!userId || sessionClaims?.metadata?.role !== 'mentee') {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
   }
-})
+
+  // Allow all other routes (including '/') to be accessed publicly
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
-}
+};

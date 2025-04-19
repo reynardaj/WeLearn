@@ -3,14 +3,15 @@
 import { auth, clerkClient } from '@clerk/nextjs/server'
 
 export const completeOnboarding = async (role: 'mentor' | 'mentee') => {
-  const { userId } = auth()
+  const { userId } = await auth()
 
   if (!userId) {
     return { error: 'No Logged In User' }
   }
 
   try {
-    const res = await clerkClient.users.updateUserMetadata(userId, {
+    const client = await clerkClient()
+    const res = await client.users.updateUserMetadata(userId, {
       publicMetadata: {
         role: role,
       },
