@@ -1,0 +1,578 @@
+[
+    {
+        "name":"Universitas Nusa Putra"
+    },
+    {
+        "name":"Akademi Farmasi Mitra Sehat Mandiri Sidoarjo"
+    },
+    {
+        "name":"Institut Sains & Teknologi Akprind"
+    },
+    {
+        "name":"STMIK AMIKOM Yogyakarta"
+    },
+    {
+        "name":"STIKES RS Anwar Medika"
+    },
+    {
+        "name":"Universitas Katolik Indonesia Atma Jaya"
+    },
+    {
+        "name":"Universitas Bakrie"
+    },
+    {
+        "name":"Binus University"
+    },
+    {
+        "name":"STIKES Bina Sehat PPNI Mojokerto"
+    },
+    {
+        "name":"Universitas Bung Hatta"
+    },
+    {
+        "name":"Universitas Dian Nuswantoro"
+    },
+    {
+        "name":"Universitas Gunadarma"
+    },
+    {
+        "name":"Universitas Ibn Chaldun Jakarta"
+    },
+    {
+        "name":"Universitas Indonusa Esa Unggul"
+    },
+    {
+        "name":"Bogor Agricultural University"
+    },
+    {
+        "name":"Institut Sains dan Teknologi Al Kamal"
+    },
+    {
+        "name":"Institut Teknologi Adhi Tama Surabaya"
+    },
+    {
+        "name":"Institut Teknologi Bandung"
+    },
+    {
+        "name":"Institut Teknologi Sepuluh Nopember"
+    },
+    {
+        "name":"Universitas Janabadra"
+    },
+    {
+        "name":"Universitas Jayabaya"
+    },
+    {
+        "name":"Universitas Ma Chung"
+    },
+    {
+        "name":"Universitas Maarif Hasyim Latif"
+    },
+    {
+        "name":"Universitas Mahendradatta"
+    },
+    {
+        "name":"Universitas Negeri Malang"
+    },
+    {
+        "name":"Universitas Kristen Maranatha"
+    },
+    {
+        "name":"Universitas Mercu Buana"
+    },
+    {
+        "name":"Universitas Dr. R. Moestopo"
+    },
+    {
+        "name":"Universitas Narotama"
+    },
+    {
+        "name":"Universitas HKBP Nommensen"
+    },
+    {
+        "name":"Universitas Pembangunan Panca Budi"
+    },
+    {
+        "name":"Universitas Paramadina Mulya"
+    },
+    {
+        "name":"Universitas Nasional Pasim"
+    },
+    {
+        "name":"STIE Perbanas"
+    },
+    {
+        "name":"Perbanas Institute"
+    },
+    {
+        "name":"Universitas Kristen Petra"
+    },
+    {
+        "name":"Prasetiya Mulya Business School"
+    },
+    {
+        "name":"Politeknik Negeri Jakarta"
+    },
+    {
+        "name":"Politeknik Negeri Lhokseumawe"
+    },
+    {
+        "name":"Politeknik Negeri Bandung"
+    },
+    {
+        "name":"Politeknik Negeri Semarang"
+    },
+    {
+        "name":"Politeknik Negeri Padang"
+    },
+    {
+        "name":"Politeknik Negeri Pontianak"
+    },
+    {
+        "name":"Politeknik Negeri Malang"
+    },
+    {
+        "name":"Politeknik Pos Indonesia"
+    },
+    {
+        "name":"Politeknik Negeri Sambas"
+    },
+    {
+        "name":"Universitas Putera Batam"
+    },
+    {
+        "name":"Universitas Sarjanawiyata Tamansiswa"
+    },
+    {
+        "name":"Swiss German University"
+    },
+    {
+        "name":"STMIK Sinar Nusantara"
+    },
+    {
+        "name":"Sekolah Tinggi Akuntansi Negara (STAN)"
+    },
+    {
+        "name":"Trisakti Institute of Tourism"
+    },
+    {
+        "name":"Universitas Telkom"
+    },
+    {
+        "name":"Universitas Klabat"
+    },
+    {
+        "name":"Universitas Trisakti"
+    },
+    {
+        "name":"Universitas Ahmad Dahlan"
+    },
+    {
+        "name":"Universitas Atma Jaya Yogyakarta"
+    },
+    {
+        "name":"Universitas Brawijaya"
+    },
+    {
+        "name":"Universitas Surabaya"
+    },
+    {
+        "name":"Universitas Bhayangkara Surabaya"
+    },
+    {
+        "name":"Universitas Bhayangkara Jakarta Raya"
+    },
+    {
+        "name":"Universitas Bunda Mulia Jakarta"
+    },
+    {
+        "name":"Universitas Darma Agung"
+    },
+    {
+        "name":"Universitas Gadjah Mada"
+    },
+    {
+        "name":"Universitas Indonesia"
+    },
+    {
+        "name":"Universitas Islam Indonesia"
+    },
+    {
+        "name":"Universitas Ibn Khaldun Bogor"
+    },
+    {
+        "name":"Universitas Islam Jakarta"
+    },
+    {
+        "name":"Universitas Islam Riau"
+    },
+    {
+        "name":"Universitas Islam Sumatera Utara"
+    },
+    {
+        "name":"Universitas Kristen Duta Wacana"
+    },
+    {
+        "name":"Universitas Kristen Indonesia"
+    },
+    {
+        "name":"Universitas Kristen Indonesia Tomohon"
+    },
+    {
+        "name":"Universitas Kristen Krida Wacana"
+    },
+    {
+        "name":"Universitas Kristen Satya Wacana"
+    },
+    {
+        "name":"Universitas Muslim Indonesia"
+    },
+    {
+        "name":"Universitas Methodist Indonesia"
+    },
+    {
+        "name":"Universitas Muhammadiyah Jakarta"
+    },
+    {
+        "name":"Universitas Muria Kudus"
+    },
+    {
+        "name":"Universitas Muhammadiyah Malang"
+    },
+    {
+        "name":"Universitas Muhammadiyah Magelang"
+    },
+    {
+        "name":"Universitas Muhammadiyah Sidoarjo"
+    },
+    {
+        "name":"Universitas Muhammadiyah Surakarta"
+    },
+    {
+        "name":"Universitas Muhammadiyah Sumatra Utara"
+    },
+    {
+        "name":"Universitas Muhammadiyah Yogyakarta"
+    },
+    {
+        "name":"Universitas Advent Indonesia"
+    },
+    {
+        "name":"Universitas Airlangga"
+    },
+    {
+        "name":"Universitas Andalas"
+    },
+    {
+        "name":"Universitas Nasional Jakarta"
+    },
+    {
+        "name":"Universitas Cenderawasih"
+    },
+    {
+        "name":"Universitas Nusa Cendana"
+    },
+    {
+        "name":"Universitas Diponegoro"
+    },
+    {
+        "name":"Universitas Jember"
+    },
+    {
+        "name":"Universitas Negeri Surabaya"
+    },
+    {
+        "name":"Universitas Negeri Gorontalo"
+    },
+    {
+        "name":"Universitas Haluoleo"
+    },
+    {
+        "name":"Universitas Amir Hamzah"
+    },
+    {
+        "name":"Universitas Hasanuddin"
+    },
+    {
+        "name":"Universitas Bengkulu"
+    },
+    {
+        "name":"Universitas Bojonegoro"
+    },
+    {
+        "name":"Universitas Katolik Soegijapranoto"
+    },
+    {
+        "name":"Universitas Pekalongan"
+    },
+    {
+        "name":"Universitas Kediri"
+    },
+    {
+        "name":"Universitas Komputer Indonesia"
+    },
+    {
+        "name":"Universitas Lampung"
+    },
+    {
+        "name":"Universitas Lancang Kuning"
+    },
+    {
+        "name":"Universitas Negeri Manado"
+    },
+    {
+        "name":"Universitas Negeri Medan"
+    },
+    {
+        "name":"Universitas Islam Nusantara"
+    },
+    {
+        "name":"Universitas Pesantren Darul Ulum Jombang"
+    },
+    {
+        "name":"Universitas Madura"
+    },
+    {
+        "name":"Universitas Islam Bandung"
+    },
+    {
+        "name":"Universitas Islam Malang"
+    },
+    {
+        "name":"Universitas Muhammadiyah Makassar"
+    },
+    {
+        "name":"Universitas Slamet Riyadi Surakarta"
+    },
+    {
+        "name":"Universitas Islam Sultan Agung"
+    },
+    {
+        "name":"Universitas Islam Syekh-Yusuf"
+    },
+    {
+        "name":"Unitomo Surabaya"
+    },
+    {
+        "name":"Universitas Trilogi"
+    },
+    {
+        "name":"Universitas Trunojoyo Madura"
+    },
+    {
+        "name":"Universitas Pancasila"
+    },
+    {
+        "name":"Universitas PGRI Adi Buana Surabaya"
+    },
+    {
+        "name":"Universitas Jambi"
+    },
+    {
+        "name":"Universitas Negeri Jakarta"
+    },
+    {
+        "name":"Universitas Jenderal Achmad Yani"
+    },
+    {
+        "name":"Universitas Khairun"
+    },
+    {
+        "name":"Universitas Krisnadwipayana"
+    },
+    {
+        "name":"Universitas Lambung Mangkurat"
+    },
+    {
+        "name":"Universitas Negeri Makassar"
+    },
+    {
+        "name":"Universitas Mahasaraswati Denpasar"
+    },
+    {
+        "name":"Universitas Merdeka Malang"
+    },
+    {
+        "name":"Universitas Merdeka Madiun"
+    },
+    {
+        "name":"Universitas Muhammadiyah Jember"
+    },
+    {
+        "name":"Universitas Muhammadiyah Mataram"
+    },
+    {
+        "name":"Universitas Mulawarman"
+    },
+    {
+        "name":"STMIK Widya Cipta Dharma"
+    },
+    {
+        "name":"Universitas Negeri Semarang"
+    },
+    {
+        "name":"Universitas Negeri Padang"
+    },
+    {
+        "name":"Universitas Padjadjaran"
+    },
+    {
+        "name":"Universitas Pakuan"
+    },
+    {
+        "name":"Universitas Katolik Parahyangan"
+    },
+    {
+        "name":"Universitas Pasundan"
+    },
+    {
+        "name":"Universitas Pattimura"
+    },
+    {
+        "name":"Universitas Ngurah Rai"
+    },
+    {
+        "name":"Universitas Mataram"
+    },
+    {
+        "name":"Universitas Riau"
+    },
+    {
+        "name":"Universitas Sebelas Maret"
+    },
+    {
+        "name":"Universitas Darma Persada"
+    },
+    {
+        "name":"Universitas Siliwangi"
+    },
+    {
+        "name":"Universitas Jenderal Soedirman"
+    },
+    {
+        "name":"Universitas Sam Ratulangi"
+    },
+    {
+        "name":"Universitas Sriwijaya"
+    },
+    {
+        "name":"Universitas Swadaya Gunung Djati"
+    },
+    {
+        "name":"Universitas Syiah Kuala"
+    },
+    {
+        "name":"Universitas Tadulako"
+    },
+    {
+        "name":"Universitas 17 Agustus 1945 Surabaya"
+    },
+    {
+        "name":"Universitas 17 Agustus 1945 Banyuwangi"
+    },
+    {
+        "name":"Universitas 17 Agustus 1945 Cirebon"
+    },
+    {
+        "name":"Universitas 17 Agustus 1945 Jakarta"
+    },
+    {
+        "name":"Universitas 17 Agustus 1945 Samarinda"
+    },
+    {
+        "name":"Universitas 17 Agustus 1945 Semarang"
+    },
+    {
+        "name":"Universitas Tanjungpura"
+    },
+    {
+        "name":"Universitas Tarumanagara"
+    },
+    {
+        "name":"Universitas Sultan Ageng Tirtayasa"
+    },
+    {
+        "name":"Universitas Udayana"
+    },
+    {
+        "name":"Universitas Wijaya Kusuma Purwokerto"
+    },
+    {
+        "name":"Universitas Negeri Yogyakarta"
+    },
+    {
+        "name":"Universitas Proklamasi 45"
+    },
+    {
+        "name":"Universitas Pelita Harapan"
+    },
+    {
+        "name":"Universitas Pendidikan Indonesia"
+    },
+    {
+        "name":"Universitas Pembangunan Nasional \"Veteran\" Jakarta"
+    },
+    {
+        "name":"Universitas Pembangunan Nasional \"Veteran\" Jawa Timur"
+    },
+    {
+        "name":"Universitas Pembangunan Nasional \"Veteran\" Yogyakarta"
+    },
+    {
+        "name":"Universitas Palangka Raya"
+    },
+    {
+        "name":"Universitas Pancasakti Tegal"
+    },
+    {
+        "name":"Universitas Sanata Dharma"
+    },
+    {
+        "name":"Universitas Simalungun"
+    },
+    {
+        "name":"Universitas Semarang"
+    },
+    {
+        "name":"Universitas Sumatera Utara"
+    },
+    {
+        "name":"Universitas Terbuka Indonesia"
+    },
+    {
+        "name":"Universitas Tidar Magelang"
+    },
+    {
+        "name":"Universitas Tunas Pembangunan"
+    },
+    {
+        "name":"Universitas Widya Gama Malang"
+    },
+    {
+        "name":"Universitas Katolik Widya Karya"
+    },
+    {
+        "name":"Universitas Widyatama"
+    },
+    {
+        "name":"Universitas Wijaya Kusuma Surabaya"
+    },
+    {
+        "name":"Universitas Katolik Widya Manadala"
+    },
+    {
+        "name":"Universitas Wisnuwardhana"
+    },
+    {
+        "name":"Universitas Persada Indonesia Y.A.I"
+    },
+    {
+        "name":"Universitas Yarsi"
+    },
+    {
+        "name":"Duta Bangsa University"
+    },
+    {
+        "name":"Akademi Farmasi Yarsis Pekanbaru"
+    }
+]

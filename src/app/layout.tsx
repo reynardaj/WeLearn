@@ -1,27 +1,28 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { Playfair_Display, Open_Sans } from "next/font/google";
+import type React from "react"
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { Toaster } from "@/components/ui/sonner"
 
-const playfair = Playfair_Display({ weight: "700", subsets: ["latin"] });
-const openSans = Open_Sans({ weight: "400", subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "WeLearn",
-  description: "WeLearn",
-};
+  title: "Subject Selector",
+  description: "Select and create teaching subjects",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${playfair.className} ${openSans.className} antialiased`}
-      >
+      <body className={inter.className}>
         {children}
+        <Toaster />
       </body>
     </html>
-  );
+  )
 }
+
