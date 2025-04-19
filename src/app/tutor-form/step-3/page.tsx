@@ -81,7 +81,7 @@ export default function AboutYouPage() {
           can update this later if needed.
         </TextMd>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-6 flex flex-col">
           <div>
             <label
               htmlFor="price"
@@ -94,7 +94,7 @@ export default function AboutYouPage() {
                 type="number"
                 id="price"
                 name="price"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-md [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
                 placeholder="Rp."
                 value={formData.price}
@@ -103,7 +103,7 @@ export default function AboutYouPage() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="self-end">
             Continue
           </Button>
         </form>
