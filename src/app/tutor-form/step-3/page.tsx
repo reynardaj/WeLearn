@@ -11,7 +11,7 @@ interface FormData {
   price: string;
 }
 
-export default function AboutYouPage() {
+export default function SetPricePage() {
   const [formData, setFormData] = useState<FormData>({
     price: "",
   });

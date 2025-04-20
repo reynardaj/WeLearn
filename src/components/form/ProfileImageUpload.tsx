@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
-import { Button } from "@/components/Buttons";
 import { TextMd, TextSm } from "../Text";
 import { Upload } from "lucide-react";
 

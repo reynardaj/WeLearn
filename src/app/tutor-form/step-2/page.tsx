@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/Buttons";
 import ProgressIndicator from "@/components/ProgressIndicator";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Heading2, Title } from "@/components/Heading";
 import { TextMd } from "@/components/Text";
 import { useRouter } from "next/navigation";
@@ -10,6 +10,7 @@ import ProfileImageUpload from "@/components/form/ProfileImageUpload";
 import CertificatesUpload from "@/components/form/CertificatesUpload";
 import SubjectInput from "@/components/subject-input";
 import { Option } from "@/components/subject-input";
+import { getFormData, saveFormData } from "@/utils/localStorage";
 
 interface FormData {
   profileImage: File | string | null;
@@ -28,6 +29,17 @@ export default function SetupProfilePage() {
     certificates: [],
   });
 
+  useEffect(() => {
+    const storedData = getFormData();
+    setFormData({
+      profileImage: storedData.profileImage,
+      introduction: storedData.introduction,
+      experience: storedData.experience,
+      specializedSubjects: storedData.specializedSubjects,
+      certificates: storedData.certificates,
+    });
+  }, []);
+
   const [uploadStatus, setUploadStatus] = useState<string>("");
   uploadStatus;
   const router = useRouter();
@@ -44,7 +56,7 @@ export default function SetupProfilePage() {
 
     if (!isValid) return;
 
-    setUploading(true); // <-- Set uploading to true before upload
+    setUploading(true);
     setUploadStatus("");
 
     let profileImageUrl = formData.profileImage;
@@ -52,9 +64,9 @@ export default function SetupProfilePage() {
     if (formData.profileImage && formData.profileImage instanceof File) {
       try {
         const uploadData = new FormData();
-        uploadData.append("file", formData.profileImage);
+        uploadData.append("image", formData.profileImage);
 
-        const res = await fetch("/api/upload", {
+        const res = await fetch("/api/tutor-form/upload-image", {
           method: "POST",
           body: uploadData,
         });
@@ -62,22 +74,22 @@ export default function SetupProfilePage() {
         if (!res.ok) throw new Error("Upload failed");
 
         const data = await res.json();
-        profileImageUrl = data.url;
+        profileImageUrl = data.imageUrl;
+
         setUploadStatus("Profile image uploaded!");
       } catch (err) {
         setUploadStatus("Image upload failed.");
-        setUploading(false); // <-- Set uploading to false if error
+        setUploading(false);
         return;
       }
     }
-
     const finalFormData = {
       ...formData,
       profileImage: profileImageUrl,
     };
+    saveFormData(finalFormData);
 
-    localStorage.setItem("tutorFormData", JSON.stringify(finalFormData));
-    setUploading(false); // <-- Set uploading to false after upload
+    setUploading(false);
     router.push("/tutor-form/step-3");
   };
 
@@ -150,7 +162,7 @@ export default function SetupProfilePage() {
                 ? formData.profileImage
                 : undefined
             }
-            loading={uploading} // if you have an uploading state
+            loading={uploading}
           />
 
           <div>
