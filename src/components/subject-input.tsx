@@ -5,18 +5,16 @@ import CreatableSelect from "react-select/creatable";
 import { Label } from "@/components/ui/label";
 import { TextMd, TextSm } from "./Text";
 
-// Define the option type for TypeScript
 export interface Option {
   label: string;
   value: string;
 }
 
-// Define props for the SubjectInput component
 interface SubjectInputProps {
-  options: Option[]; // List of available subjects
-  value: Option[]; // Currently selected subjects
-  onChange: (selected: Option[]) => void; // Callback for selection changes
-  placeholder?: string; // Optional placeholder text
+  options: Option[];
+  value: Option[];
+  onChange: (selected: Option[]) => void;
+  placeholder?: string;
 }
 
 const SubjectInput: React.FC<SubjectInputProps> = ({
@@ -89,8 +87,6 @@ const SubjectInput: React.FC<SubjectInputProps> = ({
             },
           }),
         }}
-        aria-live-region-id="react-select-1-live-region"
-        aria-placeholder-id="react-select-1-placeholder"
       />
       <TextSm className="text-xs text-muted mt-1">
         Select from existing subjects or create new ones by typing and pressing

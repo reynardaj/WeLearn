@@ -10,7 +10,6 @@ import ProfileImageUpload from "@/components/form/ProfileImageUpload";
 import CertificatesUpload from "@/components/form/CertificatesUpload";
 import SubjectInput from "@/components/subject-input";
 import { Option } from "@/components/subject-input";
-import { Upload } from "lucide-react";
 
 interface FormData {
   profileImage: File | string | null;
@@ -194,7 +193,10 @@ export default function SetupProfilePage() {
 
           <CertificatesUpload
             onFileUpload={(file: File | null) =>
-              setFormData((prev) => ({ ...prev, certificates: file ? [file] : [] }))
+              setFormData((prev) => ({
+                ...prev,
+                certificates: file ? [file] : [],
+              }))
             }
           />
 

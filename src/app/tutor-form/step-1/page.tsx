@@ -2,11 +2,12 @@
 
 import { Button } from "@/components/Buttons";
 import ProgressIndicator from "@/components/ProgressIndicator";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Heading2, Title } from "@/components/Heading";
 import { TextMd } from "@/components/Text";
 import { useRouter } from "next/navigation";
 import InstituteCombobox from "@/components/InstituteCombobox";
+import { getFormData, saveFormData } from "@/utils/localStorage";
 
 interface FormData {
   firstName: string;
@@ -24,7 +25,15 @@ export default function AboutYouPage() {
   });
 
   const router = useRouter();
-
+  useEffect(() => {
+    const storedData = getFormData();
+    setFormData({
+      firstName: storedData.firstName,
+      lastName: storedData.lastName,
+      email: storedData.email,
+      institute: storedData.institute,
+    });
+  }, []);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -32,7 +41,7 @@ export default function AboutYouPage() {
     const isValid = Object.values(formData).every(
       (value) => value.trim() !== ""
     );
-
+    saveFormData(formData);
     if (isValid) {
       // Store form data in localStorage for passing to next step
       localStorage.setItem("tutorFormData", JSON.stringify(formData));
@@ -102,7 +111,7 @@ export default function AboutYouPage() {
               name="firstName"
               className="w-full p-2 border border-gray-300 rounded-md "
               required
-              value={formData.firstName}
+              value={formData.firstName || ""}
               onChange={handleChange}
             />
           </div>
@@ -120,7 +129,7 @@ export default function AboutYouPage() {
               name="lastName"
               className="w-full p-2 border border-gray-300 rounded-md "
               required
-              value={formData.lastName}
+              value={formData.lastName || ""}
               onChange={handleChange}
             />
           </div>
