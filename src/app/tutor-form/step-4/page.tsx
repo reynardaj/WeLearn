@@ -1,10 +1,11 @@
 "use client";
 import { Button } from "@/components/Buttons";
 import ProgressIndicator from "@/components/ProgressIndicator";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Heading2, Title } from "@/components/Heading";
 import { TextMd } from "@/components/Text";
 import { useRouter } from "next/navigation";
+import { getFormData } from "@/utils/localStorage";
 
 // Define interfaces
 interface TimeSlot {
@@ -12,18 +13,20 @@ interface TimeSlot {
   to: string;
 }
 
-interface AvailabilityData {
-  monday: TimeSlot[];
-  tuesday: TimeSlot[];
-  wednesday: TimeSlot[];
-  thursday: TimeSlot[];
-  friday: TimeSlot[];
-  saturday: TimeSlot[];
-  sunday: TimeSlot[];
+interface FormData {
+  availability: {
+    monday: TimeSlot[];
+    tuesday: TimeSlot[];
+    wednesday: TimeSlot[];
+    thursday: TimeSlot[];
+    friday: TimeSlot[];
+    saturday: TimeSlot[];
+    sunday: TimeSlot[];
+  };
 }
 
 // Array of days for mapping
-const days: (keyof AvailabilityData)[] = [
+const days: (keyof FormData["availability"])[] = [
   "monday",
   "tuesday",
   "wednesday",
@@ -38,11 +41,11 @@ const timeOptions = Array.from({ length: 24 }).map((_, i) => `${i}:00`);
 
 // TimeSlotInput Component
 interface TimeSlotInputProps {
-  day: keyof AvailabilityData;
+  day: keyof FormData["availability"];
   index: number;
   slot: TimeSlot;
   onChange: (
-    day: keyof AvailabilityData,
+    day: keyof FormData["availability"],
     index: number,
     field: "from" | "to",
     value: string
@@ -89,14 +92,16 @@ function TimeSlotInput({ day, index, slot, onChange }: TimeSlotInputProps) {
 
 // Main Component
 export default function SetAvailabilityPage() {
-  const [availabilityData, setAvailabilityData] = useState<AvailabilityData>({
-    monday: [{ from: "9:00", to: "17:00" }],
-    tuesday: [{ from: "9:00", to: "17:00" }],
-    wednesday: [{ from: "9:00", to: "17:00" }],
-    thursday: [{ from: "9:00", to: "17:00" }],
-    friday: [{ from: "9:00", to: "17:00" }],
-    saturday: [],
-    sunday: [],
+  const [formData, setFormData] = useState<FormData>({
+    availability: {
+      monday: [{ from: "9:00", to: "17:00" }],
+      tuesday: [{ from: "9:00", to: "17:00" }],
+      wednesday: [{ from: "9:00", to: "17:00" }],
+      thursday: [{ from: "9:00", to: "17:00" }],
+      friday: [{ from: "9:00", to: "17:00" }],
+      saturday: [],
+      sunday: [],
+    },
   });
 
   const [selectedDays, setSelectedDays] = useState({
@@ -108,17 +113,19 @@ export default function SetAvailabilityPage() {
     saturday: false,
     sunday: false,
   });
-
   const router = useRouter();
 
   // Handle day selection toggle
   const handleDaySelection = (day: keyof typeof selectedDays) => {
     setSelectedDays((prev) => {
       const newSelectedDays = { ...prev, [day]: !prev[day] };
-      if (newSelectedDays[day] && availabilityData[day].length === 0) {
-        setAvailabilityData((prev) => ({
+      if (newSelectedDays[day] && formData.availability[day].length === 0) {
+        setFormData((prev) => ({
           ...prev,
-          [day]: [{ from: "", to: "" }],
+          availability: {
+            ...prev.availability,
+            [day]: [{ from: "", to: "" }],
+          },
         }));
       }
       return newSelectedDays;
@@ -127,45 +134,83 @@ export default function SetAvailabilityPage() {
 
   // Handle time slot changes
   const handleTimeChange = (
-    day: keyof AvailabilityData,
+    day: keyof FormData["availability"],
     index: number,
     field: "from" | "to",
     value: string
   ) => {
-    setAvailabilityData((prev) => {
-      const updatedSlots = [...prev[day]];
+    setFormData((prev) => {
+      const updatedSlots = [...prev.availability[day]];
       updatedSlots[index] = { ...updatedSlots[index], [field]: value };
-      return { ...prev, [day]: updatedSlots };
+      return {
+        ...prev,
+        availability: {
+          ...prev.availability,
+          [day]: updatedSlots,
+        },
+      };
     });
   };
 
   // Add a new time slot for a day
-  const addMoreTimeSlot = (day: keyof AvailabilityData) => {
-    setAvailabilityData((prev) => ({
+  const addMoreTimeSlot = (day: keyof FormData["availability"]) => {
+    setFormData((prev) => ({
       ...prev,
-      [day]: [...prev[day], { from: "", to: "" }],
+      availability: {
+        ...prev.availability,
+        [day]: [...prev.availability[day], { from: "", to: "" }],
+      },
     }));
   };
-
+  const emptyAvailability = {
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [],
+    sunday: [],
+  };
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const finalAvailability = days.reduce((acc, day) => {
       if (selectedDays[day]) {
-        acc[day] = availabilityData[day].filter((slot) => slot.from && slot.to);
+        acc[day] = formData.availability[day].filter(
+          (slot) => slot.from && slot.to
+        );
       }
       return acc;
-    }, {} as Partial<AvailabilityData>);
+    }, {} as Partial<FormData["availability"]>);
 
-    const previousData = JSON.parse(
-      localStorage.getItem("tutorFormData") || "{}"
-    );
-    localStorage.setItem(
-      "tutorFormData",
-      JSON.stringify({ ...previousData, availability: finalAvailability })
-    );
+    const mergedAvailability = { ...emptyAvailability, ...finalAvailability };
 
-    router.push("/tutor-form/complete");
+    // Retrieve all previous data from localStorage using getFormData helper
+    const previousData = getFormData();
+
+    // Merge previous data with current availability
+    const submissionData = {
+      ...previousData,
+      availability: mergedAvailability,
+    };
+
+    try {
+      const response = await fetch("/api/tutor-form/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(submissionData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
+      // Optionally clear localStorage after successful submission
+      localStorage.removeItem("tutorFormData");
+      router.push("/tutor-form/complete");
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
@@ -221,7 +266,7 @@ export default function SetAvailabilityPage() {
                   </label>
                 </div>
                 {selectedDays[day] &&
-                  availabilityData[day].map((slot, index) => (
+                  formData.availability[day].map((slot, index) => (
                     <div key={`${day}-${index}`} className="ml-6 mt-2">
                       <TimeSlotInput
                         day={day}
@@ -229,7 +274,7 @@ export default function SetAvailabilityPage() {
                         slot={slot}
                         onChange={handleTimeChange}
                       />
-                      {index === availabilityData[day].length - 1 && (
+                      {index === formData.availability[day].length - 1 && (
                         <button
                           type="button"
                           className="text-text text-xs mt-2"

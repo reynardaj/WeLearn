@@ -2,10 +2,11 @@
 
 import { Button } from "@/components/Buttons";
 import ProgressIndicator from "@/components/ProgressIndicator";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Heading2, Title } from "@/components/Heading";
 import { TextMd, TextSm } from "@/components/Text";
 import { useRouter } from "next/navigation";
+import { getFormData, saveFormData } from "@/utils/localStorage";
 
 interface FormData {
   price: string;
@@ -15,7 +16,12 @@ export default function SetPricePage() {
   const [formData, setFormData] = useState<FormData>({
     price: "",
   });
-
+  useEffect(() => {
+    const storedData = getFormData();
+    setFormData({
+      price: storedData.price,
+    });
+  }, []);
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,8 +33,7 @@ export default function SetPricePage() {
     );
 
     if (isValid) {
-      // Store form data in localStorage for passing to next step
-      localStorage.setItem("tutorFormData", JSON.stringify(formData));
+      saveFormData(formData);
       router.push("/tutor-form/step-4");
     }
   };
