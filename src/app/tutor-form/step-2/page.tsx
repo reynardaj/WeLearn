@@ -18,6 +18,7 @@ interface FormData {
   experience: string;
   specializedSubjects: Option[];
   certificates: File[];
+  certificateUrls: string[];
 }
 
 export default function SetupProfilePage() {
@@ -27,6 +28,7 @@ export default function SetupProfilePage() {
     experience: "",
     specializedSubjects: [],
     certificates: [],
+    certificateUrls: [],
   });
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export default function SetupProfilePage() {
       experience: storedData.experience,
       specializedSubjects: storedData.specializedSubjects,
       certificates: storedData.certificates,
+      certificateUrls: storedData.certificateUrls,
     });
   }, []);
 
@@ -60,32 +63,63 @@ export default function SetupProfilePage() {
     setUploadStatus("");
 
     let profileImageUrl = formData.profileImage;
+    let certificatesUrls: string[] = [];
 
     if (formData.profileImage && formData.profileImage instanceof File) {
       try {
+        // Upload profile image if needed
         const uploadData = new FormData();
         uploadData.append("image", formData.profileImage);
-
-        const res = await fetch("/api/tutor-form/upload-image", {
+        const imageRes = await fetch("/api/tutor-form/upload-image", {
           method: "POST",
           body: uploadData,
         });
 
-        if (!res.ok) throw new Error("Upload failed");
+        if (!imageRes.ok) throw new Error("Image upload failed");
 
-        const data = await res.json();
-        profileImageUrl = data.imageUrl;
-
+        const imageData = await imageRes.json();
+        profileImageUrl = imageData.imageUrl;
         setUploadStatus("Profile image uploaded!");
       } catch (err) {
         setUploadStatus("Image upload failed.");
         setUploading(false);
         return;
       }
+
+      // Upload certificates
+      // Only upload actual File objects (not URLs from localStorage)
+      const filesToUpload = formData.certificates.filter((f) => f instanceof File);
+      if (filesToUpload.length > 0) {
+        try {
+          const certData = new FormData();
+          filesToUpload.forEach((file) => {
+            certData.append("certificates", file);
+          });
+          const certRes = await fetch("/api/tutor-form/upload-certificates", {
+            method: "POST",
+            body: certData,
+          });
+          if (!certRes.ok) throw new Error("Certificate upload failed");
+          const certResult = await certRes.json();
+          certificatesUrls =
+            certResult.certificates?.map((c: any) => c.url) || [];
+          console.log(certificatesUrls);
+          setUploadStatus("Certificates uploaded!");
+        } catch (err) {
+          setUploadStatus("Certificate upload failed.");
+          setUploading(false);
+          return;
+        }
+      }
     }
+
+    // Update certificateUrls in formData
+    setFormData((prev) => ({ ...prev, certificateUrls: certificatesUrls }));
+
     const finalFormData = {
       ...formData,
       profileImage: profileImageUrl,
+      certificateUrls: certificatesUrls,
     };
     saveFormData(finalFormData);
 
@@ -204,10 +238,10 @@ export default function SetupProfilePage() {
           />
 
           <CertificatesUpload
-            onFileUpload={(file: File | null) =>
+            onFilesUpload={(files: File[]) =>
               setFormData((prev) => ({
                 ...prev,
-                certificates: file ? [file] : [],
+                certificates: files,
               }))
             }
           />

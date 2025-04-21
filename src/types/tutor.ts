@@ -32,6 +32,7 @@ export interface TutorFormData {
   experience: string;
   specializedSubjects: Option[];
   certificates: File[];
+  certificateUrls: string[];
 
   // Step 3
   price: string;

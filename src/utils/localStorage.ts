@@ -14,6 +14,7 @@ const defaultFormData: TutorFormData = {
   experience: "",
   specializedSubjects: [],
   certificates: [],
+  certificateUrls: [],
   price: "",
   availability: {
     monday: [],
