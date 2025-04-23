@@ -6,8 +6,11 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     // Accept single or multiple certificates
     const files = formData.getAll("certificates").filter(Boolean) as File[];
+    console.log("[API] formData keys:", Array.from(formData.keys()));
+    console.log("[API] files received:", files.map(f => ({ name: f.name, type: f.type, size: f.size })));
 
     if (!files.length) {
+      console.error("No certificates uploaded. formData keys:", Array.from(formData.keys()));
       return NextResponse.json({ error: "No certificates uploaded" }, { status: 400 });
     }
 
@@ -16,15 +19,18 @@ export async function POST(request: Request) {
     const maxFileSize = 5 * 1024 * 1024; // 5MB
     for (const file of files) {
       if (!allowedTypes.includes(file.type)) {
+        console.error("Invalid file type:", file.name, file.type);
         return NextResponse.json({ error: `Invalid file type: ${file.name}` }, { status: 400 });
       }
       if (file.size > maxFileSize) {
+        console.error("File too large:", file.name, file.size);
         return NextResponse.json({ error: `File too large: ${file.name}` }, { status: 400 });
       }
     }
 
     // Check for blob token
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error("Missing blob token in backend environment.");
       return NextResponse.json({ error: "Missing blob token in backend environment." }, { status: 500 });
     }
 
@@ -43,6 +49,7 @@ export async function POST(request: Request) {
       }
     }
 
+    console.log("[API] Upload results:", uploadResults);
     return NextResponse.json({ certificates: uploadResults });
   } catch (error) {
     console.error("Error uploading certificates to Vercel Blob:", error);

@@ -16,12 +16,15 @@ export default function SetPricePage() {
   const [formData, setFormData] = useState<FormData>({
     price: 0,
   });
+  const [inputValue, setInputValue] = useState(formData.price.toString());
+
   useEffect(() => {
     const storedData = getFormData();
-    setFormData({
-      price: storedData.price,
-    });
+    const price = storedData?.price ?? 0;
+    setFormData({ price });
+    setInputValue(price.toString());
   }, []);
+
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -37,11 +40,17 @@ export default function SetPricePage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: parseInt(value),
-    }));
+    const { value } = e.target;
+    setInputValue(value);
+
+    if (value === "") {
+      setFormData((prev) => ({ ...prev, price: 0 }));
+    } else {
+      const parsedValue = parseInt(value, 10);
+      if (!isNaN(parsedValue)) {
+        setFormData((prev) => ({ ...prev, price: parsedValue }));
+      }
+    }
   };
 
   return (
@@ -100,7 +109,7 @@ export default function SetPricePage() {
                 className="w-full p-2 border border-gray-300 rounded-md [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
                 placeholder="Rp."
-                value={formData.price}
+                value={inputValue}
                 onChange={handleChange}
               />
             </div>
