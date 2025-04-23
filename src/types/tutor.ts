@@ -35,7 +35,7 @@ export interface TutorFormData {
   certificateUrls: string[];
 
   // Step 3
-  price: string;
+  price: number;
 
   // Step 4
   availability: AvailabilityData;

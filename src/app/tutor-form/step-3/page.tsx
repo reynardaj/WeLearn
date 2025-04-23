@@ -9,12 +9,12 @@ import { useRouter } from "next/navigation";
 import { getFormData, saveFormData } from "@/utils/localStorage";
 
 interface FormData {
-  price: string;
+  price: number;
 }
 
 export default function SetPricePage() {
   const [formData, setFormData] = useState<FormData>({
-    price: "",
+    price: 0,
   });
   useEffect(() => {
     const storedData = getFormData();
@@ -28,9 +28,7 @@ export default function SetPricePage() {
     e.preventDefault();
 
     // Validate form
-    const isValid = Object.values(formData).every(
-      (value) => value.trim() !== ""
-    );
+    const isValid = formData.price !== 0;
 
     if (isValid) {
       saveFormData(formData);
@@ -42,7 +40,7 @@ export default function SetPricePage() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: parseInt(value),
     }));
   };
 

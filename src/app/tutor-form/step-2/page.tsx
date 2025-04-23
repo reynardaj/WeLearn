@@ -8,8 +8,8 @@ import { TextMd } from "@/components/Text";
 import { useRouter } from "next/navigation";
 import ProfileImageUpload from "@/components/form/ProfileImageUpload";
 import CertificatesUpload from "@/components/form/CertificatesUpload";
-import SubjectInput from "@/components/subject-input";
-import { Option } from "@/components/subject-input";
+import SubjectInput from "@/components/Subject-input";
+import { Option } from "@/components/Subject-input";
 import { getFormData, saveFormData } from "@/utils/localStorage";
 
 interface FormData {
@@ -46,7 +46,7 @@ export default function SetupProfilePage() {
   const [uploadStatus, setUploadStatus] = useState<string>("");
   uploadStatus;
   const router = useRouter();
-  const [uploading, setUploading] = useState(false); // <-- Add this line
+  const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +88,9 @@ export default function SetupProfilePage() {
 
       // Upload certificates
       // Only upload actual File objects (not URLs from localStorage)
-      const filesToUpload = formData.certificates.filter((f) => f instanceof File);
+      const filesToUpload = formData.certificates.filter(
+        (f) => f instanceof File
+      );
       if (filesToUpload.length > 0) {
         try {
           const certData = new FormData();
