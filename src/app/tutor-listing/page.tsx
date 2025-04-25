@@ -65,7 +65,7 @@ export default function page() {
           <CollapsibleSection title="Subject">
 
             <div className='relative'>
-              <Search />
+              <Search variant='sidebar' placeholder='Search Subjects...'/>
             </div>
 
             {["Discrete Mathematics", "Algorithm & Programming", "Linear Algebra", "Character Building", "Software Engineering"].map(label => (
@@ -97,7 +97,7 @@ export default function page() {
             <div>
               {/* Search Button */}
               <div className='relative'>
-                <Search />
+                <Search variant='sidebar' placeholder='Search University...'/>
               </div>
               
               {/* CheckBox */}
@@ -117,13 +117,14 @@ export default function page() {
       </div>
 
       {/* Content */}
-      <div className='h-auto min-h-[95vh] w-[80vw]'>
-        <div>
-
+      <div className='h-screen w-[80vw] overflow-y-auto pr-2 scrollbar-hover flex flex-col gap-5'>
+        <h1 className={`${playfair.className} text-[48px] font-extrabold`}>Search Tutor</h1>
+        <div className='relative'>
+          <Search variant='content' placeholder=' '/>
         </div>
 
-        <div>
-
+        <div className='bg-white h-[75vh] rounded-2xl shadow-md'>
+          
         </div>
       </div>
     </div>

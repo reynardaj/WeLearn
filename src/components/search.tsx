@@ -1,15 +1,31 @@
 import React from 'react'
 import { IoIosSearch } from "react-icons/io";
 
-export default function search() {
+interface Props {
+  variant?: "sidebar" | "content";
+  placeholder?: string;
+}
+
+export default function Search({ variant = "sidebar", placeholder }: Props) {
+  const inputClasses =
+    variant === "content"
+      ? "pl-10 pr-10 py-2 w-[100%] border-2 border-[#1F65A6] focus:border-[#1F65A6] focus:outline-none rounded-xl"
+      : "pl-10 pr-10 py-1 border-2 border-[#1F252D] rounded-2xl mt-1 placeholder:text-[13cpx] placeholder:text-black";
+    
+  const inputColors = 
+    variant === "content"
+      ? "absolute left-2 top-1.5 text-3xl text-[#1F65A6]"
+      : "absolute left-3 top-2.5 text-2xl"
+
   return (
-    <div>
+    <div className="relative">
       <input
         type="text"
-        placeholder="Search subjects..."
-        className="pl-10 pr-10 py-1 border-2 border-[#1F252D] rounded-2xl mt-1 placeholder:text-[13px] placeholder:text-black"
-    />
-    <IoIosSearch className='absolute left-3 top-2.5 text-2xl'/>
+        placeholder={placeholder}
+        className={inputClasses}
+      />
+      <IoIosSearch className={inputColors} />
     </div>
-  )
+  );
 }
+
