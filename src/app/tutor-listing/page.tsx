@@ -5,6 +5,8 @@ import CollapsibleSection from '@/components/CollapsableSection';
 import Checkbox from '@/components/checkbox';
 import Search from '@/components/search';
 import Slider from '@/components/slider'
+import BasicDateTimePicker from "@/components/DateTimePicker";
+import dayjs, { Dayjs } from 'dayjs';
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
@@ -17,6 +19,7 @@ export default function page() {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [selectedUniversities, setSelectedUniversities] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
+  const [selectedDateTime, setSelectedDateTime] = useState<Dayjs | null>(null);
 
   const toggleValue = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
     setList(prev =>
@@ -32,7 +35,7 @@ export default function page() {
     <div className='container h-screen w-screen flex items-center justify-center bg-[#F0FAF9] gap-3 p-6'>
 
       {/* Filter */}
-      <div className='h-screen w-[25vw] overflow-y-auto pr-2 scrollbar-hover'>
+      <div className='h-screen w-[20vw] overflow-y-auto pr-2 scrollbar-hover'>
         <h1 className={`${playfair.className} text-[32px]`}>Filter</h1>
 
         {/* Filter Tags Section */}
@@ -47,6 +50,12 @@ export default function page() {
             <FilterTag
               label={`Rp. ${priceRange[0].toLocaleString()} - Rp. ${priceRange[1].toLocaleString()}`}
               onRemove={() => setPriceRange(null)}
+            />
+          )}
+          {selectedDateTime && (
+            <FilterTag
+              label={`Date: ${dayjs(selectedDateTime).format('YYYY-MM-DD HH:mm')}`}
+              onRemove={() => setSelectedDateTime(null)}
             />
           )}
         </div>
@@ -79,7 +88,7 @@ export default function page() {
 
           {/* Availability Tab */}
           <CollapsibleSection title="Availability">
-            <p>String</p>
+            <BasicDateTimePicker onChange={setSelectedDateTime} value={selectedDateTime} />
           </CollapsibleSection>
 
           {/* University Tab */}
@@ -108,7 +117,7 @@ export default function page() {
       </div>
 
       {/* Content */}
-      <div className='h-auto min-h-[95vh] w-[75vw]'>
+      <div className='h-auto min-h-[95vh] w-[80vw]'>
         <div>
 
         </div>

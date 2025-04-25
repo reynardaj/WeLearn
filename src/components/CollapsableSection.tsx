@@ -34,8 +34,11 @@ export default function CollapsibleSection({ title, children }: Props) {
       {/* Animated content section */}
       <div
         ref={contentRef}
-        style={{ maxHeight: height }}
-        className='overflow-hidden transition-all duration-200 ease-in-out'
+        style={{
+          maxHeight: height,
+          overflow: isOpen  ? 'visible' : 'hidden',
+        }}
+        className='transition-all duration-200 ease-in-out'
       >
         <div className='mt-1'>
           {children}
