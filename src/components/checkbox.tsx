@@ -10,7 +10,7 @@ interface CheckboxProps {
 }
 
 export default function Checkbox({ labels, selected, setSelected }: CheckboxProps) {
-  const label = labels[0]; // single-label use case
+  const label = labels[0];
 
   return (
     <div>
