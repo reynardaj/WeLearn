@@ -1,12 +1,13 @@
 'use client';
 import React, { useState } from 'react';
-import { playfair, openSans } from '@/lib/fonts';
+import { playfair } from '@/lib/fonts';
 import CollapsibleSection from '@/components/CollapsableSection';
 import Checkbox from '@/components/checkbox';
 import Search from '@/components/search';
 import Slider from '@/components/slider'
 import BasicDateTimePicker from "@/components/DateTimePicker";
 import dayjs, { Dayjs } from 'dayjs';
+import TutorList from '@/components/TutorList';
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
@@ -117,14 +118,20 @@ export default function page() {
       </div>
 
       {/* Content */}
-      <div className='h-screen w-[80vw] overflow-y-auto pr-2 scrollbar-hover flex flex-col gap-5'>
+      <div className='h-screen w-[80vw] overflow-y-auto pr-2 scrollbar-hover flex flex-col'>
         <h1 className={`${playfair.className} text-[48px] font-extrabold`}>Search Tutor</h1>
         <div className='relative'>
           <Search variant='content' placeholder=' '/>
         </div>
 
-        <div className='bg-white h-[75vh] rounded-2xl shadow-md'>
-          
+        <div className='bg-white h-[78vh] rounded-2xl shadow-md mt-4 p-4 pl-6 overflow-y-auto pr-5 scrollbar-hover'>
+          <p className='text-[13px] mb-3'>6 Tutors Match Your Needs</p>
+          <div className='flex flex-col gap-5'>
+            <TutorList />
+            <TutorList />
+            <TutorList />
+            <TutorList />
+          </div>
         </div>
       </div>
     </div>
