@@ -2,8 +2,12 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 
-export default function BasicRating() {
-  const [value] = React.useState<number | null>(5);
+interface Props {
+  rating: number; // ✅ Accept value as props
+}
+
+export default function BasicRating({rating}: Props) {
+  const [value] = React.useState<number | null>(rating);
 
   return (
     <Box sx={{ '& > legend': { mt: 2 } }}>

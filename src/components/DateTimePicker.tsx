@@ -14,7 +14,7 @@ export default function BasicDateTimePicker({ value, onChange }: Props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={['DateTimePicker']}>
-        <DateTimePicker label="Select Date & Time" value={value} onChange={onChange} />
+        <DateTimePicker label="Select Date & Time" value={value} onChange={onChange} format="DD-MM-YYYY HH:mm"/>
       </DemoContainer>
     </LocalizationProvider>
   );

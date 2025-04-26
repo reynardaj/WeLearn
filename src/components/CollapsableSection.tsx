@@ -21,7 +21,7 @@ export default function CollapsibleSection({ title, children }: Props) {
   }, [isOpen, children]);
 
   return (
-    <div>
+    <div className='mb-4'>
       {/* Toggle header */}
       <div 
         className='flex items-center gap-2 cursor-pointer'

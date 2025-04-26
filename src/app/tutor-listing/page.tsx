@@ -1,4 +1,5 @@
 'use client';
+import tutorsData from '@/data/tutors.json';
 import React, { useState } from 'react';
 import { playfair } from '@/lib/fonts';
 import CollapsibleSection from '@/components/CollapsableSection';
@@ -22,6 +23,14 @@ export default function page() {
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
   const [selectedDateTime, setSelectedDateTime] = useState<Dayjs | null>(null);
 
+  const [isSubjectExpanded, setIsSubjectExpanded] = useState(false);
+  const [isUniversityExpanded, setIsUniversityExpanded] = useState(false);
+
+  const [subjectSearchTerm, setSubjectSearchTerm] = useState('');
+  const [universitySearchTerm, setUniversitySearchTerm] = useState('');
+
+  const [tutorNameSearchTerm, setTutorNameSearchTerm] = useState('');
+
   const toggleValue = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
     setList(prev =>
       prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
@@ -31,6 +40,33 @@ export default function page() {
   const handleSliderChange = (range: [number, number]) => {
     setPriceRange(range);
   };
+
+  const allSubjects = Array.from(new Set(
+    tutorsData.flatMap(tutor => tutor.subjects)
+  ));
+  
+  const allUniversities = Array.from(new Set(
+    tutorsData.map(tutor => tutor.university)
+  ));
+
+  const filteredSubjects = allSubjects.filter(subject =>
+    subject.toLowerCase().includes(subjectSearchTerm.toLowerCase())
+  );
+
+  const filteredUniversities = allUniversities.filter(uni =>
+    uni.toLowerCase().includes(universitySearchTerm.toLowerCase())
+  );
+  
+  const filteredTutors = tutorsData.filter(tutor => {
+    const matchesSubjects = selectedSubjects.length === 0 || selectedSubjects.some(subject => tutor.subjects.includes(subject));
+    const matchesUniversities = selectedUniversities.length === 0 || selectedUniversities.includes(tutor.university);
+    const matchesPrice = !priceRange || (tutor.price >= priceRange[0] && tutor.price <= priceRange[1]);
+    const matchesDateTime = !selectedDateTime || dayjs(tutor.availability).isAfter(selectedDateTime);
+    const matchesName = tutor.name.toLowerCase().includes(tutorNameSearchTerm.toLowerCase());
+  
+    return matchesSubjects && matchesUniversities && matchesPrice && matchesDateTime && matchesName;
+  });
+  
 
   return (
     <div className='container h-screen w-screen flex items-center justify-center bg-[#F0FAF9] gap-3 p-6'>
@@ -61,15 +97,19 @@ export default function page() {
           )}
         </div>
 
-        <div className='flex flex-col gap-3'>
+        <div className='flex flex-col'>
           {/* Subject Tab */}
           <CollapsibleSection title="Subject">
-
             <div className='relative'>
-              <Search variant='sidebar' placeholder='Search Subjects...'/>
+              <Search
+                variant='sidebar'
+                placeholder='Search Subjects...'
+                value={subjectSearchTerm}
+                onChange={(e) => setSubjectSearchTerm(e.target.value)}
+              />
             </div>
 
-            {["Discrete Mathematics", "Algorithm & Programming", "Linear Algebra", "Character Building", "Software Engineering"].map(label => (
+            {(isSubjectExpanded ? filteredSubjects : filteredSubjects.slice(0, 5)).map(label => (
               <Checkbox
                 key={label}
                 labels={[label]}
@@ -78,7 +118,16 @@ export default function page() {
               />
             ))}
 
-            <p className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'>58 more...</p>
+            {filteredSubjects.length > 5 && (
+              <p
+                className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'
+                onClick={() => setIsSubjectExpanded(prev => !prev)}
+              >
+                {isSubjectExpanded
+                  ? 'Show Less'
+                  : `${filteredSubjects.length - 5} more...`}
+              </p>
+            )}
             
           </CollapsibleSection>
 
@@ -94,25 +143,36 @@ export default function page() {
 
           {/* University Tab */}
           <CollapsibleSection title="University">
-
-            <div>
-              {/* Search Button */}
-              <div className='relative'>
-                <Search variant='sidebar' placeholder='Search University...'/>
-              </div>
-              
-              {/* CheckBox */}
-              {["Bina Nusantara", "ITB", "UI", "UGM", "UPH"].map(label => (
-                <Checkbox
-                  key={label}
-                  labels={[label]}
-                  selected={selectedUniversities}
-                  setSelected={(val) => toggleValue(selectedUniversities, setSelectedUniversities, label)}
-                />
-              ))}
-
-              <p className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'>58 more...</p>
+            {/* Search Button */}
+            <div className='relative'>
+              <Search
+                variant='sidebar'
+                placeholder='Search University...'
+                value={universitySearchTerm}
+                onChange={(e) => setUniversitySearchTerm(e.target.value)}
+              />
             </div>
+            
+            {/* CheckBox */}
+            {(isUniversityExpanded ? filteredUniversities : filteredUniversities.slice(0, 5)).map(label => (
+              <Checkbox
+                key={label}
+                labels={[label]}
+                selected={selectedUniversities}
+                setSelected={(val) => toggleValue(selectedUniversities, setSelectedUniversities, label)}
+              />
+            ))}
+
+            {filteredUniversities.length > 5 && (
+              <p
+                className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'
+                onClick={() => setIsUniversityExpanded(prev => !prev)}
+              >
+                {isUniversityExpanded
+                  ? 'Show Less'
+                  : `${filteredUniversities.length - 5} more...`}
+              </p>
+            )}
           </CollapsibleSection>
         </div>
       </div>
@@ -121,16 +181,28 @@ export default function page() {
       <div className='h-screen w-[80vw] overflow-y-auto pr-2 scrollbar-hover flex flex-col'>
         <h1 className={`${playfair.className} text-[48px] font-extrabold`}>Search Tutor</h1>
         <div className='relative'>
-          <Search variant='content' placeholder=' '/>
+          <Search
+            variant='content'
+            placeholder='Search Tutors...'
+            value={tutorNameSearchTerm}
+            onChange={(e) => setTutorNameSearchTerm(e.target.value)}
+          />
         </div>
 
         <div className='bg-white h-[78vh] rounded-2xl shadow-md mt-4 p-4 pl-6 overflow-y-auto pr-5 scrollbar-hover'>
-          <p className='text-[13px] mb-3'>6 Tutors Match Your Needs</p>
+          <p className='text-[13px] mb-3'>{filteredTutors.length} Tutors Match Your Needs</p>
           <div className='flex flex-col gap-5'>
-            <TutorList />
-            <TutorList />
-            <TutorList />
-            <TutorList />
+            {filteredTutors.map(tutor => (
+              <TutorList
+                key={tutor.id}
+                name={tutor.name}
+                subjects={tutor.subjects}
+                price={tutor.price}
+                availability={tutor.availability}
+                university={tutor.university}
+                rating={tutor.rating}
+              />
+            ))}
           </div>
         </div>
       </div>
