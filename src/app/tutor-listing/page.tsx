@@ -69,10 +69,9 @@ export default function page() {
   
 
   return (
-    <div className='container h-screen w-screen flex items-center justify-center bg-[#F0FAF9] gap-3 p-6'>
-
+    <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#F0FAF9] gap-3 overflow-x-hidden">
       {/* Filter */}
-      <div className='h-screen w-[20vw] overflow-y-auto pr-2 scrollbar-hover'>
+      <div className="w-full lg:w-[30%] xl:w-[25vw] h-auto lg:h-screen overflow-y-auto p-5 scrollbar-hover mb-6 lg:mb-0">
         <h1 className={`${playfair.className} text-[32px]`}>Filter</h1>
 
         {/* Filter Tags Section */}
@@ -178,8 +177,8 @@ export default function page() {
       </div>
 
       {/* Content */}
-      <div className='h-screen w-[80vw] overflow-y-auto pr-2 scrollbar-hover flex flex-col'>
-        <h1 className={`${playfair.className} text-[48px] font-extrabold`}>Search Tutor</h1>
+      <div className="w-full lg:w-[70%] xl:w-[75vw] flex flex-col flex-1 overflow-y-auto pr-2 scrollbar-hover">
+        <h1 className={`${playfair.className} text-[32px] md:text-[48px] font-extrabold`}>Search Tutor</h1>
         <div className='relative'>
           <Search
             variant='content'
@@ -189,7 +188,7 @@ export default function page() {
           />
         </div>
 
-        <div className='bg-white h-[78vh] rounded-2xl shadow-md mt-4 p-4 pl-6 overflow-y-auto pr-5 scrollbar-hover'>
+        <div className='bg-white h-[80vh] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
           <p className='text-[13px] mb-3'>{filteredTutors.length} Tutors Match Your Needs</p>
           <div className='flex flex-col gap-5'>
             {filteredTutors.map(tutor => (
