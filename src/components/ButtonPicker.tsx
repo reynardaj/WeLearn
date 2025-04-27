@@ -1,14 +1,13 @@
 'use client';
-import { useState } from 'react';
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
 
 interface PickerProps {
-  options: string[]; // The list of button labels
+  options: string[];
+  selected: string | null;
+  onSelect: (option: string) => void;
 }
 
-export default function Picker({ options }: PickerProps) {
-  const [selected, setSelected] = useState<string | null>(null);
-
+export default function Picker({ options, selected, onSelect }: PickerProps) {
   return (
     <div className="flex flex-wrap gap-2">
       {options.map((option) => (
@@ -16,7 +15,7 @@ export default function Picker({ options }: PickerProps) {
           key={option}
           variant="outlined"
           size="small"
-          onClick={() => setSelected(option)}
+          onClick={() => onSelect(option)}
           sx={{
             padding: "3px",
             paddingRight: '10px',
