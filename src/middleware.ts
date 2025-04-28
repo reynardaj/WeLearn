@@ -21,11 +21,15 @@ export default clerkMiddleware(async (auth, req) => {
       return redirectToSignIn({ returnBackUrl: req.url });
     }
   }
-
+  
   // Allow all other routes (including '/') to be accessed publicly
   return NextResponse.next();
 });
 
+// Updated matcher configuration to include API routes
 export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!.*\\..*|_next).*)', // Existing matcher
+    '/api/(.*)',              // Added to ensure middleware applies to API routes
+  ],
 };
