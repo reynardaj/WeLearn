@@ -1,11 +1,10 @@
 'use client';
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+// import { useSearchParams } from 'next/navigation';
 import { playfair } from '@/lib/fonts';
 import WeekDatePicker from '@/components/DatePicker';
 import Picker from '@/components/ButtonPicker';
-import tutors from '@/data/tutorsBooking.json';
-import availability from '@/data/availabilityBooking.json';
 
 const groupTimes = (times: string[]) => {
   const morning: string[] = [];
@@ -26,79 +25,85 @@ const groupTimes = (times: string[]) => {
   return { morning, afternoon, evening };
 };
 
-export default function page() {
-  // selected tutor
-  const selectedTutorId = "tutor-001";
+export default function BookingPage() {
+  // const searchParams = useSearchParams();
+  // const tutorID = searchParams.get('tutorID');
+  const tutorID = 'TUT001';
 
-  // Find tutor info
-  const tutor = tutors.find(tutor => tutor.id === selectedTutorId);
-
-  // Find availability for this tutor
-  const tutorAvailability = availability.filter(slot => slot.tutor_id === selectedTutorId);
-
-  // Find available times (only not booked)
-  const availableTimes = tutorAvailability
-    .filter(slot => !slot.is_booked)
-    .map(slot => slot.time);
-
-  const { morning, afternoon, evening } = groupTimes(availableTimes);
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [tutorSubjects, setTutorSubjects] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!tutorID || !selectedDate) return;
+
+    const fetchData = async () => {
+      const dateStr = selectedDate.toISOString().split('T')[0];
+      const res = await fetch(`/api/booking?tutorID=${tutorID}&date=${dateStr}`);
+      const data = await res.json();
+      setAvailableTimes(data.timeSlots || []);
+      setTutorSubjects(data.subjects || []);
+    };
+
+    fetchData();
+  }, [tutorID, selectedDate]);
+
+  const { morning, afternoon, evening } = groupTimes(availableTimes);
 
   return (
     <div className='min-h-screen w-full flex flex-col items-center justify-center' style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
       <div className='flex flex-col mt-10 mb-10 h-auto w-[90%] sm:w-[50%] md:w-[50%] lg:w-[40%] xl:w-[30%] rounded-2xl bg-[#F0FAF9] justify-start p-6 sm:p-8 md:p-10 lg:p-12 gap-5 overflow-visible'>
-        
+
         <h1 className={`${playfair.className} text-[24px] text-center`}>Book A Session</h1>
 
-        <WeekDatePicker />
+        <WeekDatePicker
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
 
         {/* Subject Section */}
-        <div>
-          <p className="text-[12px] mb-1">Subject</p>
-          <Picker
-            options={tutor?.subjects || []}
-            selected={selectedSubject}
-            onSelect={setSelectedSubject}
-          />
-        </div>
+        {tutorSubjects.length > 0 && (
+          <div>
+            <p className="text-[12px] mb-1">Subject</p>
+            <Picker
+              options={tutorSubjects}
+              selected={selectedSubject}
+              onSelect={setSelectedSubject}
+            />
+          </div>
+        )}
 
         {/* Morning Section */}
-        {morning.length > 0 && (
-          <div>
-            <p className="text-[12px] mb-1">Morning</p>
-            <Picker
-              options={morning}
-              selected={selectedTime}
-              onSelect={setSelectedTime}
-            />
-          </div>
-        )}
+        <div>
+          <p className="text-[12px] mb-1">Morning</p>
+          {morning.length > 0 ? (
+            <Picker options={morning} selected={selectedTime} onSelect={setSelectedTime} />
+          ) : (
+            <p className="text-[11px] italic">No available time slots</p>
+          )}
+        </div>
 
         {/* Afternoon Section */}
-        {afternoon.length > 0 && (
-          <div>
-            <p className="text-[12px] mb-1">Afternoon</p>
-            <Picker
-              options={afternoon}
-              selected={selectedTime}
-              onSelect={setSelectedTime}
-            />
-          </div>
-        )}
+        <div>
+          <p className="text-[12px] mb-1">Afternoon</p>
+          {afternoon.length > 0 ? (
+            <Picker options={afternoon} selected={selectedTime} onSelect={setSelectedTime} />
+          ) : (
+            <p className="text-[11px] italic">No available time slots</p>
+          )}
+        </div>
 
         {/* Evening Section */}
-        {evening.length > 0 && (
-          <div>
-            <p className="text-[12px] mb-1">Evening</p>
-            <Picker
-              options={evening}
-              selected={selectedTime}
-              onSelect={setSelectedTime}
-            />
-          </div>
-        )}
+        <div>
+          <p className="text-[12px] mb-1">Evening</p>
+          {evening.length > 0 ? (
+            <Picker options={evening} selected={selectedTime} onSelect={setSelectedTime} />
+          ) : (
+            <p className="text-[11px] italic">No available time slots</p>
+          )}
+        </div>
 
       </div>
     </div>
