@@ -1,14 +1,13 @@
 'use client';
-import tutorsData from '@/data/tutors.json';
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { playfair } from '@/lib/fonts';
 import CollapsibleSection from '@/components/CollapsableSection';
 import Checkbox from '@/components/checkbox';
 import Search from '@/components/search';
-import Slider from '@/components/slider'
-import BasicDateTimePicker from "@/components/DateTimePicker";
-import dayjs, { Dayjs } from 'dayjs';
+import Slider from '@/components/slider';
+import BasicDateTimePicker from '@/components/DateTimePicker';
 import TutorList from '@/components/TutorList';
+import dayjs, { Dayjs } from 'dayjs';
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
@@ -17,7 +16,8 @@ const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void })
   </div>
 );
 
-export default function page() {
+export default function Page() {
+  const [tutors, setTutors] = useState<any[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [selectedUniversities, setSelectedUniversities] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number] | null>(null);
@@ -28,8 +28,13 @@ export default function page() {
 
   const [subjectSearchTerm, setSubjectSearchTerm] = useState('');
   const [universitySearchTerm, setUniversitySearchTerm] = useState('');
-
   const [tutorNameSearchTerm, setTutorNameSearchTerm] = useState('');
+
+  useEffect(() => {
+    fetch('/api/tutor-listing')
+      .then(res => res.json())
+      .then(data => setTutors(data.tutors || []));
+  }, []);
 
   const toggleValue = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
     setList(prev =>
@@ -42,11 +47,11 @@ export default function page() {
   };
 
   const allSubjects = Array.from(new Set(
-    tutorsData.flatMap(tutor => tutor.subjects)
+    tutors.flatMap(tutor => tutor.subjects || [])
   ));
-  
+
   const allUniversities = Array.from(new Set(
-    tutorsData.map(tutor => tutor.university)
+    tutors.map(tutor => tutor.institution)
   ));
 
   const filteredSubjects = allSubjects.filter(subject =>
@@ -56,17 +61,21 @@ export default function page() {
   const filteredUniversities = allUniversities.filter(uni =>
     uni.toLowerCase().includes(universitySearchTerm.toLowerCase())
   );
-  
-  const filteredTutors = tutorsData.filter(tutor => {
-    const matchesSubjects = selectedSubjects.length === 0 || selectedSubjects.some(subject => tutor.subjects.includes(subject));
-    const matchesUniversities = selectedUniversities.length === 0 || selectedUniversities.includes(tutor.university);
+
+  const filteredTutors = tutors.filter(tutor => {
+    const matchesSubjects = selectedSubjects.length === 0 || selectedSubjects.some(subject => (tutor.subjects || []).includes(subject));
+    const matchesUniversities = selectedUniversities.length === 0 || selectedUniversities.includes(tutor.institution);
     const matchesPrice = !priceRange || (tutor.price >= priceRange[0] && tutor.price <= priceRange[1]);
-    const matchesDateTime = !selectedDateTime || dayjs(tutor.availability).isAfter(selectedDateTime);
-    const matchesName = tutor.name.toLowerCase().includes(tutorNameSearchTerm.toLowerCase());
-  
+    const matchesDateTime =
+      !selectedDateTime ||
+      (Array.isArray(tutor.availability) &&
+        tutor.availability.some(slot =>
+          dayjs(`${slot.day} ${slot.startTime}`).isAfter(selectedDateTime)
+        ));
+    const matchesName = `${tutor.firstname} ${tutor.lastname}`.toLowerCase().includes(tutorNameSearchTerm.toLowerCase());
+
     return matchesSubjects && matchesUniversities && matchesPrice && matchesDateTime && matchesName;
   });
-  
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#F0FAF9] gap-3 overflow-x-hidden">
@@ -122,12 +131,9 @@ export default function page() {
                 className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'
                 onClick={() => setIsSubjectExpanded(prev => !prev)}
               >
-                {isSubjectExpanded
-                  ? 'Show Less'
-                  : `${filteredSubjects.length - 5} more...`}
+                {isSubjectExpanded ? 'Show Less' : `${filteredSubjects.length - 5} more...`}
               </p>
             )}
-            
           </CollapsibleSection>
 
           {/* Price Tab */}
@@ -151,8 +157,7 @@ export default function page() {
                 onChange={(e) => setUniversitySearchTerm(e.target.value)}
               />
             </div>
-            
-            {/* CheckBox */}
+
             {(isUniversityExpanded ? filteredUniversities : filteredUniversities.slice(0, 5)).map(label => (
               <Checkbox
                 key={label}
@@ -167,16 +172,13 @@ export default function page() {
                 className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'
                 onClick={() => setIsUniversityExpanded(prev => !prev)}
               >
-                {isUniversityExpanded
-                  ? 'Show Less'
-                  : `${filteredUniversities.length - 5} more...`}
+                {isUniversityExpanded ? 'Show Less' : `${filteredUniversities.length - 5} more...`}
               </p>
             )}
           </CollapsibleSection>
         </div>
       </div>
 
-      {/* Content */}
       <div className="w-full lg:w-[70%] xl:w-[75vw] flex flex-col flex-1 overflow-y-auto pr-2 scrollbar-hover">
         <h1 className={`${playfair.className} text-[32px] md:text-[48px] font-extrabold`}>Search Tutor</h1>
         <div className='relative'>
@@ -193,18 +195,18 @@ export default function page() {
           <div className='flex flex-col gap-5'>
             {filteredTutors.map(tutor => (
               <TutorList
-                key={tutor.id}
-                name={tutor.name}
-                subjects={tutor.subjects}
+                key={tutor.tutorid}
+                name={`${tutor.firstname} ${tutor.lastname}`}
+                subjects={tutor.subjects || []}
                 price={tutor.price}
-                availability={tutor.availability}
-                university={tutor.university}
-                rating={tutor.rating}
+                availability={tutor.availability || []}
+                university={tutor.institution}
+                rating={tutor.rating || 5}
               />
             ))}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

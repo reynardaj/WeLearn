@@ -5,16 +5,25 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import dayjs from 'dayjs';
 
+interface AvailabilitySlot {
+  day: number;
+}
 interface Props {
   name: string;
   subjects: string[];
   price: number;
   university: string;
-  availability: string;
+  availability: AvailabilitySlot[];
   rating: number;
 }
 
 export default function TutorList({ name, subjects, price, university, availability, rating }: Props) {
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  const uniqueDays = Array.from(new Set(availability.map(slot => slot.day)))
+    .sort((a, b) => a - b)
+    .map(dayIndex => days[dayIndex]);
+
   return (
     <div className='flex flex-col md:flex-row lg:flex-row gap-5'>
       {/* Profile Picture */}
@@ -24,10 +33,10 @@ export default function TutorList({ name, subjects, price, university, availabil
       <div className='flex flex-col w-full'>
         <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>{name}</h1>
         <div className='flex flex-col'>
-            <p className='text-[13px] lg:text-[14px]'>Subjects: {subjects.join(', ')}</p>
-            <p className='text-[13px] lg:text-[14px]'>Price: Rp. {price.toLocaleString('id-ID')}</p>
-            <p className='text-[13px] lg:text-[14px]'>Availability: {dayjs(availability).format('DD-MM-YYYY HH:mm')}</p>
-            <p className='text-[13px] lg:text-[14px]'>University: {university}</p>
+            <p className='text-[13px] lg:text-[14px]'>{subjects.join(', ')}</p>
+            <p className='text-[13px] lg:text-[14px]'>{price.toLocaleString('id-ID')} / hour</p>
+            <p className='text-[13px] lg:text-[14px]'>{uniqueDays.join(', ')}</p>
+            <p className='text-[13px] lg:text-[14px]'>{university}</p>
         </div>
         <div className='mt-3 flex flex-col md:flex-row lg:flex-row items-start lg:items-center justify-between gap-2'>
             <Rating rating={rating}/>
