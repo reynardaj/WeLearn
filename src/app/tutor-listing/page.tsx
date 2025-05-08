@@ -8,6 +8,7 @@ import Slider from '@/components/slider';
 import BasicDateTimePicker from '@/components/DateTimePicker';
 import TutorList from '@/components/TutorList';
 import dayjs, { Dayjs } from 'dayjs';
+import BookingModal from '@/components/BookingModal';
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
@@ -29,6 +30,10 @@ export default function Page() {
   const [subjectSearchTerm, setSubjectSearchTerm] = useState('');
   const [universitySearchTerm, setUniversitySearchTerm] = useState('');
   const [tutorNameSearchTerm, setTutorNameSearchTerm] = useState('');
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTutorID, setSelectedTutorID] = useState<string | null>(null);
+
 
   useEffect(() => {
     fetch('/api/tutor-listing')
@@ -55,6 +60,7 @@ export default function Page() {
   ));
 
   const filteredSubjects = allSubjects.filter(subject =>
+    typeof subject === 'string' &&
     subject.toLowerCase().includes(subjectSearchTerm.toLowerCase())
   );
 
@@ -196,15 +202,29 @@ export default function Page() {
             {filteredTutors.map(tutor => (
               <TutorList
                 key={tutor.tutorid}
+                tutorID={tutor.tutorid}
                 name={`${tutor.firstname} ${tutor.lastname}`}
                 subjects={tutor.subjects || []}
                 price={tutor.price}
                 availability={tutor.availability || []}
                 university={tutor.institution}
                 rating={tutor.rating || 5}
+                onBook={(id) => {
+                  setSelectedTutorID(id);
+                  setShowModal(true);
+                }}
               />
             ))}
           </div>
+          {showModal && selectedTutorID && (
+            <BookingModal
+              tutorID={selectedTutorID}
+              onClose={() => {
+                setShowModal(false);
+                setSelectedTutorID(null);
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
