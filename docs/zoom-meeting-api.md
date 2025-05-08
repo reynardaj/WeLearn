@@ -10,7 +10,7 @@ This API endpoint allows users to create Zoom meetings programmatically through 
 
 ## Implementation Details
 
-### 1. Zoom API Integration ([src/lib/zoom.ts](cci:7://file:///d:/Rey/Binus/Semester%204/Software%20Engineering/welearn/src/lib/zoom.ts:0:0-0:0))
+### 1. Zoom API Integration ([../src/lib/zoom.ts](cci:7://file:///d:/Rey/Binus/Semester%204/Software%20Engineering/welearn/src/lib/zoom.ts:0:0-0:0))
 
 #### ZoomAPI Class
 
@@ -33,7 +33,7 @@ A singleton class that handles all Zoom API interactions. Key features include:
    - Accepts meeting configuration parameters
    - Returns meeting details including join and start URLs
 
-### 2. API Route ([src/app/api/zoom/create-meeting/route.ts](cci:7://file:///d:/Rey/Binus/Semester%204/Software%20Engineering/welearn/src/app/api/zoom/create-meeting/route.ts:0:0-0:0))
+### 2. API Route ([../src/app/api/zoom/create-meeting/route.ts](cci:7://file:///d:/Rey/Binus/Semester%204/Software%20Engineering/welearn/src/app/api/zoom/create-meeting/route.ts:0:0-0:0))
 
 #### Request Body
 
@@ -54,8 +54,8 @@ A singleton class that handles all Zoom API interactions. Key features include:
   success: boolean;
   meeting?: {
     id: string;
-    join_url: string;
-    start_url: string;
+    join_url: string;     // URL for participants to join the meeting
+    start_url: string;    // URL for the host to start the meeting
     topic: string;
     start_time: string;
     duration: number;
@@ -63,6 +63,11 @@ A singleton class that handles all Zoom API interactions. Key features include:
   error?: string;
 }
 ```
+
+## Response Fields Explanation
+
+- `join_url`: This is the URL that participants use to join the meeting. It's a public URL that can be shared with anyone who needs to attend the meeting.
+- `start_url`: This is the URL that the host uses to start the meeting. It contains special host privileges and should only be used by the meeting organizer. This URL provides additional host controls and features that are not available to regular participants.
 
 ## Error Handling
 
@@ -102,7 +107,7 @@ if (data.success) {
 
 ## Environment Requirements
 
-The following environment variables must be set in [.env](cci:7://file:///d:/Rey/Binus/Semester%204/Software%20Engineering/welearn/.env:0:0-0:0):
+The following environment variables must be set in [../.env](cci:7://file:///d:/Rey/Binus/Semester%204/Software%20Engineering/welearn/.env:0:0-0:0):
 
 - `ZOOM_CLIENT_ID`: Zoom API client ID
 - `ZOOM_CLIENT_SECRET`: Zoom API client secret
