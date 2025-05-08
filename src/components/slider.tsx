@@ -1,0 +1,68 @@
+"use client";
+
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import MuiSlider from '@mui/material/Slider';
+
+function valuetext(value: number) {
+  return `Rp ${value.toLocaleString("en-US")}`;
+}
+
+interface RangeSliderProps {
+  value: [number, number] | null;
+  onChange: (val: [number, number]) => void;
+}
+
+export default function RangeSlider({ value, onChange }: RangeSliderProps) {
+  const handleChange = (_event: Event, newValue: number | number[]) => {
+    if (Array.isArray(newValue)) {
+      onChange([newValue[0], newValue[1]]);
+    }
+  };
+
+  const currentValue = value || [0, 300000];
+
+  const formatRupiah = (num: number) =>
+    new Intl.NumberFormat('en-US').format(num);
+
+  return (
+    <div>
+      <p className="text-sm mt-2">
+        Selected range: Rp. {formatRupiah(currentValue[0])} – Rp. {formatRupiah(currentValue[1])}
+      </p>
+
+      <Box sx={{ width: 225, marginLeft: '1.5vh', marginTop: '0.5vh' }}>
+        <MuiSlider
+          getAriaLabel={() => 'Price range'}
+          min={0}
+          max={300000}
+          step={1000}
+          value={currentValue}
+          onChange={handleChange}
+          valueLabelDisplay="off"
+          getAriaValueText={valuetext}
+          sx={{
+            '& .MuiSlider-thumb': {
+              backgroundColor: "#1F65A6",
+              border: "2px solid #1F252D",
+              '&:hover, &.Mui-focusVisible, &.Mui-active': {
+                boxShadow: "none",
+              },
+            },
+            '& .MuiSlider-track': {
+              backgroundColor: "#1F65A6",
+            },
+            '& .MuiSlider-rail': {
+              backgroundColor: "#1F252D",
+            },
+          }}
+        />
+      </Box>
+
+      <div className='flex gap-[13vw]'>
+        <p>0</p>
+        <p>300,000</p>
+      </div>
+    </div>
+  );
+}
