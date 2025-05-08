@@ -1,12 +1,42 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useState } from 'react'
 import { playfair } from '@/lib/fonts';
 import Rating from '@/components/rating'
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button'
 import ProgressBar from '@/components/ProgressBar'
 import ReviewList from '@/components/reviewList';
+import { useSearchParams } from 'next/navigation';
+
+interface TutorData {
+  tutorid: string;
+  firstname: string;
+  lastname: string;
+  institution: string;
+  price: number;
+  description: string;
+  experience: string;
+  profileimg: string;
+  subjects: string[];
+  availableDays: string[];
+}
 
 export default function page() {
+  const searchParams = useSearchParams();
+  const tutorID = searchParams.get('tutorID') || 'TUT001'; // fallback for testing
+
+  const [tutor, setTutor] = useState<TutorData | null>(null);
+
+  useEffect(() => {
+    if (!tutorID) return;
+
+    fetch(`/api/tutor-profile?tutorID=${tutorID}`)
+      .then((res) => res.json())
+      .then((data) => setTutor(data));
+  }, [tutorID]);
+
+  if (!tutor) return <div>Loading...</div>;
+  
   return (
     <div className='flex flex-col min-h-screen w-full bg-[#F0FAF9] p-5 md:p-15 gap-5'>
       {/* Tutor Header */}
@@ -16,14 +46,13 @@ export default function page() {
 
         {/* Tutor Information */}
         <div className='flex flex-col w-full'>
-          <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>Name</h1>
+          <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>{tutor.firstname} {tutor.lastname}</h1>
           <div className='flex flex-col'>
-            <p className='text-[16px] lg:text-[18px]'>Teacher with 4 years of teaching experience and numerous successful
-            examples.</p>
-            <p className='text-[13px] lg:text-[14px]'>Subject</p>
-            <p className='text-[13px] lg:text-[14px]'>Price / hour</p>
-            <p className='text-[13px] lg:text-[14px]'>Days</p>
-            <p className='text-[13px] lg:text-[14px]'>University</p>
+            <p className='text-[16px] lg:text-[18px]'>{tutor.experience}</p>
+            <p className='text-[13px] lg:text-[14px]'>{tutor.subjects.join(', ')}</p>
+            <p className='text-[13px] lg:text-[14px]'>Rp. {tutor.price} / hour</p>
+            <p className='text-[13px] lg:text-[14px]'>{tutor.availableDays.join(', ')}</p>
+            <p className='text-[13px] lg:text-[14px]'>{tutor.institution}</p>
           </div>
           <div className='mt-3 flex flex-col gap-1'>
               <Rating rating={5}/>
@@ -40,7 +69,7 @@ export default function page() {
       {/* About Me */}
       <div>
         <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>About Me</h1>
-        <p className='text-[14px]'>I’m a passionate tutor with over five years of experience helping students of all ages master their subjects. I specialize in math, science, and writing, but I love tackling any challenge a student throws my way. My teaching style is patient, creative, and tailored to each learner’s needs—whether you’re prepping for exams or just want to boost your confidence. When I’m not tutoring, you’ll find me reading sci-fi novels or experimenting with new recipes. Let’s work together to make learning fun and effective!"</p>
+        <p className='text-[14px]'>{tutor.description}</p>
       </div>
 
       {/* Review Section */}
