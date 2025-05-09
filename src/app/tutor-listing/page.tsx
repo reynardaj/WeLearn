@@ -9,6 +9,9 @@ import BasicDateTimePicker from '@/components/DateTimePicker';
 import TutorList from '@/components/TutorList';
 import dayjs, { Dayjs } from 'dayjs';
 import BookingModal from '@/components/BookingModal';
+import UpcomingSession from '@/components/UpcomingSession';
+import Button from '@mui/material/Button';
+import { HiOutlineCalendarDays } from "react-icons/hi2";
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
@@ -33,6 +36,8 @@ export default function Page() {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTutorID, setSelectedTutorID] = useState<string | null>(null);
+
+  const [showUpcoming, setShowUpcoming] = useState(false);
 
 
   useEffect(() => {
@@ -75,9 +80,12 @@ export default function Page() {
     const matchesDateTime =
       !selectedDateTime ||
       (Array.isArray(tutor.availability) &&
-        tutor.availability.some(slot =>
-          dayjs(`${slot.day} ${slot.startTime}`).isAfter(selectedDateTime)
-        ));
+        tutor.availability.some(slot => {
+          const selectedDay = selectedDateTime.day();
+          const selectedHour = selectedDateTime.hour();
+
+          return slot.day === selectedDay && selectedHour >= parseInt(slot.startTime.split(':')[0]) && selectedHour < parseInt(slot.endTime.split(':')[0]);
+        }));
     const matchesName = `${tutor.firstname} ${tutor.lastname}`.toLowerCase().includes(tutorNameSearchTerm.toLowerCase());
 
     return matchesSubjects && matchesUniversities && matchesPrice && matchesDateTime && matchesName;
@@ -185,8 +193,32 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="w-full lg:w-[70%] xl:w-[75vw] flex flex-col flex-1 overflow-y-auto pr-2 scrollbar-hover">
-        <h1 className={`${playfair.className} text-[32px] md:text-[48px] font-extrabold`}>Search Tutor</h1>
+      <div className="w-full lg:w-[70%] xl:w-[75vw] flex flex-col flex-1 overflow-y-auto scrollbar-hover p-5">
+        <div className='flex items-center justify-between'>
+          <h1 className={`${playfair.className} text-[32px] md:text-[48px] font-extrabold`}>Search Tutor</h1>
+          <div className="relative inline-block">
+            <Button
+              onClick={() => setShowUpcoming(true)}
+              variant="outlined"
+              sx={{
+                fontSize: "12px",
+                color: "black",
+                borderRadius: "8px",
+                border: 0,
+                backgroundColor: "#F4B660",
+                padding: '10px',
+              }}
+              className="gap-2"
+            >
+              <HiOutlineCalendarDays className="text-[18px]" />
+              <span className="hidden sm:inline">Upcoming Session</span>
+            </Button>
+
+            {showUpcoming && (
+              <UpcomingSession onClose={() => setShowUpcoming(false)} />
+            )}
+          </div>
+        </div>
         <div className='relative'>
           <Search
             variant='content'
@@ -196,7 +228,7 @@ export default function Page() {
           />
         </div>
 
-        <div className='bg-white h-[80vh] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
+        <div className='bg-white h-[76vh] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
           <p className='text-[13px] mb-3'>{filteredTutors.length} Tutors Match Your Needs</p>
           <div className='flex flex-col gap-5'>
             {filteredTutors.map(tutor => (
