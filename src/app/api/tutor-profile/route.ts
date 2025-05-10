@@ -1,4 +1,3 @@
-// /app/api/tutor-profile/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
@@ -18,11 +17,20 @@ export async function GET(req: NextRequest) {
   try {
     const client = await pool.connect();
 
+    // 1. Tutor profile
     const tutorRes = await client.query(
       `SELECT * FROM "mstutor" WHERE "tutorid" = $1`,
       [tutorID]
     );
 
+    if (tutorRes.rows.length === 0) {
+      client.release();
+      return NextResponse.json({ error: 'Tutor not found' }, { status: 404 });
+    }
+
+    const tutor = tutorRes.rows[0];
+
+    // 2. Subjects
     const subjectRes = await client.query(
       `SELECT s.name 
        FROM Subject s 
@@ -30,27 +38,36 @@ export async function GET(req: NextRequest) {
        WHERE ts.tutorID = $1`,
       [tutorID]
     );
+    const subjects = subjectRes.rows.map(s => s.name);
 
+    // 3. Available days
     const daysRes = await client.query(
       `SELECT DISTINCT day 
        FROM TutorAvailability 
        WHERE tutorID = $1`,
       [tutorID]
     );
-
-    client.release();
-
-    if (tutorRes.rows.length === 0) {
-      return NextResponse.json({ error: 'Tutor not found' }, { status: 404 });
-    }
-
     const dayMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const availableDays = daysRes.rows.map(d => dayMap[d.day]);
 
+    // 4. Reviews
+    const reviewRes = await client.query(
+      `SELECT rating, comment
+      FROM "review"
+      WHERE "tutorID" = $1`,
+      [tutorID]
+    );
+
+
+    const reviews = reviewRes.rows;
+
+    client.release();
+
     return NextResponse.json({
-      ...tutorRes.rows[0],
-      subjects: subjectRes.rows.map(s => s.name),
-      availableDays
+      ...tutor,
+      subjects,
+      availableDays,
+      reviews
     });
   } catch (err) {
     console.error('Error:', err);
