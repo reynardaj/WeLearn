@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from '@/lib/db';
+import { auth } from '@clerk/nextjs/server';
 
 // POST /api/tutor-form
 export async function POST(req: NextRequest) {
@@ -63,10 +64,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Insert to User
-    // const result2 = await pool.query(
-    //   'UPDATE user (tutorID) VALUES ($1) WHEN userID=___ RETURNING *',
-    //   [tutorID]
-    // );
+    const { userId } = await auth();
+    await pool.query(
+      'UPDATE user (tutorID) VALUES ($1) WHEN userID=($2)',
+      [tutorID, userId]
+    );
 
     return NextResponse.json({ tutor: tutorID }, { status: 201 });
 
