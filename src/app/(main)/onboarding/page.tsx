@@ -21,23 +21,31 @@ export default function RoleSelector() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-6">Choose Your Role</h1>
-      <div className="flex gap-4">
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+      <div className="bg-[#f1fdfc] p-8 rounded-2xl shadow-2xl w-[400px] relative">
         <button
-          className="px-6 py-3 border border-blue-600 rounded-lg text-blue-600 hover:bg-blue-100 transition"
-          onClick={() => handleRoleSelect('mentor')}
+          onClick={() => router.push('/')} // Adjust if needed
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl"
         >
-          I'm a Mentor
+          &times;
         </button>
-        <button
-          className="px-6 py-3 border border-green-600 rounded-lg text-green-600 hover:bg-green-100 transition"
-          onClick={() => handleRoleSelect('mentee')}
-        >
-          I'm a Mentee
-        </button>
+        <h2 className="text-3xl font-semibold text-center mb-8">Select your role</h2>
+        <div className="space-y-6">
+          <button
+            className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-white border hover:shadow-lg text-blue-700 text-lg font-semibold"
+            onClick={() => handleRoleSelect('mentor')}
+          >
+            🎓 Tutor
+          </button>
+          <button
+            className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-white border hover:shadow-lg text-blue-700 text-lg font-semibold"
+            onClick={() => handleRoleSelect('mentee')}
+          >
+            👤 Tutee
+          </button>
+        </div>
+        {error && <p className="text-red-600 mt-6 text-center text-base">Error: {error}</p>}
       </div>
-      {error && <p className="text-red-600 mt-4">Error: {error}</p>}
     </div>
   )
 }

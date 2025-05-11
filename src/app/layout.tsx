@@ -1,7 +1,7 @@
 "use client"; // ✅ Must be a Client Component
 
 import "./globals.css";
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton, useAuth, useUser } from "@clerk/nextjs";
 import { Playfair_Display, Open_Sans } from "next/font/google";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -37,14 +37,25 @@ export default function RootLayout({
 }
 
 function AuthRedirectWrapper() {
-  const { userId, isLoaded } = useAuth();
+  const { isLoaded: authLoaded, userId } = useAuth();
+  const { isLoaded: userLoaded, user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (isLoaded && userId) {
-      router.replace("/onboarding"); // ✅ Redirects only once
+    if (authLoaded && userLoaded) {
+      if (!userId || !user) return;
+
+      const role = user.publicMetadata?.role;
+
+      if (role === 'mentor') {
+        router.replace('/mentor-dashboard');
+      } else if (role === 'mentee') {
+        router.replace('/mentee-dashboard');
+      } else {
+        router.replace('/onboarding');
+      }
     }
-  }, [isLoaded, userId, router]);
+  }, [authLoaded, userLoaded, userId, user, router]);
 
   return null;
 }
