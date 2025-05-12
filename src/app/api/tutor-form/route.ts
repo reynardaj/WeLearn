@@ -41,19 +41,16 @@ export async function POST(req: NextRequest) {
     for (const day of availability) {
       if (day.length > 0 ) {
         for (const hour of day) {
-          console.log(hour.from)
-          console.log(hour.to)
           await pool.query(
             'INSERT INTO TutorAvailability (availabilityID, tutorID, day, startTime, endTime) VALUES (gen_random_uuid(), $1, $2, $3, $4)',
             [tutorID, dayCount, hour.from, hour.to]
           )
         }
-        dayCount++;
       }
+      dayCount++;
     }
 
     // Insert to TutorCertificate
-    console.log(certificateUrls.length);
     if (certificateUrls.length > 0) {
       for (const certificateUrl of certificateUrls) {
         await pool.query(
@@ -63,12 +60,38 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Insert to TutorSubject
+    for (const subject of subjects) {
+      let subjectID = "";
+
+      const subjectResult = await pool.query(
+        'SELECT (subjectsID) FROM Subjects WHERE (subjects = $1)',
+        [subject]
+      )
+
+      if (subjectResult.rows[0]) { // subject existed
+        subjectID = subjectResult.rows[0].subjectsid;
+      } else { // subject doesn't exist
+        const subjectInsert = await pool.query(
+          'INSERT INTO Subjects (subjectsID, subjects) VALUES (gen_random_uuid(), $1) RETURNING subjectsID',
+          [subject]
+        )
+        subjectID = subjectInsert.rows[0].subjectsid;
+      }
+      console.log(subject, subjectID)
+
+      await pool.query(
+        'INSERT INTO TutorSubjects (tutorID, subjectsID) VALUES ($1, $2)',
+        [tutorID, subjectID]
+      )
+    }
+
     // Insert to User
-    const { userId } = await auth();
-    await pool.query(
-      'UPDATE user (tutorID) VALUES ($1) WHEN userID=($2)',
-      [tutorID, userId]
-    );
+    // const { userId } = await auth();
+    // await pool.query(
+    //   'UPDATE user (tutorID) VALUES ($1) WHEN userID=($2)',
+    //   [tutorID, userId]
+    // );
 
     return NextResponse.json({ tutor: tutorID }, { status: 201 });
 
