@@ -5,11 +5,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { useTuteeForm } from "@/contexts/TuteeFormContext";
-// import { useRouter } from "next/navigation";
 
 export default function TuteeForm4() {
-  const { formData, updateFormData } = useTuteeForm();  
-  // const router = useRouter();  
+  const { formData, updateFormData } = useTuteeForm();
 
   const handleSubmit = async () => {  
     try {  
@@ -36,7 +34,6 @@ export default function TuteeForm4() {
         })  
       });  
   
-      // Log the raw response for debugging  
       console.log('Response status:', response.status);  
       console.log('Response headers:', Object.fromEntries(response.headers.entries())); 
   
@@ -46,11 +43,9 @@ export default function TuteeForm4() {
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);  
       }  
   
-      // Try to parse JSON with error handling  
       try {  
         const responseData = await response.json();  
         console.log('Server Response:', responseData);  
-        // router.push('/');  
       } catch (jsonError) {  
         console.error('JSON parsing error:', jsonError);  
         throw new Error('Failed to parse server response');  
@@ -58,7 +53,6 @@ export default function TuteeForm4() {
     } catch (error) {  
       console.error('Submission error:', error);  
       
-      // Optional: Show user-friendly error message  
       alert(error instanceof Error ? error.message : 'Submission failed');  
     }  
   };   
@@ -148,7 +142,7 @@ export default function TuteeForm4() {
       <div className="w-[70%] bg-[#F0FAF9]">
         <div className="h-screen w-full">  
           <div className="h-[15%] flex justify-center items-center">  
-            <Link href="/tutee-form" className="w-12 h-12 rounded-full bg-white border-2 border-[#1F65A6] flex justify-center items-center">  
+            <Link href="/tutee-form/tutee-form1" className="w-12 h-12 rounded-full bg-white border-2 border-[#1F65A6] flex justify-center items-center">  
               <Image 
                 src="/assets/CheckList.png"
                 alt="done"

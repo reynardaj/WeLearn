@@ -28,10 +28,10 @@ export async function POST(req: NextRequest) {
 
     console.log('Inserting TuteeForm');  
     const tuteeResult = await client.query(  
-      `INSERT INTO TuteeForm (TuteeID, Education, MinBudget, MaxBudget)  
-       VALUES (gen_random_uuid(), $1, $2, $3)  
+      `INSERT INTO TuteeForm (TuteeID, Education, MinBudget, MaxBudget, firstname, lastname)  
+       VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)  
        RETURNING TuteeID`,  
-      [body.education, body.minBudget, body.maxBudget]  
+      [body.education, body.minBudget, body.maxBudget, body.firstName, body.lastName]  
     );  
     
     const tuteeId = tuteeResult.rows[0].tuteeid;  

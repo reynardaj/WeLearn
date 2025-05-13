@@ -46,7 +46,7 @@ export default function TuteeForm2() {
       <div className="w-[70%] bg-[#F0FAF9]">  
         <div className="h-screen w-full">  
           <div className="h-[15%] flex justify-center items-center">  
-            <Link href="/tutee-form" className="w-12 h-12 rounded-full bg-white border-2 border-[#1F65A6] flex justify-center items-center">  
+            <Link href="/tutee-form/tutee-form1" className="w-12 h-12 rounded-full bg-white border-2 border-[#1F65A6] flex justify-center items-center">  
               <Image   
                 src="/assets/CheckList.png"  
                 alt="done"  
@@ -74,7 +74,7 @@ export default function TuteeForm2() {
             </Link>  
           </div>   
           <div className="h-[5%] flex items-center pl-15">  
-            <Link href={"/tutee-form"}>  
+            <Link href={"/tutee-form/tutee-form1"}>  
               <Image   
                 src="/assets/Arrow.png"  
                 alt="Tutee Form"  
