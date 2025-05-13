@@ -78,7 +78,6 @@ export async function POST(req: NextRequest) {
         )
         subjectID = subjectInsert.rows[0].subjectsid;
       }
-      console.log(subject, subjectID)
 
       await pool.query(
         'INSERT INTO TutorSubjects (tutorID, subjectsID) VALUES ($1, $2)',
@@ -87,11 +86,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Insert to User
-    // const { userId } = await auth();
-    // await pool.query(
-    //   'UPDATE user (tutorID) VALUES ($1) WHEN userID=($2)',
-    //   [tutorID, userId]
-    // );
+    const { userId } = await auth();
+    console.log(userId)
+    if (userId) {
+      await pool.query(
+        'UPDATE user (tutorID) VALUES ($1) WHEN userID=($2)',
+        [tutorID, userId]
+      );
+    }
 
     return NextResponse.json({ tutor: tutorID }, { status: 201 });
 
