@@ -85,7 +85,30 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // // Insert to User
+    // Insert to User
+    const { userId } = await auth();
+    console.log(userId);
+    if (userId) {
+      try {
+        const result = await pool.query(
+          'UPDATE "user" SET "tutorID" = $1 WHERE "userID" = $2',
+          [tutorID, userId]
+        );
+
+        if (result.rowCount === 0) {
+          console.warn(`No user found with userID: ${userId}`);
+        } else {
+          console.log(`Updated tutorID for userID: ${userId}`);
+        }
+      } catch (error) {
+        console.error('Error updating tutorID:', error);
+      }
+    } else {
+      console.warn('No userId found in auth context.');
+    }
+
+
+
     // const { userId } = await auth();
     // console.log(userId)
     // if (userId) {
