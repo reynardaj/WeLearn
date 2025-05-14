@@ -23,7 +23,6 @@ export interface TutorFormData {
   // Step 1
   firstName: string;
   lastName: string;
-  email: string;
   institute: string;
 
   // Step 2

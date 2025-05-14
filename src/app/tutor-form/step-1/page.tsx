@@ -12,7 +12,6 @@ import { getFormData, saveFormData } from "@/utils/localStorage";
 interface FormData {
   firstName: string;
   lastName: string;
-  email: string;
   institute: string;
 }
 
@@ -20,7 +19,6 @@ export default function AboutYouPage() {
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
-    email: "",
     institute: "",
   });
 
@@ -30,7 +28,6 @@ export default function AboutYouPage() {
     setFormData({
       firstName: storedData.firstName,
       lastName: storedData.lastName,
-      email: storedData.email,
       institute: storedData.institute,
     });
   }, []);
@@ -130,24 +127,6 @@ export default function AboutYouPage() {
               className="w-full p-2 border border-gray-300 rounded-md "
               required
               value={formData.lastName || ""}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-text mb-1"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full p-2 border border-gray-300 rounded-md "
-              required
-              value={formData.email}
               onChange={handleChange}
             />
           </div>

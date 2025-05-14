@@ -23,6 +23,7 @@ export async function POST(request: Request) {
     const blob = await put(`tutor-images/${file.name}`, file, {
       access: "public",
       token: process.env.BLOB_READ_WRITE_TOKEN,
+      allowOverwrite: true,
     });
 
     return NextResponse.json({ imageUrl: blob.url });
