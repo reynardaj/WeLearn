@@ -189,13 +189,56 @@ export default function SetAvailabilityPage() {
     const previousData = getFormData();
 
     // Merge previous data with current availability
+    // --- Transform data to match API format ---
+    // Map day object to array of arrays (Monday-Sunday)
+    const dayOrder = [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ];
+    // Fix lint: ensure mergedAvailability is Record<string, TimeSlot[]>
+    const mergedAvailabilityRecord: Record<string, TimeSlot[]> =
+      mergedAvailability;
+    const availabilityArray = dayOrder.map(
+      (day) => mergedAvailabilityRecord[day] || []
+    );
+
+    // Map specializedSubjects (Option[]) to subjects (string[])
+    const subjects = (previousData.specializedSubjects || []).map((opt: any) =>
+      typeof opt === "string" ? opt : opt.value
+    );
+
+    // Ensure certificateUrls is string[]
+    const certificateUrls = Array.isArray(previousData.certificateUrls)
+      ? previousData.certificateUrls
+      : [];
+
+    // Ensure profileImg is a string (URL or filename)
+    const profileImg =
+      typeof previousData.profileImage === "string"
+        ? previousData.profileImage
+        : "";
+
+    // Compose the API payload in the required format
     const submissionData = {
-      ...previousData,
-      availability: mergedAvailability,
+      firstName: previousData.firstName,
+      lastName: previousData.lastName,
+      institution: previousData.institute,
+      price: previousData.price,
+      profileImg,
+      description: previousData.introduction,
+      experience: previousData.experience,
+      subjects,
+      certificateUrls,
+      availability: availabilityArray,
     };
 
     try {
-      const response = await fetch("/api/tutor-form/submit", {
+      const response = await fetch("/api/tutor-form", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,7 +250,7 @@ export default function SetAvailabilityPage() {
       }
       // Optionally clear localStorage after successful submission
       localStorage.removeItem("tutorFormData");
-      router.push("/tutor-form/complete");
+      router.push("/tutor-listing"); // Harus diganti ke route tutor listing (yoel)
     } catch (error) {
       console.error("Error submitting form:", error);
     }

@@ -1,11 +1,6 @@
 import React, { useRef, useState } from "react";
 import { TextMd, TextSm } from "../Text";
-import {
-  CloudUpload,
-  FileText,
-  Image as ImageIcon,
-  XCircle,
-} from "lucide-react";
+import { CloudUpload, FileText, Image as ImageIcon, X } from "lucide-react";
 
 interface CertificatesUploadProps {
   onFilesUpload: (files: File[]) => void;
@@ -52,7 +47,9 @@ const CertificatesUpload: React.FC<CertificatesUploadProps> = ({
     const validTypes = ["application/pdf", "image/jpeg", "image/png"];
     const validFiles = files.filter((file) => validTypes.includes(file.type));
     if (validFiles.length !== files.length) {
-      alert("Some files were not valid (PDF, JPEG, or PNG only). Only valid files will be added.");
+      alert(
+        "Some files were not valid (PDF, JPEG, or PNG only). Only valid files will be added."
+      );
     }
     // Prevent duplicates by name
     const newFiles = validFiles.filter(
@@ -104,7 +101,9 @@ const CertificatesUpload: React.FC<CertificatesUploadProps> = ({
           className="stroke-[1] w-8 h-8 text-gray-400 mb-2"
           aria-hidden="true"
         />
-        <TextSm className="text-gray-500">Drag or upload files here (PDF, JPEG, PNG)</TextSm>
+        <TextSm className="text-gray-500">
+          Drag or upload files here (PDF, JPEG, PNG)
+        </TextSm>
         <input
           type="file"
           ref={fileInputRef}
@@ -120,7 +119,7 @@ const CertificatesUpload: React.FC<CertificatesUploadProps> = ({
           {uploadedFiles.map((file) => (
             <div
               key={file.name}
-              className="flex items-center justify-between px-3 py-2 bg-gray-50 rounded border border-gray-200"
+              className="flex items-center justify-between px-3 py-2 border border-gray-200 rounded-lg"
             >
               <div className="flex items-center">
                 {getFileIcon(file)}
@@ -131,10 +130,10 @@ const CertificatesUpload: React.FC<CertificatesUploadProps> = ({
               <button
                 type="button"
                 onClick={() => handleDiscard(file.name)}
-                className="ml-4 p-1 rounded-full hover:bg-gray-200 transition-colors"
+                className="ml-4 p-1 rounded-full  transition-colors"
                 aria-label={`Discard uploaded certificate ${file.name}`}
               >
-                <XCircle className="w-5 h-5 text-text" />
+                <X className="w-5 h-5 text-text" />
               </button>
             </div>
           ))}

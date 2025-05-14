@@ -85,12 +85,17 @@ export default function SetupProfilePage() {
         setUploading(false);
         return;
       }
-
+    }
+    if (formData.certificates.length > 0) {
       // Upload certificates
       // Only upload actual File objects (not URLs from localStorage)
       const filesToUpload = formData.certificates.filter(
         (f) => f instanceof File
       );
+      console.log("Files to upload:", filesToUpload);
+      filesToUpload.forEach((file, idx) => {
+        console.log(`File[${idx}]:`, file.name, file.type, file.size);
+      });
       if (filesToUpload.length > 0) {
         try {
           const certData = new FormData();
@@ -101,8 +106,16 @@ export default function SetupProfilePage() {
             method: "POST",
             body: certData,
           });
-          if (!certRes.ok) throw new Error("Certificate upload failed");
+          console.log("certRes status:", certRes.status);
+          if (!certRes.ok) {
+            const errorText = await certRes.text();
+            console.error("Certificate upload failed:", errorText);
+            setUploadStatus("Certificate upload failed: " + errorText);
+            setUploading(false);
+            return;
+          }
           const certResult = await certRes.json();
+          console.log("certResult:", certResult);
           certificatesUrls =
             certResult.certificates?.map((c: any) => c.url) || [];
           console.log(certificatesUrls);
