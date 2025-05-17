@@ -11,7 +11,7 @@ import { useSearchParams } from 'next/navigation';
 interface Review {
   rating: number;
   comment: string;
-  name: string; // use 'Anonymous' if no name
+  name: string;
 }
 interface TutorData {
   tutorid: string;
@@ -29,7 +29,7 @@ interface TutorData {
 
 export default function page() {
   const searchParams = useSearchParams();
-  const tutorID = searchParams.get('tutorID') || 'TUT001'; // fallback for testing
+  const tutorID = searchParams.get('tutorID') || '998083f8-869a-44e8-b2eb-798aa9900274'; // fallback for testing
 
   const [tutor, setTutor] = useState<TutorData | null>(null);
 

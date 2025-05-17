@@ -32,9 +32,9 @@ export async function GET(req: NextRequest) {
 
     // 2. Subjects
     const subjectRes = await client.query(
-      `SELECT s.name 
-       FROM Subject s 
-       JOIN TutorSubject ts ON ts.subjectID = s.subjectID 
+      `SELECT s.subjects AS name 
+       FROM Subjects s 
+       JOIN TutorSubjects ts ON ts.subjectsID = s.subjectsID 
        WHERE ts.tutorID = $1`,
       [tutorID]
     );
@@ -52,14 +52,19 @@ export async function GET(req: NextRequest) {
 
     // 4. Reviews
     const reviewRes = await client.query(
-      `SELECT rating, comment
-      FROM "review"
-      WHERE "tutorID" = $1`,
+      `SELECT r.rating, r.comment, t."firstname", t."lastname"
+      FROM "review" r
+      JOIN "tuteeform" t ON t."tuteeid" = r."tuteeID"
+      WHERE r."tutorID" = $1`,
       [tutorID]
     );
 
 
-    const reviews = reviewRes.rows;
+    const reviews = reviewRes.rows.map(r => ({
+      rating: r.rating,
+      comment: r.comment,
+      name: `${r.firstname} ${r.lastname}`
+    }));
 
     client.release();
 
