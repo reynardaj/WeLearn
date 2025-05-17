@@ -3,40 +3,41 @@
 import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "outline";
+  variant?: "primary" | "secondary" | "ghost";
   size?: "sm" | "base" | "lg" | "icon";
 }
 
+import { TextMd } from "@/components/Text";
+interface ButtonProps {
+  className?: string;
+  children?: React.ReactNode;
+  onClick?: () => void;
+}
+
 export const Button: React.FC<ButtonProps> = ({
+  className,
   children,
-  variant = "default",
-  size = "base",
-  className = "",
-  ...props
+  variant,
+  onClick,
 }) => {
-  let variantClass = "";
-  if (variant === "default") {
-    variantClass = "bg-blue-700 text-white hover:bg-blue-800";
-  } else if (variant === "outline") {
-    variantClass = "border border-gray-300 text-gray-700 hover:bg-gray-100";
+    let variantClass = "", textClass = "";
+  if (variant == "primary") {
+    variantClass = "bg-[#1F65A6] text-white hover:bg-[#1F65A6]";
+    textClass = "text-white";
+  } else if (variant == "secondary") {
+    variantClass = "bg-[#F4B660] text-black hover:bg-[#F4B660]";
+    textClass = "text-white";
+  } else if (variant == "ghost") {
+    variantClass = "bg-transparent text-gray-700 hover:underline";
+    textClass = "text-black";
   }
-
-  let sizeClass = "";
-  if (size === "sm") {
-    sizeClass = "px-3 py-1.5 text-sm";
-  } else if (size === "base") {
-    sizeClass = "px-4 py-2 text-base";
-  } else if (size === "lg") {
-    sizeClass = "px-6 py-3 text-lg";
-  } else if (size === "icon") {
-    sizeClass = "p-2 w-10 h-10";
-  }
-
-  const combined = `inline-flex items-center justify-center rounded-2xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${variantClass} ${sizeClass} ${className}`;
-
   return (
-    <button className={combined} {...props}>
-      {children}
+    <button
+      type={"button"}
+      className={`w-auto h-10 px-4 py-3 rounded-[10px] inline-flex justify-center items-center gap-2.5 cursor-pointer ${variantClass} ${className}`}
+      onClick={onClick}
+    >
+      <TextMd className={`${textClass}`}>{children}</TextMd>
     </button>
   );
-};
+};  
