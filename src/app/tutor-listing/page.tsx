@@ -215,7 +215,7 @@ export default function Page() {
             </Button>
 
             {showUpcoming && (
-              <UpcomingSession onClose={() => setShowUpcoming(false)} />
+              <UpcomingSession onCloseAction={() => setShowUpcoming(false)} />
             )}
           </div>
         </div>

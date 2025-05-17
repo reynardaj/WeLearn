@@ -1,26 +1,32 @@
-'use client';
+"use client";
 import { playfair } from '@/lib/fonts';
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 
 type Session = {
   id: string;
-  date: string;   // already formatted
-  time: string;   // already formatted
+  date: string;
+  time: string;
   subject: string;
 };
 
-export default function UpcomingSession({ onClose }: { onClose: () => void }) {
+export default function UpcomingSession({ onCloseAction }: { onCloseAction: () => void }) {
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
-    fetch('/api/upcoming?tuteeID=b52d9970-d390-42f3-b01e-0a79e8ceb9f1')
-      .then(res => res.json())
-      .then(data => {
-        console.log('Upcoming sessions:', data);
-        setSessions(data.sessions || []);
-      });
-  }, []);
+  fetch('/api/upcoming?tuteeID=b52d9970-d390-42f3-b01e-0a79e8ceb9f1')
+    .then(res => {
+      console.log("✅ API status:", res.status);
+      return res.json();  // may throw
+    })
+    .then(data => {
+      console.log("✅ Raw data from API:", data);
+      setSessions(data.sessions || []);
+    })
+    .catch(err => {
+      console.error("❌ Fetch or JSON parse error:", err);
+    });
+}, []);
 
   const grouped = sessions.reduce((acc, session) => {
     acc[session.date] = acc[session.date] || [];
@@ -31,7 +37,7 @@ export default function UpcomingSession({ onClose }: { onClose: () => void }) {
   return (
     <div className="absolute right-0 mt-2 w-[90vw] sm:w-[400px] bg-white rounded-2xl shadow-lg p-5 z-50 border border-gray-200">
       <div className="relative flex flex-col gap-2">
-        <button onClick={onClose} className="absolute top-1 right-2 text-xl font-bold cursor-pointer">
+        <button onClick={onCloseAction} className="absolute top-1 right-2 text-xl font-bold cursor-pointer">
           &times;
         </button>
         <h2 className={`${playfair.className} text-[18px] md:text-[20px] font-extrabold`}>Upcoming</h2>

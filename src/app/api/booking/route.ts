@@ -50,9 +50,9 @@ export async function GET(req: NextRequest) {
 
     // --- Fetch subject names ---
     const subjectRes = await client.query(
-      `SELECT s.name 
-       FROM Subject s
-       JOIN TutorSubject ts ON ts.subjectID = s.subjectID
+      `SELECT s.subjects AS name
+       FROM subjects s
+       JOIN TutorSubjects ts ON ts.subjectsID = s.subjectsID
        WHERE ts.tutorID = $1`,
       [tutorID]
     );

@@ -23,10 +23,10 @@ export async function GET() {
                 'startTime', a."starttime",
                 'endTime', a."endtime"
             )) AS availability,
-            array_agg(DISTINCT s."name") AS subjects
+            array_agg(DISTINCT s."subjects") AS subjects
         FROM "mstutor" t
-        LEFT JOIN "tutorsubject" ts ON t."tutorid" = ts."tutorid"
-        LEFT JOIN "subject" s ON ts."subjectid" = s."subjectid"
+        LEFT JOIN "tutorsubjects" ts ON t."tutorid" = ts."tutorid"
+        LEFT JOIN "subjects" s ON ts."subjectsid" = s."subjectsid"
         LEFT JOIN "tutoravailability" a ON t."tutorid" = a."tutorid"
         GROUP BY t."tutorid"
     `);
