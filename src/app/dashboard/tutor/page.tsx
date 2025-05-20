@@ -1,10 +1,11 @@
 "use client";
 import { Heading2, Heading3 } from "@/components/Heading";
-// import { TextMd } from "@/components/Text";
+
 import DashboardClick from "@/components/tutorDashClick";
 import Calendar from 'react-calendar';
 import React , {useState} from "react";
 import 'react-calendar/dist/Calendar.css';
+import AnalyticsTabs from '@/components/AnalyticTab';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -42,145 +43,9 @@ export default function Register() {
               <Heading2 className="h-auto">
                 Analytic Overview
               </Heading2>
-              <div className="flex w-[50%] h-[8%] justify-between items-center rounded-lg bg-[#E5E5E5] pl-2 pr-2 mt-3 mb-3">
-                <div className="w-[30%] h-[80%] flex justify-center items-center rounded-lg bg-white">
-                  Performance
-                </div>
-                <div className="w-[30%] h-[80%] flex justify-center items-center rounded-lg bg-white">
-                  Sessions
-                </div>
-                <div className="w-[30%] h-[80%] flex justify-center items-center rounded-lg bg-white">
-                  Feedback
-                </div>
+              <div className="w-full">
+                <AnalyticsTabs />
               </div>
-              {/* performance part */}
-              <div className="h-auto flex items-center">
-                <Heading3>
-                  Perfomance review
-                </Heading3>
-              </div>
-              <div className="h-[10%] flex justify-between items-center">
-                <div className="w-[50%] h-[100%] flex justify-between items-center">
-                  <div className="w-[30%] h-[80%] flex justify-center items-center rounded-2xl bg-white shadow-lg border-2 border-[#E5E5E5]">
-                    Daily
-                  </div>
-                  <div className="w-[30%] h-[80%] flex justify-center items-center rounded-2xl bg-white shadow-lg border-2 border-[#E5E5E5]">
-                    Weekly
-                  </div>
-                  <div className="w-[30%] h-[80%] flex justify-center items-center rounded-2xl bg-white shadow-lg border-2 border-[#E5E5E5]">
-                    Monthly
-                  </div>
-                </div>
-                <div className=" w-[30%] h-[100%] flex justify-between items-center">
-                  <div>
-                    pick a date
-                  </div>
-                  to
-                  <div>
-                    pick a date
-                  </div>
-                </div>
-              </div>
-              <div className="h-[65%] w-[100%] bg-amber-600 mt-3">
-                  statistic
-              </div>
-
-              {/* session part */}
-              <div className="h-[10%] flex justify-between items-center">
-                <div className="w-[50%] h-[100%] flex justify-between items-center">
-                  <Heading3>
-                  Session History
-                </Heading3>
-                </div>
-                <div className=" w-[30%] h-[100%] flex justify-between items-center">
-                  <div>
-                    pick a date
-                  </div>
-                  to
-                  <div>
-                    pick a date
-                  </div>
-                </div>
-              </div>
-              <div className="h-[75%] w-[100%] bg-amber-600 mt-3">
-                  statistic
-              </div>
-
-              {/* rating part */}
-              <div className="h-[10%] flex justify-between items-center">
-                <div className="w-[50%] h-[100%] flex justify-between items-center">
-                  <Heading3>
-                    Rating Overview
-                </Heading3>
-                </div>
-              </div>
-              <div className="h-[75%] w-[100%] mt-3">
-                  <div className="h-[20%]">
-                    <div>
-                      ../5
-                    </div>
-                    <div>
-                      starss
-                    </div>
-                    <div>
-                      total reviews
-                    </div>
-                  </div>
-                  <div className="h-[35%] w-[100%] flex flex-col justify-between">
-                    <div className="w-[100%] h-[20%] flex justify-between items-center">
-                      5
-                      <div className="w-[95%] h-[50%] border-1 border-black rounded-4xl">
-
-                      </div>
-                      <div>
-                        (...)
-                      </div>
-                    </div>
-                    <div className="w-[100%] h-[20%] flex justify-between items-center">
-                      4
-                      <div className="w-[95%] h-[50%] border-1 border-black rounded-4xl">
-
-                      </div>
-                      <div>
-                        (...)
-                      </div>
-                    </div>
-                    <div className="w-[100%] h-[20%] flex justify-between items-center">
-                      3
-                      <div className="w-[95%] h-[50%] border-1 border-black rounded-4xl">
-
-                      </div>
-                      <div>
-                        (...)
-                      </div>
-                    </div>
-                    <div className="w-[100%] h-[20%] flex justify-between items-center">
-                      2
-                      <div className="w-[95%] h-[50%] border-1 border-black rounded-4xl">
-
-                      </div>
-                      <div>
-                        (...)
-                      </div>
-                    </div>
-                    <div className="w-[100%] h-[20%] flex justify-between items-center">
-                      1
-                      <div className="w-[95%] h-[50%] border-1 border-black rounded-4xl">
-
-                      </div>
-                      <div>
-                        (...)
-                      </div>
-                    </div>
-                  </div>
-                  <div className="h-[10%] w-[100%] flex items-end">
-                    Recent Feedback
-                  </div>
-                  <div className="h-[35%] w-[100%]">
-
-                  </div>
-              </div>
-              
             </div>
         </div>
       </div>
