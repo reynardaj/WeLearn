@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
+    "jsonwebtoken": "^9.0.2",
     "next": "15.2.3",
     "nextjs-app": "file:",
     "postcss": "^8.5.3",
