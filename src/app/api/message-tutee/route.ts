@@ -27,8 +27,6 @@ export async function GET(req: Request) {
      ORDER BY "sentAt"`,
     [convId]
   );
-
-  console.log("✅  GET /api/messages returned", rows.length, "rows for", convId);
   return NextResponse.json(rows);
 }
 
@@ -42,6 +40,5 @@ export async function POST(req: Request) {
        "messageID", "senderIsTutor", content, "sentAt"`,
     [conversationId, senderIsTutor, content]
   );
-  console.log("🛠️  POST /api/messages inserted", rows[0]);
   return NextResponse.json(rows[0]);
 }
