@@ -17,10 +17,10 @@ interface Msg {
 }
 
 export default function MessagePage() {
-  const [contacts,   setContacts]   = useState<Contact[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [activeConv, setActiveConv] = useState<string>('');
-  const [messages,   setMessages]   = useState<Msg[]>([]);
-  const [draft,      setDraft]      = useState<string>('');
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [draft, setDraft] = useState<string>('');
   const tuteeID = 'b52d9970-d390-42f3-b01e-0a79e8ceb9f1';
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
