@@ -7,7 +7,7 @@ import { VscSend } from "react-icons/vsc";
 interface Contact {
   conversationId: string;
   name: string;
-  lastMessage: string;       // should already be tutor-only from your backend
+  lastMessage: string;
 }
 interface Msg {
   messageID: string;
@@ -29,18 +29,22 @@ export default function MessagePage() {
       const res = await fetch(`/api/conversation?tuteeID=${tuteeID}`);
       const data: Contact[] = await res.json();
       setContacts(data);
-      if (data.length && !activeConv) {
-        setActiveConv(data[0].conversationId);
-      }
     } catch (err) {
       console.error('Failed fetching contacts', err);
     }
   };
+
   useEffect(() => {
     fetchContacts();
     const iv = setInterval(fetchContacts, 5000);
     return () => clearInterval(iv);
   }, [tuteeID]);
+
+  useEffect(() => {
+    if (!activeConv && contacts.length > 0) {
+      setActiveConv(contacts[0].conversationId);
+    }
+  }, [contacts, activeConv]);
 
   const fetchMessages = async () => {
     if (!activeConv) return;
@@ -52,10 +56,9 @@ export default function MessagePage() {
       console.error('Failed loading messages', err);
     }
   };
-    useEffect(() => {
-    fetchMessages();
-    }, [activeConv]);
     
+  useEffect(() => { fetchMessages(); }, [activeConv]);
+
   useEffect(() => {
     if (!activeConv) return;
     const iv = setInterval(fetchMessages, 2000);
@@ -96,7 +99,7 @@ export default function MessagePage() {
             return (
               <div
                 key={c.conversationId}
-                className={!isLast ? 'pb-3 border-b-2 border-gray-300' : ''}
+                className={!isLast ? 'pb-2 border-b-2 border-gray-300' : ''}
               >
                 <Contacts
                   name={c.name}

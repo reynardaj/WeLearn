@@ -25,7 +25,7 @@ export default function Contact({
     <div
       onClick={onClick}
       className={[
-        'h-[12vh] w-full p-4 flex gap-3 cursor-pointer transition',
+        'h-[12vh] w-full p-4 flex gap-3 cursor-pointer transition mt-2',
         selected
           ? 'bg-white shadow-md hover:bg-gray-50 rounded-xl'
           : 'hover:bg-gray-50'
