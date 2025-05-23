@@ -26,7 +26,7 @@ export default function MessagePage() {
 
   const fetchContacts = async () => {
     try {
-      const res = await fetch(`/api/conversation?tuteeID=${tuteeID}`);
+      const res = await fetch(`/api/conversation-tutee?tuteeID=${tuteeID}`);
       const data: Contact[] = await res.json();
       setContacts(data);
     } catch (err) {
@@ -49,7 +49,7 @@ export default function MessagePage() {
   const fetchMessages = async () => {
     if (!activeConv) return;
     try {
-      const res = await fetch(`/api/message?conversationId=${activeConv}`);
+      const res = await fetch(`/api/message-tutee?conversationId=${activeConv}`);
       const msgs: Msg[] = await res.json();
       setMessages(msgs);
     } catch (err) {
