@@ -8,12 +8,19 @@ interface ContactProps {
   onClick?: () => void;
 }
 
+function truncateWords(text: string, wordLimit: number) {
+  const words = text.split(' ');
+  if (words.length <= wordLimit) return text;
+  return words.slice(0, wordLimit).join(' ') + '...';
+}
+
 export default function Contact({
   name,
   lastMessage,
   selected = false,
   onClick,
 }: ContactProps) {
+  const snippet = truncateWords(lastMessage, 5);
   return (
     <div
       onClick={onClick}
@@ -31,11 +38,11 @@ export default function Contact({
         ].join(' ')}
       />
       <div className="flex flex-col justify-center overflow-hidden">
-        <p className={`${playfair.className} text-[18px]`}>
+        <p className={`${playfair.className} text-[18px] truncate`}>
           {name}
         </p>
         <p className="text-[12px]">
-          {lastMessage}
+          {snippet}
         </p>
       </div>
     </div>

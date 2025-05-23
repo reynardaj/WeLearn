@@ -2,43 +2,38 @@ import { Pool } from 'pg';
 import { NextResponse } from 'next/server';
 
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
 });
 
-export async function GET() {
-  const client = await pool.connect();
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const conversationId = searchParams.get('conversationId');
+  if (!conversationId) return NextResponse.json([], { status: 200 });
 
-  try {
-    const result = await client.query(`
-        SELECT 
-            t."tutorid", 
-            t."firstname", 
-            t."lastname", 
-            t."institution", 
-            t."price", 
-            t."profileimg",
-            json_agg(json_build_object(
-                'day', a."day",
-                'startTime', a."starttime",
-                'endTime', a."endtime"
-            )) AS availability,
-            array_agg(DISTINCT s."name") AS subjects
-        FROM "mstutor" t
-        LEFT JOIN "tutorsubject" ts ON t."tutorid" = ts."tutorid"
-        LEFT JOIN "subject" s ON ts."subjectid" = s."subjectid"
-        LEFT JOIN "tutoravailability" a ON t."tutorid" = a."tutorid"
-        GROUP BY t."tutorid"
-    `);
+  const { rows } = await pool.query(
+    `SELECT
+       messageID,
+       senderIsTutor,
+       content,
+       sentAt
+     FROM Message
+     WHERE conversationID = $1
+     ORDER BY sentAt`,
+    [conversationId]
+  );
 
-    return NextResponse.json({ tutors: result.rows }, { status: 200 });
-  } catch (error) {
-    console.error('Database error:', error);
-    return NextResponse.json(
-        { error: error instanceof Error ? error.message : 'Unknown error' },
-        { status: 500 }
-    );
-  } finally {
-    client.release();
-  }
+  return NextResponse.json(rows);
+}
+
+export async function POST(req: Request) {
+  const { conversationId, senderIsTutor, content } = await req.json();
+  const { rows } = await pool.query(
+    `INSERT INTO Message
+       (conversationID, senderIsTutor, content)
+     VALUES ($1, $2, $3)
+     RETURNING messageID, senderIsTutor, content, sentAt`,
+    [conversationId, senderIsTutor, content]
+  );
+  return NextResponse.json(rows[0]);
 }
