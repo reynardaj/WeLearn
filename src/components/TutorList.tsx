@@ -3,7 +3,7 @@ import { playfair } from '@/lib/fonts';
 import Rating from '@/components/rating'
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
 
 interface AvailabilitySlot {
   day: number;
@@ -20,11 +20,16 @@ interface Props {
 }
 
 export default function TutorList({ tutorID, name, subjects, price, university, availability, rating, onBook }: Props) {
+  const router = useRouter(); 
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const uniqueDays = Array.from(new Set(availability.map(slot => slot.day)))
     .sort((a, b) => a - b)
     .map(dayIndex => days[dayIndex]);
+
+  const goToChat = () => {
+    router.push(`/message?tutorID=${tutorID}`);
+  };
 
   return (
     <div className='flex flex-col md:flex-row lg:flex-row gap-5'>
@@ -44,7 +49,13 @@ export default function TutorList({ tutorID, name, subjects, price, university, 
             <Rating rating={rating}/>
             <div>
                 <Stack spacing={1} direction="row">
-                  <Button variant="outlined" sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7"}}>Send Message</Button>
+                  <Button 
+                    variant="outlined" 
+                    sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7"}}
+                    onClick={goToChat}
+                  >
+                    Send Message
+                  </Button>
                   <Button 
                     variant="contained" 
                     sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6" }}

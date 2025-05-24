@@ -1,4 +1,3 @@
-// app/api/messages/route.ts
 import { Pool } from 'pg';
 import { NextResponse } from 'next/server';
 
@@ -31,7 +30,36 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const { conversationId, senderIsTutor, content } = await req.json();
+  const {
+    conversationId: maybeConv,  // ← accepts optional conversationId
+    tutorID,                    // ← needed if maybeConv is null
+    tuteeID,                    // ← needed if maybeConv is null
+    senderIsTutor,
+    content
+  } = await req.json();
+
+  let conversationId = maybeConv;
+  if (!conversationId) {
+    const existing = await pool.query(
+      `SELECT "conversationID"
+         FROM "conversation"
+        WHERE "tutorID" = $1
+          AND "tuteeID" = $2;`,
+      [tutorID, tuteeID]
+    );
+    if (existing.rows.length) {
+      conversationId = existing.rows[0].conversationID;
+    } else {
+      const insertRes = await pool.query(
+        `INSERT INTO "conversation"("tutorID","tuteeID")
+          VALUES ($1, $2)
+         RETURNING "conversationID";`,
+        [tutorID, tuteeID]
+      );
+      conversationId = insertRes.rows[0].conversationID;
+    }
+  }
+  
   const { rows } = await pool.query(
     `INSERT INTO "message"
        ("conversationID", "senderIsTutor", content)
@@ -40,5 +68,9 @@ export async function POST(req: Request) {
        "messageID", "senderIsTutor", content, "sentAt"`,
     [conversationId, senderIsTutor, content]
   );
-  return NextResponse.json(rows[0]);
+  
+  return NextResponse.json({
+    conversationId,
+    message: rows[0]
+  });
 }

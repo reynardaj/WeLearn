@@ -3,12 +3,13 @@ import { playfair } from '@/lib/fonts';
 
 interface ContactProps {
   name: string;
-  lastMessage: string;
+  lastMessage: string | null;
   selected?: boolean;
   onClick?: () => void;
 }
 
-function truncateWords(text: string, wordLimit: number) {
+function truncateWords(text: string | null | undefined, wordLimit: number) {
+  if (!text) return '';                                                        // ← ADDED: guard null/undefined
   const words = text.split(' ');
   if (words.length <= wordLimit) return text;
   return words.slice(0, wordLimit).join(' ') + '...';

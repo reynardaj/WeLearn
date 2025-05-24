@@ -29,3 +29,39 @@ export async function GET(req: Request) {
 
   return NextResponse.json(rows);
 }
+
+export async function POST(req: Request) {
+  const { tutorID, tuteeID } = await req.json();
+
+  const { rows } = await pool.query(
+    `INSERT INTO "conversation"("tutorID","tuteeID")
+      VALUES ($1,$2)
+    ON CONFLICT ON CONSTRAINT uniq_conv_pair
+      DO UPDATE SET "tuteeID" = EXCLUDED."tuteeID"  -- no-op update
+    RETURNING "conversationID";`,
+    [tutorID, tuteeID]
+  );
+  const conversationId = rows[0].conversationID;
+
+  // fetch & return the contact snippet
+  const contactRes = await pool.query(
+    `SELECT
+       c."conversationID"            AS "conversationId",
+       t."firstname" || ' ' || t."lastname" AS name,
+       (
+         SELECT m.content
+           FROM "message" m
+          WHERE m."conversationID" = c."conversationID"
+            AND m."senderIsTutor" = true
+          ORDER BY m."sentAt" DESC
+          LIMIT 1
+       ) AS "lastMessage"
+     FROM "conversation" c
+     JOIN "mstutor"    t
+       ON t."tutorid" = c."tutorID"
+    WHERE c."conversationID" = $1;`,
+    [conversationId]
+  );
+
+  return NextResponse.json(contactRes.rows[0]);
+}

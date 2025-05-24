@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { playfair } from '@/lib/fonts';
 import Contacts from './contacts';
 import { VscSend } from "react-icons/vsc";
+import { useSearchParams } from 'next/navigation';
 
 interface Contact {
   conversationId: string;
@@ -17,12 +18,29 @@ interface Msg {
 }
 
 export default function MessagePage() {
+  const params = useSearchParams();
+  const tutorID = params.get('tutorID'); 
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [activeConv, setActiveConv] = useState<string>('');
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState<string>('');
   const tuteeID = 'b52d9970-d390-42f3-b01e-0a79e8ceb9f1';
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!tutorID) return;
+    fetch('/api/conversation-tutee', {                    
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tutorID, tuteeID })
+    })
+      .then(res => res.json())
+      .then((c: Contact) => {
+        setActiveConv(c.conversationId);
+        fetchContacts();
+      })
+      .catch(err => console.error('Failed upserting conversation', err));
+  }, [tutorID]); 
 
   const fetchContacts = async () => {
     try {
@@ -44,7 +62,7 @@ export default function MessagePage() {
     if (!activeConv && contacts.length > 0) {
       setActiveConv(contacts[0].conversationId);
     }
-  }, [contacts, activeConv]);
+  }, [contacts]);
 
   const fetchMessages = async () => {
     if (!activeConv) return;
@@ -71,7 +89,7 @@ export default function MessagePage() {
 
   const handleSend = async () => {
     if (!draft.trim()) return;
-    const res = await fetch('/api/message', {
+    const res = await fetch('/api/message-tutee', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -125,9 +143,9 @@ export default function MessagePage() {
 
         {/* Messages */}
         <div className="flex-1 bg-white rounded-2xl p-6 overflow-y-auto scroll-hover shadow-md flex flex-col gap-2">
-          {messages.map(m => (
+          {messages.map((m, index) => (
             <div
-              key={m.messageID}
+              key={m.messageID || `message-${index}`}
               className={[
                 'max-w-[60%] p-3 rounded-lg',
                 m.senderIsTutor
