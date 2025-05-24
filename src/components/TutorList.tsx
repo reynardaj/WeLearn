@@ -9,15 +9,17 @@ interface AvailabilitySlot {
   day: number;
 }
 interface Props {
+  tutorID: string;
   name: string;
   subjects: string[];
   price: number;
   university: string;
   availability: AvailabilitySlot[];
   rating: number;
+  onBook: (tutorID: string) => void;
 }
 
-export default function TutorList({ name, subjects, price, university, availability, rating }: Props) {
+export default function TutorList({ tutorID, name, subjects, price, university, availability, rating, onBook }: Props) {
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const uniqueDays = Array.from(new Set(availability.map(slot => slot.day)))
@@ -43,7 +45,13 @@ export default function TutorList({ name, subjects, price, university, availabil
             <div>
                 <Stack spacing={1} direction="row">
                   <Button variant="outlined" sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7"}}>Send Message</Button>
-                  <Button variant="contained" sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6" }}>Book A Session</Button>
+                  <Button 
+                    variant="contained" 
+                    sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6" }}
+                    onClick={() => onBook(tutorID)}
+                  >
+                    Book A Session
+                  </Button>
                 </Stack>
             </div>
         </div>
