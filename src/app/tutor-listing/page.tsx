@@ -240,7 +240,7 @@ export default function Page() {
                 price={tutor.price}
                 availability={tutor.availability || []}
                 university={tutor.institution}
-                rating={tutor.rating || 5}
+                rating={tutor.rating || 0}
                 onBook={(id) => {
                   setSelectedTutorID(id);
                   setShowModal(true);

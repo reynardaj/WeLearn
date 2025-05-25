@@ -29,7 +29,7 @@ interface TutorData {
 
 export default function page() {
   const searchParams = useSearchParams();
-  const tutorID = searchParams.get('tutorID') || '998083f8-869a-44e8-b2eb-798aa9900274'; // fallback for testing
+  const tutorID = searchParams.get('tutorID');
 
   const [tutor, setTutor] = useState<TutorData | null>(null);
 
@@ -74,7 +74,9 @@ export default function page() {
             <p className='text-[13px] lg:text-[14px]'>{tutor.institution}</p>
           </div>
           <div className='mt-3 flex flex-col gap-1'>
-              <Rating rating={5}/>
+              <Rating rating={tutor.reviews.length > 0
+                  ? Math.round(tutor.reviews.reduce((sum, r) => sum + r.rating, 0) / tutor.reviews.length)
+                  : 0}/>
               <div>
                   <Stack spacing={1} direction="row">
                     <Button variant="contained" sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6", padding: '10px' }}>Book A Session</Button>

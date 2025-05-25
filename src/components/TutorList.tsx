@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from 'react';
 import { playfair } from '@/lib/fonts';
 import Rating from '@/components/rating'
@@ -31,15 +33,19 @@ export default function TutorList({ tutorID, name, subjects, price, university, 
     router.push(`/message?tutorID=${tutorID}`);
   };
 
+  const goToProfile = () => {
+    router.push(`/tutor-profile?tutorID=${tutorID}`);
+  };
+
   return (
     <div className='flex flex-col md:flex-row lg:flex-row gap-5'>
       {/* Profile Picture */}
-      <div className='bg-gray-300 h-[40vh] w-full md:h-[25vh] md:w-[25vw] lg:w-[20vw] xl:w-[12vw] rounded-2xl'></div>
+      <div onClick={goToProfile} className='bg-gray-300 h-[40vh] w-full md:h-[25vh] md:w-[25vw] lg:w-[20vw] xl:w-[12vw] rounded-2xl cursor-pointer'></div>
 
       {/* Tutor Information */}
       <div className='flex flex-col w-full'>
-        <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>{name}</h1>
-        <div className='flex flex-col'>
+        <h1 onClick={goToProfile} className={`${playfair.className} text-[24px] lg:text-[32px] cursor-pointer`}>{name}</h1>
+        <div onClick={goToProfile} className='flex flex-col cursor-pointer'>
             <p className='text-[13px] lg:text-[14px]'>{subjects.join(', ')}</p>
             <p className='text-[13px] lg:text-[14px]'>{price.toLocaleString('id-ID')} / hour</p>
             <p className='text-[13px] lg:text-[14px]'>{uniqueDays.join(', ')}</p>
