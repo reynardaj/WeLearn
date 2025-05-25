@@ -25,7 +25,6 @@ export default function MessagePage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState<string>('');
   const tuteeID = 'b52d9970-d390-42f3-b01e-0a79e8ceb9f1';
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!tutorID) return;
@@ -83,10 +82,6 @@ export default function MessagePage() {
     return () => clearInterval(iv);
   }, [activeConv]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
   const handleSend = async () => {
     if (!draft.trim()) return;
     const res = await fetch('/api/message-tutee', {
@@ -107,17 +102,17 @@ export default function MessagePage() {
   const current = contacts.find(c => c.conversationId === activeConv);
 
   return (
-    <div className="flex gap-5 h-screen w-full bg-[#F0FAF9] p-6">
+    <div className="flex flex-col md:flex-row min-h-screen md:h-screen w-full bg-[#F0FAF9] p-4 md:p-6 gap-4 ">
       {/*Contacts pane*/}
-      <div className="flex flex-col gap-5 w-[20vw] p-2 h-full">
+      <div className="flex flex-col gap-4 w-full md:w-[35%] lg:w-[30%] xl:w-[20%] h-full p-2">
         <h1 className={`${playfair.className} text-[38px]`}>Messaging</h1>
-        <div className="flex-1 overflow-y-auto p-2 scrollbar-hover">
+        <div className="flex-1 flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 scrollbar-hover space-x-4 md:space-x-0">
           {contacts.map((c, idx) => {
             const isLast = idx === contacts.length - 1;
             return (
               <div
                 key={c.conversationId}
-                className={!isLast ? 'pb-2 border-b-2 border-gray-300' : ''}
+                className={!isLast ? 'pr-4 md:pr-0 md:pb-2 border-r-2 md:border-r-0 md:border-b-2 border-gray-300' : ''}
               >
                 <Contacts
                   name={c.name}
@@ -132,22 +127,22 @@ export default function MessagePage() {
       </div>
 
       {/* Message pane */}
-      <div className="w-[80vw] flex flex-col flex-1 p-2 gap-3">
+      <div className="w-full md:w-[65%] lg:w-[70%] xl:w-[80%] flex flex-col flex-1 p-2 gap-3">
         {/* Header */}
         <div className="flex gap-3 items-center mb-4">
-          <div className="bg-gray-300 h-[5vh] w-[2.5vw] rounded-md" />
+          <div className="bg-gray-300 h-[5vh] w-[9vw] sm:w-[5vw] md:w-[4.5vw] lg:w-[4.5vw] xl:w-[3vw] rounded-md" />
           <p className={`${playfair.className} text-[18px]`}>
             {current?.name || 'Select a contact'}
           </p>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 bg-white rounded-2xl p-6 overflow-y-auto scroll-hover shadow-md flex flex-col gap-2">
+        <div className="h-[70vh] md:flex-1 bg-white rounded-2xl p-4 md:p-6 overflow-y-auto scroll-hover shadow-md flex flex-col gap-2">
           {messages.map((m, index) => (
             <div
               key={m.messageID || `message-${index}`}
               className={[
-                'max-w-[60%] p-3 rounded-lg',
+                'max-w-[60%] p-3 rounded-lg mb-2',
                 m.senderIsTutor
                   ? 'self-start bg-[#F0FAF9]'
                   : 'self-end bg-[#1F65A6] text-white',
@@ -156,7 +151,6 @@ export default function MessagePage() {
               {m.content}
             </div>
           ))}
-          <div ref={messagesEndRef} />
         </div>
 
         {/* Composer */}

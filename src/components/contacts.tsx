@@ -25,18 +25,17 @@ export default function Contact({
   return (
     <div
       onClick={onClick}
-      className={[
-        'h-[12vh] w-full p-4 flex gap-3 cursor-pointer transition mt-2',
-        selected
+      className={`
+        w-full cursor-pointer transition flex flex-col items-center md:flex-row p-4 gap-2 sm:gap-3 mt-2
+        ${selected
           ? 'bg-white shadow-md hover:bg-gray-50 rounded-xl'
-          : 'hover:bg-gray-50'
-      ].join(' ')}
+          : 'hover:bg-gray-50'}
+      `}
     >
       <div
-        className={[
-          'w-[25%] h-full rounded-xl flex-shrink-0',
-          selected ? 'bg-gray-300' : 'bg-gray-300'
-        ].join(' ')}
+        className={`
+          bg-gray-300 rounded-xl flex-shrink-0 w-20 h-20 md:w-15 md:h-15
+        `}
       />
       <div className="flex flex-col justify-center overflow-hidden">
         <p className={`${playfair.className} text-[18px] truncate`}>
