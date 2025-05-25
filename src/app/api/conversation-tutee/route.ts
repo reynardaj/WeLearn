@@ -15,15 +15,18 @@ export async function GET(req: Request) {
     `SELECT
         c."conversationID" AS "conversationId",
         t.firstname || ' ' || t.lastname AS name,
-        (SELECT content
-            FROM message m
-            WHERE m."conversationID" = c."conversationID"
-            ORDER BY "sentAt" DESC
-            LIMIT 1) AS "lastMessage"
+        m2."content" AS "lastMessage",
+        m2."sentAt" AS "lastMessageAt"
     FROM conversation c
     JOIN mstutor t ON t.tutorid = c."tutorID"
-    WHERE c."tuteeID" = $1
-    ORDER BY c."conversationID"`,
+    LEFT JOIN LATERAL (
+      SELECT "content", "sentAt"
+      FROM "message"
+      WHERE "conversationID" = c."conversationID"
+      ORDER BY "sentAt" DESC
+      LIMIT 1
+    ) AS m2 ON true
+    WHERE c."tuteeID" = $1`,
     [tuteeID]
   );
 

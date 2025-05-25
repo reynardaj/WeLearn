@@ -9,6 +9,7 @@ interface Contact {
   conversationId: string;
   name: string;
   lastMessage: string;
+  lastMessageAt: string;
 }
 interface Msg {
   messageID: string;
@@ -45,6 +46,9 @@ export default function MessagePage() {
     try {
       const res = await fetch(`/api/conversation-tutee?tuteeID=${tuteeID}`);
       const data: Contact[] = await res.json();
+      data.sort((a, b) =>
+        new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
+      );
       setContacts(data);
     } catch (err) {
       console.error('Failed fetching contacts', err);
