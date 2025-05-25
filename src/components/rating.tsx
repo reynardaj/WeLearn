@@ -7,8 +7,9 @@ interface Props {
   rating: number;
   color?: 'black' | 'yellow';
 }
+        
+export default function BasicRating({rating}: Props) {
 
-export default function BasicRating({ rating, color = 'black' }: Props) {
   const [value] = React.useState<number | null>(rating);
 
   return (
