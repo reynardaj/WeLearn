@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+/.idx
 # dependencies
 /node_modules
 /.pnp
@@ -42,3 +43,5 @@ next-env.d.ts
 
 # windsurf rules
 .windsurfrules
+# clerk configuration (can include secrets)
+/.clerk/
