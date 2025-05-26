@@ -22,3 +22,28 @@ h1, h2, h3, h4, h5 {
 .my-swiper .swiper-button-prev {
   color: #1F65A6;
 }
+.scrollbar-hover {
+  scrollbar-width: 6px;
+}
+
+.scrollbar-hover::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+.scrollbar-hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-hover::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 6px;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar-thumb {
+  background-color: #a0aec0;
+}
+
+.scrollbar-hover::-webkit-scrollbar-button {
+  display: none;
+}
