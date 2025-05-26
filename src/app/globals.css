@@ -1,15 +1,12 @@
 @import "tailwindcss";
 
-:root {
-}
 
-@theme inline {
+:root {
   --color-primary: #0369a1;
   --color-secondary: #fdba74;
   --color-text: #27272a;
   --color-background: #f0fdfa;
   --color-container: #ffffff;
-  
 }
 
 body {
