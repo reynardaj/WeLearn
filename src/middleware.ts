@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
-// Define route matchers for protected routes
+// ini harus diadjust ke route yang sesuai
 const isMentorRoute = createRouteMatcher(['/mentor-dashboard(.*)']);
 const isMenteeRoute = createRouteMatcher(['/mentee-dashboard(.*)']);
 
