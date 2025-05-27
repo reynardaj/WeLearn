@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
       ]
     );
     const tutorID = result.rows[0].tutorid;
+    console.log("tutorID: ", tutorID);
 
     // Insert to TutorAvailability
     let dayCount = 1;
@@ -89,7 +90,7 @@ export async function POST(req: NextRequest) {
         // subject existed
         subjectID = subjectResult.rows[0].subjectsid;
       } else {
-        // subject doesn't exist
+        // subject doesn't exist  
         const subjectInsert = await pool.query(
           "INSERT INTO Subjects (subjectsID, subjects) VALUES (gen_random_uuid(), $1) RETURNING subjectsID",
           [subject]
