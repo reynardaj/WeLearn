@@ -1,25 +1,19 @@
-"use client";
+"use client"; // ✅ Must be a Client Component
 
-import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton, useAuth, useUser } from "@clerk/nextjs";
 import { Playfair_Display, Open_Sans } from "next/font/google";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const playfair = Playfair_Display({ weight: "700", subsets: ["latin"] });
 const openSans = Open_Sans({ weight: "400", subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "WeLearn",
-  description: "WeLearn",
-};
-
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <ClerkProvider>
       <AuthRedirectWrapper />
@@ -65,4 +59,3 @@ function AuthRedirectWrapper() {
 
   return null;
 }
-
