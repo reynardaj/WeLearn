@@ -15,6 +15,7 @@ export async function GET(req: Request) {
     `SELECT
         c."conversationID" AS "conversationId",
         t.firstname || ' ' || t.lastname AS name,
+        t.profileimg,
         m2."content" AS "lastMessage",
         m2."sentAt" AS "lastMessageAt"
     FROM conversation c

@@ -3,13 +3,15 @@ import React, { useEffect, useState, useRef } from 'react';
 import { playfair } from '@/lib/fonts';
 import Contacts from './contacts';
 import { VscSend } from "react-icons/vsc";
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { IoArrowBackOutline } from "react-icons/io5";
 
 interface Contact {
   conversationId: string;
   name: string;
   lastMessage: string;
   lastMessageAt: string;
+  profileimg: string;
 }
 interface Msg {
   messageID: string;
@@ -19,6 +21,7 @@ interface Msg {
 }
 
 export default function MessagePage() {
+  const router = useRouter(); 
   const params = useSearchParams();
   const tutorID = params.get('tutorID'); 
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -26,6 +29,10 @@ export default function MessagePage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState<string>('');
   const tuteeID = 'b52d9970-d390-42f3-b01e-0a79e8ceb9f1';
+
+  const goBack = () => {
+    router.back();
+  };
 
   useEffect(() => {
     if (!tutorID) return;
@@ -109,6 +116,15 @@ export default function MessagePage() {
     <div className="flex flex-col md:flex-row min-h-screen md:h-screen w-full bg-[#F0FAF9] p-4 md:p-6 gap-4 ">
       {/*Contacts pane*/}
       <div className="flex flex-col gap-4 w-full md:w-[35%] lg:w-[30%] xl:w-[20%] h-full p-2">
+        {/* Back Button */}
+        <div>
+          <button
+            onClick={goBack}
+          >
+            <IoArrowBackOutline className='text-[32px] hover:-translate-x-1 transition-transform duration-200' />
+          </button>
+        </div>
+        
         <h1 className={`${playfair.className} text-[38px]`}>Messaging</h1>
         <div className="flex-1 flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 scrollbar-hover space-x-4 md:space-x-0">
           {contacts.map((c, idx) => {
@@ -122,6 +138,7 @@ export default function MessagePage() {
                   name={c.name}
                   lastMessage={c.lastMessage}
                   selected={c.conversationId === activeConv}
+                  profileimg={c.profileimg}
                   onClick={() => setActiveConv(c.conversationId)}
                 />
               </div>
@@ -134,7 +151,13 @@ export default function MessagePage() {
       <div className="w-full md:w-[65%] lg:w-[70%] xl:w-[80%] flex flex-col flex-1 p-2 gap-3">
         {/* Header */}
         <div className="flex gap-3 items-center mb-4">
-          <div className="bg-gray-300 h-[5vh] w-[9vw] sm:w-[5vw] md:w-[4.5vw] lg:w-[4.5vw] xl:w-[3vw] rounded-md" />
+          <div className="bg-gray-300 h-10 w-10 xl:w-12 aspect-square rounded-md">
+            <img
+              src={current?.profileimg}
+              alt={`${current?.name}`}
+              className='object-cover h-full w-full rounded-2xl'
+            />
+          </div>
           <p className={`${playfair.className} text-[18px]`}>
             {current?.name || 'Select a contact'}
           </p>

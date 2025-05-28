@@ -5,6 +5,7 @@ interface ContactProps {
   name: string;
   lastMessage: string | null;
   selected?: boolean;
+  profileimg: string;
   onClick?: () => void;
 }
 
@@ -19,6 +20,7 @@ export default function Contact({
   name,
   lastMessage,
   selected = false,
+  profileimg,
   onClick,
 }: ContactProps) {
   const snippet = truncateWords(lastMessage, 5);
@@ -36,7 +38,13 @@ export default function Contact({
         className={`
           bg-gray-300 rounded-xl flex-shrink-0 w-20 h-20 md:w-15 md:h-15
         `}
-      />
+      >
+        <img
+          src={profileimg}
+          alt={`${name}`}
+          className='object-cover h-full w-full rounded-2xl'
+        />
+      </div>
       <div className="flex flex-col justify-center overflow-hidden">
         <p className={`${playfair.className} text-[18px] truncate`}>
           {name}
