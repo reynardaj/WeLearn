@@ -1,5 +1,7 @@
 import React from 'react'
 import { IoIosSearch } from "react-icons/io";
+import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
+import { TextSm } from '@/components/Text';
 
 interface Props {
   labels?: string[];

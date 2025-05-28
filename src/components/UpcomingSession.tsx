@@ -2,6 +2,8 @@
 import { playfair } from '@/lib/fonts';
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
+import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
+import { TextSm } from '@/components/Text';
 
 type Session = {
   id: string;
@@ -40,22 +42,22 @@ export default function UpcomingSession({ onCloseAction }: { onCloseAction: () =
         <button onClick={onCloseAction} className="absolute top-1 right-2 text-xl font-bold cursor-pointer">
           &times;
         </button>
-        <h2 className={`${playfair.className} text-[18px] md:text-[20px] font-extrabold`}>Upcoming</h2>
+        <Heading4>Upcoming</Heading4>
 
         {Object.keys(grouped).length === 0 ? (
-          <p className="text-sm text-gray-500">No upcoming sessions.</p>
+          <TextSm>No upcoming sessions.</TextSm>
         ) : (
           Object.entries(grouped).map(([date, items]) => (
             <div key={date} className="mb-4">
-              <p className="text-sm text-[#5C5C5C] mb-2">{date}</p>
+              <TextSm>{date}</TextSm>
               <hr className="mb-2 border-gray-300" />
               {items.map((s, i) => (
                 <div key={i} className="flex items-start justify-between mb-3 text-sm gap-4">
                   <div className="w-[80px] text-left whitespace-nowrap">
-                    <p className="font-medium">{s.time}</p>
+                    <TextSm>{s.time}</TextSm>
                   </div>
                   <div className="flex-1 text-[#5C5C5C] text-center break-words">
-                    <p>{s.subject}</p>
+                    <TextSm>{s.subject}</TextSm>
                   </div>
                   <div>
                     <Button 

@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { playfair } from '@/lib/fonts';
 import CollapsibleSection from '@/components/CollapsableSection';
 import Checkbox from '@/components/checkbox';
 import Search from '@/components/search';
@@ -12,10 +11,12 @@ import BookingModal from '@/components/BookingModal';
 import UpcomingSession from '@/components/UpcomingSession';
 import Button from '@mui/material/Button';
 import { HiOutlineCalendarDays } from "react-icons/hi2";
+import { Heading1, Heading2, Heading3 } from '@/components/Heading';
+import { TextSm, TextMd } from '@/components/Text';
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
-    {label}
+    <TextSm>{label}</TextSm>
     <button onClick={onRemove} className="text-black text-[20px] cursor-pointer">×</button>
   </div>
 );
@@ -95,7 +96,7 @@ export default function Page() {
     <div className="flex flex-col lg:flex-row w-full min-h-screen bg-[#F0FAF9] gap-3 overflow-x-hidden">
       {/* Filter */}
       <div className="w-full lg:w-[30%] xl:w-[25vw] h-auto lg:h-screen overflow-y-auto p-5 scrollbar-hover mb-6 lg:mb-0">
-        <h1 className={`${playfair.className} text-[32px]`}>Filter</h1>
+        <Heading3>Filter</Heading3>
 
         {/* Filter Tags Section */}
         <div className="flex flex-wrap gap-2 mt-4">
@@ -145,7 +146,7 @@ export default function Page() {
                 className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'
                 onClick={() => setIsSubjectExpanded(prev => !prev)}
               >
-                {isSubjectExpanded ? 'Show Less' : `${filteredSubjects.length - 5} more...`}
+                <TextSm>{isSubjectExpanded ? 'Show Less' : `${filteredSubjects.length - 5} more...`}</TextSm>
               </p>
             )}
           </CollapsibleSection>
@@ -186,16 +187,16 @@ export default function Page() {
                 className='ml-4 mt-1 text-[13px] italic underline cursor-pointer'
                 onClick={() => setIsUniversityExpanded(prev => !prev)}
               >
-                {isUniversityExpanded ? 'Show Less' : `${filteredUniversities.length - 5} more...`}
+                <TextSm>{isUniversityExpanded ? 'Show Less' : `${filteredUniversities.length - 5} more...`}</TextSm>
               </p>
             )}
           </CollapsibleSection>
         </div>
       </div>
 
-      <div className="w-full lg:w-[70%] xl:w-[75vw] flex flex-col flex-1 overflow-y-auto scrollbar-hover p-5">
+      <div className="w-full h-screen lg:w-[70%] xl:w-[75vw] flex flex-col flex-1 overflow-y-auto scrollbar-hover p-6">
         <div className='flex items-center justify-between'>
-          <h1 className={`${playfair.className} text-[32px] md:text-[48px] font-extrabold`}>Search Tutor</h1>
+          <Heading1>Search Tutor</Heading1>
           <div className="relative inline-block">
             <Button
               onClick={() => setShowUpcoming(true)}
@@ -211,7 +212,7 @@ export default function Page() {
               className="gap-2"
             >
               <HiOutlineCalendarDays className="text-[18px]" />
-              <span className="hidden sm:inline">Upcoming Session</span>
+              <TextSm>Upcoming Session</TextSm>
             </Button>
 
             {showUpcoming && (
@@ -228,11 +229,12 @@ export default function Page() {
           />
         </div>
 
-        <div className='bg-white h-[76vh] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
-          <p className='text-[13px] mb-3'>{filteredTutors.length} Tutors Match Your Needs</p>
+        <div className='flex flex-col gap-5 bg-white h-[90%] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
+          <TextMd>{filteredTutors.length} Tutors Match Your Needs</TextMd>
           <div className='flex flex-col gap-5'>
             {filteredTutors.map(tutor => (
               <TutorList
+                profileImage={tutor.profileimg} 
                 key={tutor.tutorid}
                 tutorID={tutor.tutorid}
                 name={`${tutor.firstname} ${tutor.lastname}`}

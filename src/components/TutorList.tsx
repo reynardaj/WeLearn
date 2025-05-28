@@ -6,6 +6,8 @@ import Rating from '@/components/rating'
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/navigation';
+import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
+import { TextSm, TextMd } from '@/components/Text';
 
 interface AvailabilitySlot {
   day: number;
@@ -18,10 +20,11 @@ interface Props {
   university: string;
   availability: AvailabilitySlot[];
   rating: number;
+  profileImage: string;
   onBook: (tutorID: string) => void;
 }
 
-export default function TutorList({ tutorID, name, subjects, price, university, availability, rating, onBook }: Props) {
+export default function TutorList({ tutorID, name, subjects, price, university, availability, rating, profileImage, onBook }: Props) {
   const router = useRouter(); 
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -38,39 +41,43 @@ export default function TutorList({ tutorID, name, subjects, price, university, 
   };
 
   return (
-    <div className='flex flex-col md:flex-row lg:flex-row gap-5'>
+    <div className='flex flex-col md:flex-row gap-5 w-full'>
       {/* Profile Picture */}
-      <div onClick={goToProfile} className='bg-gray-300 h-[40vh] w-full md:h-[25vh] md:w-[25vw] lg:w-[20vw] xl:w-[12vw] rounded-2xl cursor-pointer'></div>
+      <div onClick={goToProfile} className='bg-gray-300 w-28 sm:w-32 md:w-40 lg:w-48 xl:w-56 aspect-square rounded-2xl cursor-pointer'>
+        <img
+          src={profileImage}
+          alt={`${name} profile`}
+          className='object-cover h-full w-full rounded-2xl'
+        />
+      </div>
 
       {/* Tutor Information */}
-      <div className='flex flex-col w-full'>
-        <h1 onClick={goToProfile} className={`${playfair.className} text-[24px] lg:text-[32px] cursor-pointer`}>{name}</h1>
+      <div className='flex-1 flex flex-col w-full border-b-2 border-gray-300 pb-4'>
+        <Heading3>{name}</Heading3>
         <div onClick={goToProfile} className='flex flex-col cursor-pointer'>
-            <p className='text-[13px] lg:text-[14px]'>{subjects.join(', ')}</p>
-            <p className='text-[13px] lg:text-[14px]'>{price.toLocaleString('id-ID')} / hour</p>
-            <p className='text-[13px] lg:text-[14px]'>{uniqueDays.join(', ')}</p>
-            <p className='text-[13px] lg:text-[14px]'>{university}</p>
+            <TextMd>{subjects.join(', ')}</TextMd>
+            <TextMd>{price.toLocaleString('id-ID')} / hour</TextMd>
+            <TextMd>{uniqueDays.join(', ')}</TextMd>
+            <TextMd>{university}</TextMd>
         </div>
-        <div className='mt-3 flex flex-col md:flex-row lg:flex-row items-start lg:items-center justify-between gap-2'>
-            <Rating rating={rating}/>
-            <div>
-                <Stack spacing={1} direction="row">
-                  <Button 
-                    variant="outlined" 
-                    sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7"}}
-                    onClick={goToChat}
-                  >
-                    Send Message
-                  </Button>
-                  <Button 
-                    variant="contained" 
-                    sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6" }}
-                    onClick={() => onBook(tutorID)}
-                  >
-                    Book A Session
-                  </Button>
-                </Stack>
-            </div>
+        <Rating rating={rating}/>
+        <div className='flex justify-center md:justify-end'>
+            <Stack spacing={1} direction="row">
+              <Button 
+                variant="outlined" 
+                sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7"}}
+                onClick={goToChat}
+              >
+                Send Message
+              </Button>
+              <Button 
+                variant="contained" 
+                sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6" }}
+                onClick={() => onBook(tutorID)}
+              >
+                Book A Session
+              </Button>
+            </Stack>
         </div>
       </div>
     </div>
