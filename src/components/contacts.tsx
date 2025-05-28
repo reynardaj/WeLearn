@@ -1,5 +1,7 @@
 import React from 'react'
 import { playfair } from '@/lib/fonts';
+import { Heading4 } from './Heading';
+import { TextMd } from './Text';
 
 interface ContactProps {
   name: string;
@@ -24,6 +26,7 @@ export default function Contact({
   onClick,
 }: ContactProps) {
   const snippet = truncateWords(lastMessage, 5);
+  const nameSnippet = truncateWords(name, 2);
   return (
     <div
       onClick={onClick}
@@ -46,12 +49,12 @@ export default function Contact({
         />
       </div>
       <div className="flex flex-col justify-center overflow-hidden">
-        <p className={`${playfair.className} text-[18px] truncate`}>
-          {name}
-        </p>
-        <p className="text-[12px]">
+        <Heading4 className="truncate">
+          {nameSnippet}
+        </Heading4>
+        <TextMd>
           {snippet}
-        </p>
+        </TextMd>
       </div>
     </div>
   );

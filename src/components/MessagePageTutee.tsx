@@ -5,6 +5,7 @@ import Contacts from './contacts';
 import { VscSend } from "react-icons/vsc";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { IoArrowBackOutline } from "react-icons/io5";
+import { Heading1, Heading4 } from './Heading';
 
 interface Contact {
   conversationId: string;
@@ -124,9 +125,9 @@ export default function MessagePage() {
             <IoArrowBackOutline className='text-[32px] hover:-translate-x-1 transition-transform duration-200' />
           </button>
         </div>
-        
-        <h1 className={`${playfair.className} text-[38px]`}>Messaging</h1>
-        <div className="flex-1 flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto p-2 scrollbar-hover space-x-4 md:space-x-0">
+
+        <Heading1>Messaging</Heading1>
+        <div className="flex-1 flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto scrollbar-hover space-x-4 md:space-x-0">
           {contacts.map((c, idx) => {
             const isLast = idx === contacts.length - 1;
             return (
@@ -158,9 +159,9 @@ export default function MessagePage() {
               className='object-cover h-full w-full rounded-2xl'
             />
           </div>
-          <p className={`${playfair.className} text-[18px]`}>
+          <Heading4>
             {current?.name || 'Select a contact'}
-          </p>
+          </Heading4>
         </div>
 
         {/* Messages */}
@@ -169,7 +170,7 @@ export default function MessagePage() {
             <div
               key={m.messageID || `message-${index}`}
               className={[
-                'max-w-[60%] p-3 rounded-lg mb-2',
+                'max-w-[60%] p-3 rounded-lg mb-2 font-[Open_Sans] text-[1rem]',
                 m.senderIsTutor
                   ? 'self-start bg-[#F0FAF9]'
                   : 'self-end bg-[#1F65A6] text-white',
@@ -188,7 +189,7 @@ export default function MessagePage() {
             value={draft}
             onChange={e => setDraft(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
-            className="flex-1 bg-transparent outline-none border-none text-[14px]"
+            className="flex-1 bg-transparent outline-none border-none font-[Open_Sans] text-[1rem]"
           />
           <button onClick={handleSend} className="ml-2 cursor-pointer">
             <VscSend className="text-[#1F65A6] text-[22px]" />
