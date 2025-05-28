@@ -7,6 +7,10 @@ import Button from '@mui/material/Button'
 import ProgressBar from '@/components/ProgressBar'
 import ReviewList from '@/components/reviewList';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import BookingModal from '@/components/BookingModal';
+import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
+import { TextSm, TextMd, TextLg } from '@/components/Text';
 
 interface Review {
   rating: number;
@@ -28,10 +32,12 @@ interface TutorData {
 }
 
 export default function page() {
+  const router = useRouter(); 
   const searchParams = useSearchParams();
   const tutorID = searchParams.get('tutorID');
-
-  const [tutor, setTutor] = useState<TutorData | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedTutorID, setSelectedTutorID] = useState<string | null>(null);
+  const [tutor, setTutor] = useState<TutorData | null>(null); 
 
   useEffect(() => {
     if (!tutorID) return;
@@ -52,25 +58,42 @@ export default function page() {
     });
   }
 
+  const goToChat = () => {
+    router.push(`/message?tutorID=${tutorID}`);
+  };
+
+  const handleBook = () => {
+    if (tutorID) {
+      setSelectedTutorID(tutorID);
+      setShowModal(true);
+    }
+  };
+
   return (
     <div className='flex flex-col min-h-screen w-full bg-[#F0FAF9] p-5 md:p-15 gap-5'>
       {/* Tutor Header */}
-      <div className='flex flex-col md:flex-row lg:flex-row gap-5'>
+      <div className='flex flex-col md:flex-row lg:flex-row gap-5 md:items-center'>
         {/* Profile Picture */}
-        <div className='bg-gray-300 h-[40vh] w-full md:w-[50vw] lg:w-[30vw] xl:h-[35vh] xl:w-[20vw] rounded-2xl'></div>
+        <div className='w-28 sm:w-32 md:w-52 lg:w-56 xl:w-64 h-28 sm:h-32 md:h-52 lg:h-56 xl:h-64 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0'>
+          <img
+            src={tutor.profileimg}
+            alt={`${tutor.firstname} ${tutor.lastname}`}
+            className='object-cover h-full w-full rounded-2xl'
+          />
+        </div>
 
         {/* Tutor Information */}
         <div className='flex flex-col w-full'>
-          <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>{tutor.firstname} {tutor.lastname}</h1>
+          <Heading1>{tutor.firstname} {tutor.lastname}</Heading1>
           <div className='flex flex-col'>
-            <p className='text-[16px] lg:text-[18px]'>{tutor.experience}</p>
-            <p className='text-[13px] lg:text-[14px]'>
+            <TextLg>{tutor.experience}</TextLg>
+            <TextMd>
               {tutor.subjects?.join(', ') || 'No subjects listed'}
-            </p>
-            <p className='text-[13px] lg:text-[14px]'>Rp. {tutor.price} / hour</p>
-            <p className='text-[13px] lg:text-[14px]'>
+            </TextMd>
+            <TextMd>Rp. {tutor.price} / hour</TextMd>
+            <TextMd>
               {tutor.availableDays?.join(', ') || 'No availability listed'}
-            </p>
+            </TextMd>
             <p className='text-[13px] lg:text-[14px]'>{tutor.institution}</p>
           </div>
           <div className='mt-3 flex flex-col gap-1'>
@@ -79,31 +102,40 @@ export default function page() {
                   : 0}/>
               <div>
                   <Stack spacing={1} direction="row">
-                    <Button variant="contained" sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6", padding: '10px' }}>Book A Session</Button>
-                    <Button variant="outlined" sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7", padding: '10px'}}>Send Message</Button>
+                    <Button variant="contained" sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6", padding: '10px' }} onClick={handleBook}>Book A Session</Button>
+                    <Button variant="outlined" sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7", padding: '10px'}} onClick={goToChat}>Send Message</Button>
                   </Stack>
               </div>
+              {showModal && selectedTutorID && (
+                <BookingModal
+                  tutorID={selectedTutorID}
+                  onClose={() => {
+                    setShowModal(false);
+                    setSelectedTutorID(null);
+                  }}
+                />
+              )}
           </div>
         </div>
       </div>
 
       {/* About Me */}
       <div>
-        <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>About Me</h1>
-        <p className='text-[14px]'>{tutor.description}</p>
+        <Heading3>About Me</Heading3>
+        <TextMd>{tutor.description}</TextMd>
       </div>
 
       {/* Review Section */}
       <div>
-        <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>What my students say</h1>
+        <Heading3>What my students say</Heading3>
         <div className='flex flex-col md:flex-row gap-5 mt-3'>
           {/* Rating */}
           <div className='flex flex-col gap-3 md:w-[25vw] lg:w-[20vw]'>
-            <h1 className={`${playfair.className} text-[24px] lg:text-[32px]`}>
+            <Heading1>
               {tutor.reviews.length > 0
                 ? (tutor.reviews.reduce((sum, r) => sum + r.rating, 0) / tutor.reviews.length).toFixed(1)
                 : '0'}
-            </h1>
+            </Heading1>
             <Rating
               rating={
                 tutor.reviews.length > 0
@@ -112,7 +144,7 @@ export default function page() {
               }
               color="yellow"
             />
-            <p className='text-[14px]'>{tutor.reviews.length} reviews</p>
+            <TextMd>{tutor.reviews.length} reviews</TextMd>
             <div className='flex flex-col'>
               {[5, 4, 3, 2, 1].map((rating) => (
                 <ProgressBar

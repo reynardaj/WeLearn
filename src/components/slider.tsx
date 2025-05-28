@@ -29,9 +29,7 @@ export default function RangeSlider({ value, onChange }: RangeSliderProps) {
 
   return (
     <div>
-      <p className="text-sm mt-2">
-        <TextSm>Selected range: Rp. {formatRupiah(currentValue[0])} – Rp. {formatRupiah(currentValue[1])}</TextSm>
-      </p>
+      <TextSm>Selected range: Rp. {formatRupiah(currentValue[0])} – Rp. {formatRupiah(currentValue[1])}</TextSm>
 
       <Box sx={{ width: 225, marginLeft: '1.5vh', marginTop: '0.5vh' }}>
         <MuiSlider

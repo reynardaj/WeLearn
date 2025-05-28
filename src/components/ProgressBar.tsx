@@ -2,6 +2,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
+import { TextSm } from './Text';
 
 interface Props {
   count: number;
@@ -14,7 +15,7 @@ export default function ProgressBar({ count, total, label }: Props) {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', width: '90%', alignItems: 'center', gap: '0.5vw' }}>
-      <span className='text-[14px]'>{label}</span>
+      <TextSm>{label}</TextSm>
       <LinearProgress
         variant="determinate"
         value={percentage}
@@ -30,7 +31,7 @@ export default function ProgressBar({ count, total, label }: Props) {
           }
         }}
       />
-      <p className='text-[14px]'>{`(${count})`}</p>
+      <TextSm>{`(${count})`}</TextSm>
     </Box>
   );
 }
