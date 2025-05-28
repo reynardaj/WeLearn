@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import BookingModal from '@/components/BookingModal';
 import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
 import { TextSm, TextMd, TextLg } from '@/components/Text';
+import { IoArrowBackOutline } from "react-icons/io5";
 
 interface Review {
   rating: number;
@@ -69,8 +70,22 @@ export default function page() {
     }
   };
 
+  const goBack = () => {
+    router.back();
+  };
+
   return (
-    <div className='flex flex-col min-h-screen w-full bg-[#F0FAF9] p-5 md:p-15 gap-5'>
+    <div className='flex flex-col min-h-screen w-full bg-[#F0FAF9] p-5 md:p-8 md:pr-12 md:pl-12 gap-5'>
+
+      {/* Back Button */}
+      <div>
+        <button
+          onClick={goBack}
+        >
+          <IoArrowBackOutline className='text-[32px] hover:-translate-x-1 transition-transform duration-200' />
+        </button>
+      </div>
+
       {/* Tutor Header */}
       <div className='flex flex-col md:flex-row lg:flex-row gap-5 md:items-center'>
         {/* Profile Picture */}
