@@ -1,5 +1,6 @@
 'use client';
 import { Button } from '@mui/material';
+import { TextMd } from './Text';
 
 interface PickerProps {
   options: string[];
@@ -24,9 +25,12 @@ export default function Picker({ options, selected, onSelect }: PickerProps) {
             color: 'black',
             borderColor: selected === option ? '#1F65A6' : '#E4E4E7',
             borderWidth: selected === option ? '2px' : '1px',
+            textTransform: 'capitalize'
           }}
         >
-          {option}
+          <TextMd>
+            {option}
+          </TextMd>
         </Button>
       ))}
     </div>

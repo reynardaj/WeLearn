@@ -2,6 +2,7 @@ import React from 'react';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MuiCheckbox from '@mui/material/Checkbox';
+import { TextSm } from './Text';
 
 interface CheckboxProps {
   labels: string[];
@@ -27,8 +28,7 @@ export default function Checkbox({ labels, selected, setSelected }: CheckboxProp
               }}
             />
           }
-          label={label}
-          sx={{ "& .MuiFormControlLabel-label": { fontSize: "13px" } }}
+          label={<TextSm>{label}</TextSm>}
         />
       </FormGroup>
     </div>

@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { playfair } from '@/lib/fonts';
+import { TextMd, TextSm } from './Text';
+import { Heading3 } from './Heading';
 
 interface WeekDatePickerProps {
   selectedDate: Date;
@@ -61,13 +63,13 @@ export default function WeekDatePicker({ selectedDate, setSelectedDate }: WeekDa
     <div className="flex flex-col items-center bg-[#F0FAF9] rounded-lg w-full max-w-md mx-auto">
       <div className="flex items-center justify-between w-full">
         <button onClick={prevWeek}><IoIosArrowBack size={24} /></button>
-        <h2 className="text-[13px] font-normal">{formatWeekRange(startDate)}</h2>
+        <TextMd>{formatWeekRange(startDate)}</TextMd>
         <button onClick={nextWeek}><IoIosArrowForward size={24} /></button>
       </div>
 
       <div className="grid grid-cols-7 gap-2 w-full text-center text-[10px] mt-3">
         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-          <div key={index}>{day}</div>
+          <div key={index}><TextSm>{day}</TextSm></div>
         ))}
       </div>
 
@@ -79,8 +81,8 @@ export default function WeekDatePicker({ selectedDate, setSelectedDate }: WeekDa
             className={`flex flex-col items-center justify-center p-1 rounded-lg cursor-pointer
               ${date.toDateString() === selectedDate.toDateString() ? 'border-2 border-[#1F65A6]' : ''}`}
           >
-            <span className={`${playfair.className} text-[20px] font-semibold`}>{formatDay(date)}</span>
-            <span className="text-[10px]">{date.toLocaleString('default', { month: 'short' })}</span>
+            <Heading3>{formatDay(date)}</Heading3>
+            <TextSm>{date.toLocaleString('default', { month: 'short' })}</TextSm>
           </div>
         ))}
       </div>

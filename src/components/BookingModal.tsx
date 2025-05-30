@@ -5,6 +5,8 @@ import { playfair } from '@/lib/fonts';
 import WeekDatePicker from '@/components/DatePicker';
 import Picker from '@/components/ButtonPicker';
 import Button from '@mui/material/Button';
+import { Heading3 } from './Heading';
+import { TextMd, TextSm } from './Text';
 
 const groupTimes = (times: string[]) => {
   const morning: string[] = [];
@@ -49,13 +51,13 @@ export default function BookingModal({ tutorID, onClose }: { tutorID: string; on
       <div className="relative flex flex-col w-[90%] sm:w-[60%] md:w-[50%] lg:w-[40%] xl:w-[30%] max-h-[90vh] overflow-y-auto rounded-2xl bg-[#F0FAF9] p-6 gap-5">
         <button onClick={onClose} className="absolute top-2 right-3 text-[20px] font-bold cursor-pointer">&times;</button>
 
-        <h1 className={`${playfair.className} text-[24px] text-center`}>Book A Session</h1>
+        <Heading3 className='text-center'>Book A Session</Heading3>
 
         <WeekDatePicker selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
         {tutorSubjects.length > 0 && (
           <div>
-            <p className="text-[12px] mb-1">Subject</p>
+            <TextMd>Subject</TextMd>
             <Picker options={tutorSubjects} selected={selectedSubject} onSelect={setSelectedSubject} />
           </div>
         )}
@@ -64,11 +66,11 @@ export default function BookingModal({ tutorID, onClose }: { tutorID: string; on
           const slot = [morning, afternoon, evening][i];
           return (
             <div key={label}>
-              <p className="text-[12px] mb-1">{label}</p>
+              <TextMd>{label}</TextMd>
               {slot.length > 0 ? (
                 <Picker options={slot} selected={selectedTime} onSelect={setSelectedTime} />
               ) : (
-                <p className="text-[11px] italic">No available time slots</p>
+                <TextSm>No available time slots</TextSm>
               )}
             </div>
           );
