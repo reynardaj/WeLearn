@@ -2,6 +2,8 @@
 import { playfair } from '@/lib/fonts';
 import React, { useState, useRef, useEffect } from 'react';
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
+import { TextSm } from '@/components/Text';
 
 interface Props {
   title: string;
@@ -28,7 +30,7 @@ export default function CollapsibleSection({ title, children }: Props) {
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <IoIosArrowDown /> : <IoIosArrowForward />}
-        <h1 className={`${playfair.className} text-[20px]`}>{title}</h1>
+        <Heading4>{title}</Heading4>
       </div>
 
       {/* Animated content section */}

@@ -3,6 +3,8 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import MuiSlider from '@mui/material/Slider';
+import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
+import { TextSm } from '@/components/Text';
 
 function valuetext(value: number) {
   return `Rp ${value.toLocaleString("en-US")}`;
@@ -27,9 +29,7 @@ export default function RangeSlider({ value, onChange }: RangeSliderProps) {
 
   return (
     <div>
-      <p className="text-sm mt-2">
-        Selected range: Rp. {formatRupiah(currentValue[0])} – Rp. {formatRupiah(currentValue[1])}
-      </p>
+      <TextSm>Selected range: Rp. {formatRupiah(currentValue[0])} – Rp. {formatRupiah(currentValue[1])}</TextSm>
 
       <Box sx={{ width: 225, marginLeft: '1.5vh', marginTop: '0.5vh' }}>
         <MuiSlider
@@ -60,8 +60,8 @@ export default function RangeSlider({ value, onChange }: RangeSliderProps) {
       </Box>
 
       <div className='flex gap-[13vw]'>
-        <p>0</p>
-        <p>300,000</p>
+        <TextSm>0</TextSm>
+        <TextSm>300,000</TextSm>
       </div>
     </div>
   );

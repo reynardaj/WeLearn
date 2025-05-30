@@ -1,5 +1,7 @@
 import React from 'react'
 import { IoIosSearch } from "react-icons/io";
+import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
+import { TextSm } from '@/components/Text';
 
 interface Props {
   labels?: string[];
@@ -14,8 +16,8 @@ interface Props {
 export default function Search({ variant = "sidebar", placeholder = "Search...", value, onChange }: Props) {
   const inputClasses =
     variant === "content"
-      ? "pl-10 pr-10 py-2 w-full border-2 border-[#1F65A6] focus:border-[#1F65A6] focus:outline-none rounded-xl"
-      : "pl-10 pr-10 py-1 border-2 border-[#1F252D] rounded-2xl mt-1 placeholder:text-[13cpx] placeholder:text-black";
+      ? "pl-10 pr-10 py-2 w-full border-2 border-[#1F65A6] focus:border-[#1F65A6] focus:outline-none rounded-xl font-[Open_Sans] text-[0.81rem]"
+      : "pl-10 pr-10 py-1 border-2 border-[#1F252D] rounded-2xl mt-1 placeholder:text-[13cpx] placeholder:text-black font-[Open_Sans] text-[0.81rem]";
     
   const inputColors = 
     variant === "content"
