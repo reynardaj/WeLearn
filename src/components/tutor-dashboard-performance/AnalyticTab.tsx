@@ -7,33 +7,37 @@ import FeedbackSection from './FeedbackSession';
 
 export type TabName = 'performance' | 'sessions' | 'feedback';
 
-const AnalyticsTabs: React.FC = () => {
+interface AnalyticsTabsProps {
+  tutorId: string;
+}
+
+const AnalyticsTabs: React.FC<AnalyticsTabsProps> = ({ tutorId }) => {
   const [activeTab, setActiveTab] = useState<TabName>('performance');
 
   const renderContent = () => {
     switch (activeTab) {
       case 'performance':
-        return <PerformanceSection />;
+        return <PerformanceSection tutorId={tutorId}/>;
       case 'sessions':
-        return <SessionsSection />;
+        return <SessionsSection tutorId={tutorId}/>;
       case 'feedback':
-        return <FeedbackSection />;
+        return <FeedbackSection tutorId={tutorId}/>;
       default:
-        return <PerformanceSection />; // Default to performance
+        return <PerformanceSection tutorId={tutorId}/>; // Default to performance
     }
   };
 
   const getTabClasses = (tabName: TabName): string => {
-    const baseClasses = "w-[30%] h-[80%] flex justify-center items-center rounded-lg cursor-pointer transition-colors duration-150 ease-in-out text-xs sm:text-sm";
+    const baseClasses = "w-[32%] h-[80%] flex justify-center items-center rounded-lg cursor-pointer transition-colors duration-150 ease-in-out text-xs sm:text-sm";
     if (activeTab === tabName) {
-      return `${baseClasses} bg-blue-600 text-white shadow-md`; // Active tab style
+      return `${baseClasses} bg-white text-black shadow-md`; // Active tab style
     }
-    return `${baseClasses} bg-white hover:bg-gray-100 text-gray-700`; // Inactive tab style
+    return `${baseClasses}  text-black`; // Inactive tab style
   };
 
   return (
-    <> 
-      <div className="flex w-full h-full justify-between items-center rounded-lg bg-[#E5E5E5] p-1.5 sm:p-2">
+    <div className='h-[100%]'> 
+      <div className="flex w-[50%] h-[8%] justify-evenly items-center rounded-lg bg-[#E5E5E5] mt-2">
         <div
           className={getTabClasses('performance')}
           onClick={() => setActiveTab('performance')}
@@ -63,11 +67,10 @@ const AnalyticsTabs: React.FC = () => {
         </div>
       </div>
 
-      {/* Content Area - This will be rendered below the tab bar */}
-      <div className="w-full mt-3"> {/* mt-3 to give some space below the tabs */}
+      <div className="w-full mt-2 h-[87%]">
         {renderContent()}
       </div>
-    </>
+    </div>
   );
 };
 

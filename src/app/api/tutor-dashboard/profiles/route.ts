@@ -1,4 +1,4 @@
-// app/api/tutor/profile/route.ts
+// app/api/tutor-dashboard/profile/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 

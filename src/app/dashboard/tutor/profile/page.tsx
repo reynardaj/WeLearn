@@ -1,7 +1,7 @@
 "use client";
 import { Heading3 } from "@/components/Heading"; // Assuming these exist
 import { TextMd } from "@/components/Text"; // Assuming this exists
-import DashboardClick from "@/components/tutorDashClick"; // Assuming this exists
+import DashboardClick from "@/components/tutor-dashboard-performance/DashboardSidebar"; // Assuming this exists
 import React, { useState, useEffect } from "react";
 // import Image from "next/image"; // For displaying profile image
 
@@ -57,7 +57,7 @@ export default function Profile() {
       }
 
       try {
-        const response = await fetch(`/api/tutor-dashboard?tutorId=${currentTutorId}`);
+        const response = await fetch(`/api/tutor-dashboard/profiles?tutorId=${currentTutorId}`);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || `Failed to fetch profile: ${response.statusText} (status: ${response.status})`);
@@ -78,44 +78,32 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
+  // 1. Keep your isLoading check
   if (isLoading) {
     return (
-      <div className="h-screen w-full flex bg-[#F0FAF9] pt-15">
-        <div className="w-[15%] flex flex-col items-center">
+      <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
+        <div className="w-[15%] h-[85%] flex flex-col items-center">
           <DashboardClick/>
         </div>
-        <div className="w-[85%] flex flex-col">
-          <div className="w-[90%] h-[95%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
+        <div className="w-[85%] h-[85%] flex flex-col">
+          <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
+            <TextMd>Loading profile...</TextMd> {/* Loading message */}
           </div>
         </div>
       </div>
     );
   }
 
-  if(error){
+  // 2. Keep your error check
+  if (error) {
     return (
-      <div className="h-screen w-full flex bg-[#F0FAF9] pt-15">
-        <div className="w-[15%] flex flex-col items-center">
+      <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
+        <div className="w-[15%] h-[85%] flex flex-col items-center">
           <DashboardClick/>
         </div>
-        <div className="w-[85%] flex flex-col">
-          <div className="w-[90%] h-[95%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
-            eror
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!profileData) {
-    return (
-      <div className="h-screen w-full flex bg-[#F0FAF9] pt-15">
-        <div className="w-[15%] flex flex-col items-center">
-          <DashboardClick/>
-        </div>
-        <div className="w-[85%] flex flex-col">
-          <div className="w-[90%] h-[95%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
-            <TextMd>No profile data found for the specified tutor.</TextMd>
+        <div className="w-[85%] h-[85%] flex flex-col">
+          <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
+            <TextMd>Error: {error}</TextMd> {/* Error message */}
           </div>
         </div>
       </div>
@@ -124,43 +112,43 @@ export default function Profile() {
 
   // Using your original JSX structure and populating with profileData
   return (
-    <div className="h-screen w-full flex bg-[#F0FAF9] pt-15">
-      <div className="w-[15%] flex flex-col items-center">
+    <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
+      <div className="w-[15%] h-[85%] flex flex-col items-center">
         <DashboardClick/>
       </div>
-      <div className="w-[85%] flex flex-col">
-        <div className="w-[90%] h-[95%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
+      <div className="w-[85%] h-[85%] flex flex-col">
+        <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
           <div className="w-[95%] h-[90%]">
             <div className="h-[50%] w-[100%] flex">
               <div className="w-[23%] h-[90%] rounded-2xl justify-center items-center flex bg-[#D9D9D9]">
                 image
               </div>
               <div className="w-auto h-[90%] ml-5">
-                <Heading3 className="mb-2">{profileData.firstname} {profileData.lastname}</Heading3>
-                <TextMd className="mb-1">{profileData.experience}</TextMd>
+                <Heading3 className="mb-2">{profileData?.firstname} {profileData?.lastname}</Heading3>
+                <TextMd className="mb-2">{profileData?.experience}</TextMd>
                 <div className="flex ">
-                  {profileData.subjects && profileData.subjects.length > 0 ? (
-                    <TextMd>
+                  {profileData?.subjects && profileData.subjects.length > 0 ? (
+                    <TextMd className="mb-2">
                       {profileData.subjects.map(subject => subject.subjects).join(' , ')}
                     </TextMd>
                   ) : (
                     <TextMd className="text-xs inline">No subjects listed.</TextMd>
                   )}
                 </div>
-                <TextMd className="mb-2">Rp {profileData.price} / hour</TextMd>
-                <div className="flex mb-1">
-                  {profileData.availability && profileData.availability.length > 0 ? (
+                <TextMd className="mb-2">Rp {profileData?.price} / hour</TextMd>
+                <div className="flex mb-2">
+                  {profileData?.availability && profileData.availability.length > 0 ? (
                     <TextMd>{profileData.availability.map(availDay => getDayName(availDay.day)).join(' , ')}</TextMd>
                   ) : (
                     <TextMd>Not specified.</TextMd>
                   )}
                 </div>
-                <TextMd>{profileData.institution}</TextMd>
+                <TextMd>{profileData?.institution}</TextMd>
               </div>
             </div>  
             <div className="h-[50%] w-[100%]">
               <Heading3>About me</Heading3>
-              <TextMd>{profileData.description}</TextMd>
+              <TextMd>{profileData?.description}</TextMd>
             </div>
           </div>
         </div>
