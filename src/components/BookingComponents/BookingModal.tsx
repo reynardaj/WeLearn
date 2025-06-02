@@ -2,11 +2,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { playfair } from '@/lib/fonts';
-import WeekDatePicker from '@/components/DatePicker';
-import Picker from '@/components/ButtonPicker';
+import WeekDatePicker from '@/components/BookingComponents/DatePicker';
+import Picker from '@/components/BookingComponents/ButtonPicker';
 import Button from '@mui/material/Button';
-import { Heading3 } from './Heading';
-import { TextMd, TextSm } from './Text';
+import { Heading3 } from '../Heading';
+import { TextMd, TextSm } from '../Text';
 
 const groupTimes = (times: string[]) => {
   const morning: string[] = [];

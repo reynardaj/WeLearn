@@ -5,7 +5,7 @@ import Contacts from './contacts';
 import { VscSend } from "react-icons/vsc";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { IoArrowBackOutline } from "react-icons/io5";
-import { Heading1, Heading4 } from './Heading';
+import { Heading1, Heading4 } from '@/components/Heading';
 
 interface Contact {
   conversationId: string;

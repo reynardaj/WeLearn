@@ -2,7 +2,7 @@ import React from 'react';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MuiCheckbox from '@mui/material/Checkbox';
-import { TextSm } from './Text';
+import { TextSm } from '../Text';
 
 interface CheckboxProps {
   labels: string[];

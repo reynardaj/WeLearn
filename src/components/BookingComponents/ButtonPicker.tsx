@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@mui/material';
-import { TextMd } from './Text';
+import { TextMd } from '../Text';
 
 interface PickerProps {
   options: string[];

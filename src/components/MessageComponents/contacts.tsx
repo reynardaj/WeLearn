@@ -1,7 +1,7 @@
 import React from 'react'
 import { playfair } from '@/lib/fonts';
-import { Heading4 } from './Heading';
-import { TextMd } from './Text';
+import { Heading4 } from '../Heading';
+import { TextMd } from '../Text';
 
 interface ContactProps {
   name: string;

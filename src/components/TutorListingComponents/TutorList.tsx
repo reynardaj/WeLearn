@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { playfair } from '@/lib/fonts';
-import Rating from '@/components/rating'
+import Rating from '@/components/TutorListingComponents/rating'
 import Stack from '@mui/material/Stack';
-import { Button } from "../components/button";
+import { Button } from "../button";
 import { useRouter } from 'next/navigation';
 import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
 import { TextSm, TextMd } from '@/components/Text';
