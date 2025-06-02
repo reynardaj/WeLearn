@@ -4,7 +4,7 @@ import * as React from 'react';
 import { playfair } from '@/lib/fonts';
 import Rating from '@/components/rating'
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+import { Button } from "../components/button";
 import { useRouter } from 'next/navigation';
 import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
 import { TextSm, TextMd } from '@/components/Text';
@@ -64,15 +64,14 @@ export default function TutorList({ tutorID, name, subjects, price, university, 
         <div className='flex justify-center md:justify-end'>
             <Stack spacing={1} direction="row">
               <Button 
-                variant="outlined" 
-                sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7"}}
+                variant="ghost" 
                 onClick={goToChat}
+                className='border-gray-300 border-1'
               >
                 Send Message
               </Button>
               <Button 
-                variant="contained" 
-                sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6" }}
+                variant="primary" 
                 onClick={() => onBook(tutorID)}
               >
                 Book A Session

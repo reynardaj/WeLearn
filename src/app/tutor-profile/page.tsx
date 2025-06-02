@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { playfair } from '@/lib/fonts';
 import Rating from '@/components/rating'
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button'
+import { Button } from "@/components/button";
 import ProgressBar from '@/components/ProgressBar'
 import ReviewList from '@/components/reviewList';
 import { useSearchParams } from 'next/navigation';
@@ -117,8 +117,8 @@ export default function page() {
                   : 0}/>
               <div>
                   <Stack spacing={1} direction="row">
-                    <Button variant="contained" sx={{ fontSize: "12px", borderRadius: "8px", backgroundColor: "#1F65A6", padding: '10px' }} onClick={handleBook}>Book A Session</Button>
-                    <Button variant="outlined" sx={{ fontSize: "12px", color: "black", borderRadius: "8px", borderColor: "#E4E4E7", padding: '10px'}} onClick={goToChat}>Send Message</Button>
+                    <Button variant="primary" onClick={handleBook}>Book A Session</Button>
+                    <Button variant="ghost" className='border-gray-300 border-1' onClick={goToChat}>Send Message</Button>
                   </Stack>
               </div>
               {showModal && selectedTutorID && (
@@ -170,7 +170,7 @@ export default function page() {
                 />
               ))}
             </div>
-            <Button variant="contained" sx={{ fontSize: "12px", color: 'black', borderRadius: "8px", backgroundColor: "#F4B660", padding: '10px' }} className='w-full lg:w-[13vw] xl:w-[10vw]'>Write A Review</Button>
+            <Button variant="secondary" className='w-full lg:w-[13vw] xl:w-[10vw]'>Write A Review</Button>
           </div>
 
           {/* Review */}

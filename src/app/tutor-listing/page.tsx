@@ -9,11 +9,10 @@ import TutorList from '@/components/TutorList';
 import dayjs, { Dayjs } from 'dayjs';
 import BookingModal from '@/components/BookingModal';
 import UpcomingSession from '@/components/UpcomingSession';
-import Button from '@mui/material/Button';
+import { Button } from "@/components/button";
 import { HiOutlineCalendarDays } from "react-icons/hi2";
 import { Heading1, Heading2, Heading3 } from '@/components/Heading';
 import { TextSm, TextMd } from '@/components/Text';
-import { openSans } from "@/lib/fonts";
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
@@ -201,19 +200,12 @@ export default function Page() {
           <div className="relative inline-block">
             <Button
               onClick={() => setShowUpcoming(true)}
-              variant="outlined"
-              sx={{
-                fontSize: "12px",
-                color: "black",
-                borderRadius: "8px",
-                border: 0,
-                backgroundColor: "#F4B660",
-                padding: '10px',
-              }}
-              className="gap-2"
+              variant="secondary"
             >
-              <HiOutlineCalendarDays className="text-[18px]" />
-              <TextSm>Upcoming Session</TextSm>
+              <div className="inline-flex items-center gap-2 justify-center">
+                <HiOutlineCalendarDays className="text-[18px]" />
+                <TextMd className='hidden sm:inline-block'>Upcoming Session</TextMd>
+              </div>
             </Button>
 
             {showUpcoming && (
