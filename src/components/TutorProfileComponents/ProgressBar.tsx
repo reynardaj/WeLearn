@@ -2,7 +2,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
-import { TextSm } from './Text';
+import { TextSm } from '../Text';
 
 interface Props {
   count: number;

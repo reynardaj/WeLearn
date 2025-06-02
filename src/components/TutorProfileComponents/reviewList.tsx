@@ -1,6 +1,6 @@
 import React from 'react'
-import Rating from '@/components/rating'
-import { TextMd, TextSm } from './Text';
+import Rating from '@/components/TutorListingComponents/rating'
+import { TextMd, TextSm } from '../Text';
 
 interface ReviewItem {
   name: string;

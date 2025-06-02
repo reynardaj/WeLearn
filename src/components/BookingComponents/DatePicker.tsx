@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { playfair } from '@/lib/fonts';
-import { TextMd, TextSm } from './Text';
-import { Heading3 } from './Heading';
+import { TextMd, TextSm } from '../Text';
+import { Heading3 } from '../Heading';
 
 interface WeekDatePickerProps {
   selectedDate: Date;

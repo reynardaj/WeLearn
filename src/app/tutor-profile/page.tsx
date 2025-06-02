@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useState } from 'react'
 import { playfair } from '@/lib/fonts';
-import Rating from '@/components/rating'
+import Rating from '@/components/TutorListingComponents/rating'
 import Stack from '@mui/material/Stack';
 import { Button } from "@/components/button";
-import ProgressBar from '@/components/ProgressBar'
-import ReviewList from '@/components/reviewList';
+import ProgressBar from '@/components/TutorProfileComponents/ProgressBar'
+import ReviewList from '@/components/TutorProfileComponents/reviewList';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import BookingModal from '@/components/BookingModal';
+import BookingModal from '@/components/BookingComponents/BookingModal';
 import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
 import { TextSm, TextMd, TextLg } from '@/components/Text';
 import { IoArrowBackOutline } from "react-icons/io5";
