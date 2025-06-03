@@ -8,7 +8,7 @@ const MentorDashboard = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (user?.publicMetadata?.role !== 'Mentor') {
+    if (user?.publicMetadata?.role !== 'mentor') {
       router.push('/');
     }
   }, [user, router]);

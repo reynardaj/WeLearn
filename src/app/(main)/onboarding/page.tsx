@@ -10,6 +10,7 @@ export default function RoleSelector() {
   const router = useRouter();
 
   const handleRoleSelect = async (role: "mentor" | "mentee") => {
+    console.log(`Selecting role: ${role}`);
     try {
       // First, store the user ID
       const signupResponse = await fetch("/api/signup", {
@@ -20,21 +21,25 @@ export default function RoleSelector() {
       });
 
       if (!signupResponse.ok) {
+        console.error("Failed to complete signup:", signupResponse.status);
         throw new Error("Failed to complete signup");
       }
 
+      console.log("Signup successful, completing onboarding...");
       // Then complete the onboarding
       const onboardingRes = await completeOnboarding(role);
 
       if (onboardingRes?.message) {
+        console.log("Onboarding complete, reloading user and redirecting...");
         await user?.reload();
         router.push(
-          role === "mentor" ? "/mentor-dashboard" : "/mentee-dashboard"
+          role === "mentor" ? "/tutor-form" : "/tutee-form"
         );
       }
 
       if (onboardingRes?.error) {
         setError(onboardingRes.error);
+        console.error("Failed to complete onboarding:", onboardingRes.error);
       }
     } catch (err) {
       console.error("Error during signup/onboarding:", err);
