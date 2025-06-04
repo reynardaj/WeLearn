@@ -12,8 +12,12 @@ interface HeadingProps {
 export const Title: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h1
-      className={clsx(playfair.className, "text-text font-normal", className)}
-      style={{ fontSize: "4rem" }} // 64px
+      className={clsx(
+        playfair.className,
+        "text-text font-normal mb-6",
+        className
+      )}
+      style={{ fontSize: "4rem", lineHeight: "1" }} // 64px
     >
       {children}
     </h1>
@@ -36,7 +40,7 @@ export const Subtitle: React.FC<HeadingProps> = ({ className, children }) => {
 export const Heading1: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h1
-      className={clsx(playfair.className, "text-text font-normal", className)}
+      className={clsx(playfair.className, "text-text font-normal ", className)}
       style={{ fontSize: "3rem" }} // 48px
     >
       {children}
