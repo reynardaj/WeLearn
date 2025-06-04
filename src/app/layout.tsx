@@ -1,12 +1,8 @@
-
-
 import type { Metadata } from "next";
 import "./globals.css";
-import {
-  ClerkProvider,
-} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Playfair_Display, Open_Sans } from "next/font/google";
-import { Providers } from '@/components/Providers';  
+import { Providers } from "@/components/Providers";
 import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 
 const playfair = Playfair_Display({ weight: "700", subsets: ["latin"] });
@@ -22,11 +18,11 @@ export default function RootLayout({
       <html lang="en">
         <body className="antialiased flex items-center justify-center min-h-screen">
           <main>
-            <Providers>  
+            <Providers>
               <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
             </Providers>
-          </main>  
-      </body>
+          </main>
+        </body>
       </html>
     </ClerkProvider>
   );
