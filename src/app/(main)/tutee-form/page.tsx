@@ -40,7 +40,7 @@ export default function TuteeForm() {
 
   return (  
     <div className="h-screen w-full flex">  
-      <div className="w-[30%] bg-[#FFFFFF] flex items-center justify-center">  
+      <div className="hidden sm:flex w-[30%] bg-[#FFFFFF] items-center justify-center">  
         <Image   
           src="/assets/TuteeFormPage1.png"  
           alt="Tutee Form"  
@@ -48,7 +48,7 @@ export default function TuteeForm() {
           height={0}  
         />  
       </div>  
-      <div className="w-[70%] bg-[#F0FAF9]">  
+      <div className="w-full sm:w-[70%] bg-[#F0FAF9]">  
         <div className="h-screen w-full">  
           <div className="h-[15%] flex justify-center items-center">  
             <Link href="/tutee-form" className="w-12 h-12 rounded-full bg-[#1F65A6] border-2 border-[#1F65A6] flex justify-center items-center">  
@@ -75,8 +75,8 @@ export default function TuteeForm() {
 
           </div>  
           <div className="h-[75%] flex flex-col justify-center items-center">  
-              <h1 className="font-normal text-[3rem]">Which subjects are you interested in?</h1>  
-              <div className="w-[80%] grid grid-cols-3 gap-4 my-6">  
+              <h1 className="font-normal text-[1.5rem] sm:text-[1.7rem] md:text-[2rem] lg:text-[2.5rem] xl:text-[3rem] text-center">Which subjects are you interested in?</h1>  
+              <div className="w-[90%] grid grid-cols-2 md:grid-cols-3 gap-4 my-6">  
                 {subjects.map((subject, index) => (  
                   <div   
                     key={index}  
@@ -107,7 +107,7 @@ export default function TuteeForm() {
                 <TextMd>Skip question</TextMd>  
               </div>  
           </div>  
-          <div className="h-[10%] flex justify-end items-start pr-25">  
+          <div className="h-[10%] flex justify-center md:justify-end items-start md:pr-25">  
             <div   
               onClick={handleContinue}  
               className="w-30 h-10 rounded-full bg-[#1F65A6] flex justify-center items-center cursor-pointer"  
