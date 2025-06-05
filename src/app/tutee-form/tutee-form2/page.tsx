@@ -35,7 +35,7 @@ export default function TuteeForm2() {
 
   return (  
     <div className="h-screen w-full flex">  
-      <div className="w-[30%] bg-[#FFFFFF] p-4 flex items-center justify-center">  
+      <div className="hidden sm:flex w-[30%] bg-[#FFFFFF] p-4 items-center justify-center">  
         <Image   
           src="/assets/TuteeFormPage2.png"  
           alt="Tutee Form"  
@@ -43,7 +43,7 @@ export default function TuteeForm2() {
           height={0}  
         />  
       </div>  
-      <div className="w-[70%] bg-[#F0FAF9]">  
+      <div className="w-full sm:w-[70%] bg-[#F0FAF9]">  
         <div className="h-screen w-full">  
           <div className="h-[15%] flex justify-center items-center">  
             <Link href="/tutee-form" className="w-12 h-12 rounded-full bg-white border-2 border-[#1F65A6] flex justify-center items-center">  
@@ -73,7 +73,7 @@ export default function TuteeForm2() {
               <TextMd>4</TextMd>  
             </Link>  
           </div>   
-          <div className="h-[5%] flex items-center pl-15">  
+          <div className="h-[5%] flex items-center pl-5 md:pl-15">  
             <Link href={"/tutee-form"}>  
               <Image   
                 src="/assets/Arrow.png"  
@@ -84,7 +84,7 @@ export default function TuteeForm2() {
             </Link>  
           </div>  
           <div className="h-[70%] flex flex-col justify-center items-center">  
-            <h1 className="font-normal text-[3rem]">What is your current education level?</h1>  
+            <h1 className="font-normal text-center text-[1.5rem] sm:text-[2rem] md:text-[2rem] lg:text-[2.5rem] xl:text-[3rem]">What is your current education level?</h1>  
             <div className="w-[80%] h-[45%] gap-4 my-6 flex flex-col justify-between">  
             {educationLevels.map((educationLevel) => (  
               <div   
@@ -136,7 +136,7 @@ export default function TuteeForm2() {
               <TextMd>Skip question</TextMd>  
             </div>   
           </div>  
-          <div className="h-[10%] flex justify-end items-start pr-25">  
+          <div className="h-[10%] flex justify-center md:justify-end items-start md:pr-25">  
             <div   
               onClick={handleContinue}  
               className={`  

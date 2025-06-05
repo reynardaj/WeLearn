@@ -56,8 +56,8 @@ export default function TuteeForm3() {
   };  
 
   return (  
-    <div className="h-screen w-full flex">  
-      <div className="w-[30%] bg-[#FFFFFF] flex items-center justify-center">  
+    <div className="h-screen w-full flex flex-col sm:flex-row">  
+      <div className="hidden sm:flex w-[30%] bg-[#FFFFFF] items-center justify-center">  
         <Image   
           src="/assets/TuteeFormPage3.png"  
           alt="Tutee Form"  
@@ -65,8 +65,8 @@ export default function TuteeForm3() {
           height={0}  
         />  
       </div>  
-      <div className="w-[70%] bg-[#F0FAF9]">  
-        <div className="h-screen w-full">  
+      <div className="w-full sm:w-[70%] bg-[#F0FAF9]">  
+        <div className="h-full w-full flex flex-col justify-between py-6 overflow-y-auto space-y-10 md:space-y-0">  
           <div className="h-[15%] flex justify-center items-center">  
             <Link href="/tutee-form" className="w-12 h-12 rounded-full bg-white border-2 border-[#1F65A6] flex justify-center items-center">  
               <Image   
@@ -101,7 +101,7 @@ export default function TuteeForm3() {
             </Link>  
 
           </div>  
-          <div className="h-[5%] flex items-center pl-15">  
+          <div className="h-[5%] flex items-center pl-5 md:pl-15">  
             <Link href={"/tutee-form/tutee-form2"}>  
               <Image   
                 src="/assets/Arrow.png"  
@@ -111,12 +111,12 @@ export default function TuteeForm3() {
               />  
             </Link>  
           </div>  
-          <div className="h-[70%] flex flex-col justify-start items-center">  
-              <h1 className="font-normal text-[2.5rem]">When can you take the course?</h1>  
+          <div className="flex flex-col justify-start items-center px-4">  
+              <h1 className="font-normal text-center text-[1.5rem] sm:text-[2rem] md:text-[2rem] lg:text-[2.5rem] xl:text-[3rem]">When can you take the course?</h1>  
               <div className="w-[80%] flex">  
                 <h1 className="text-2xl">Days</h1>  
               </div>  
-              <div className="w-[80%] grid grid-cols-3 gap-4 mt-2 mb-2">  
+              <div className="w-[90%] grid grid-cols-2 md:grid-cols-3 gap-4 mt-2 mb-2">  
                 {days.map((day) => (  
                   <div   
                     key={day}  
@@ -143,7 +143,7 @@ export default function TuteeForm3() {
               <div className="w-[80%] flex">  
                 <h1 className="text-2xl">Times</h1>  
               </div>  
-              <div className="w-[80%] grid grid-cols-3 gap-4 mt-2 mb-4">  
+              <div className="w-[90%] grid grid-cols-2 md:grid-cols-3 gap-4 mt-2 mb-4">  
                 {times.map((time) => (  
                   <div   
                     key={time}  
@@ -174,7 +174,7 @@ export default function TuteeForm3() {
                 <TextMd>Skip question</TextMd>  
               </div>  
           </div>  
-          <div className="h-[10%] flex justify-end items-start pr-25">  
+          <div className="flex justify-center sm:justify-end items-center mt-4 px-6">  
             <div   
               onClick={handleContinue}  
               className="w-30 h-10 rounded-full bg-[#1F65A6] flex justify-center items-center cursor-pointer"  
