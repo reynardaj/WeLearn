@@ -136,8 +136,8 @@ export default function TuteeForm4() {
   if (!mounted) return null;
   
   return (  
-    <div className="h-screen w-full flex">  
-      <div className="w-[30%] bg-[#FFFFFF] p-4 flex items-center justify-center">  
+    <div className="min-h-screen w-full flex">  
+      <div className="hidden sm:flex bg-[#FFFFFF] p-4 items-center justify-center">  
         <Image 
           src="/assets/TuteeFormPage4.png"
           alt="Tutee Form"
@@ -145,9 +145,9 @@ export default function TuteeForm4() {
           height={0}
         />
       </div>
-      <div className="w-[70%] bg-[#F0FAF9]">
-        <div className="h-screen w-full">  
-          <div className="h-[15%] flex justify-center items-center">  
+      <div className="w-full sm:w-[70%] bg-[#F0FAF9] flex flex-col">
+        <div className="flex flex-col flex-grow overflow-y-auto">  
+          <div className="flex justify-center items-center py-4">  
             <Link href="/tutee-form" className="w-12 h-12 rounded-full bg-white border-2 border-[#1F65A6] flex justify-center items-center">  
               <Image 
                 src="/assets/CheckList.png"
@@ -184,7 +184,7 @@ export default function TuteeForm4() {
             </Link>
             
           </div> 
-          <div className="h-[5%] flex items-center pl-15">
+          <div className="flex items-center pl-5 md:pl-15 py-2">
             <Link href={"/tutee-form/tutee-form3"}>
               <Image 
                 src="/assets/Arrow.png"
@@ -194,10 +194,10 @@ export default function TuteeForm4() {
               />
             </Link>
           </div>
-          <div className="h-[80%] flex flex-col justify-center items-center space-y-8">  
-            <h1 className="font-normal text-[3rem]">What is your budget?</h1>  
-            
-            <div className="w-[80%]max-w-[600px] relative flex justify-center items-center">   
+          <div className="flex-grow flex flex-col justify-center items-center space-y-8 p-4">  
+            <h1 className="font-normal text-center text-[1.5rem] sm:text-[2rem] md:text-[2rem] lg:text-[2.5rem] xl:text-[3rem]">What is your budget?</h1>  
+
+            <div className="w-[80%] max-w-[600px] relative flex justify-center items-center">   
               <div className="w-[500px] p-8">  
                 <div className="relative w-full pb-6">  
                   {/* Extreme Value Labels */}  
@@ -299,15 +299,17 @@ export default function TuteeForm4() {
                   </div>  
                 </div>  
               </div>  
-            </div>   
+            </div>  
             
             {/* Continue Button */}  
-            <div   
-              onClick={handleSubmit}  
-              className="w-[40%] bg-[#1F65A6] rounded-xl p-3 flex justify-center items-center cursor-pointer"  
-            >  
-              <TextMd className="text-white">Continue</TextMd>  
-            </div>  
+            <div className="w-full flex justify-center p-4">
+              <div   
+                onClick={handleSubmit}  
+                className="w-[40%] bg-[#1F65A6] rounded-xl p-3 flex justify-center items-center cursor-pointer"  
+              >  
+                <TextMd className="text-white">Continue</TextMd>  
+              </div>  
+            </div>
           </div>
         </div>
       </div>  
