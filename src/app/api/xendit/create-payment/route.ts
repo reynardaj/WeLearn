@@ -49,7 +49,6 @@ export async function POST(req: NextRequest) {
     const response = await Invoice.createInvoice({
       data: invoiceData
     });
-    
     return NextResponse.json(response);
   } catch (error) {
     console.error('Payment error:', error);
