@@ -73,6 +73,7 @@ export async function GET(req: NextRequest) {
 
 interface BookingRequest {
   tutorID: string;
+  tuteeId: string;
   subject: string;
   startTime: string;
   endTime: string;
@@ -81,15 +82,23 @@ interface BookingRequest {
 
 export async function POST(req: NextRequest) {
   try {
-    const { tutorID, subject, startTime, endTime, xenditInvoiceId } =
+    const { tutorID, tuteeId, subject, startTime, endTime, xenditInvoiceId } =
       (await req.json()) as BookingRequest;
 
-    if (!tutorID || !subject || !startTime || !endTime || !xenditInvoiceId) {
+    if (
+      !tutorID ||
+      !tuteeId ||
+      !subject ||
+      !startTime ||
+      !endTime ||
+      !xenditInvoiceId
+    ) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
+    console.log("tuteeid route: ", tuteeId);
 
     const client = await pool.connect();
 
@@ -99,8 +108,8 @@ export async function POST(req: NextRequest) {
       // Create booking record
       const bookingRes = await client.query(
         `INSERT INTO booking 
-         ("BookingID", "SubjectBooked", "StartTime", "EndTime", "tutorID", "status", "xenditInvoiceID")
-         VALUES ($1, $2, $3, $4, $5, 'PENDING_PAYMENT', $6)
+         ("BookingID", "SubjectBooked", "StartTime", "EndTime", "tutorID", "tuteeID", "status", "xenditInvoiceID")
+         VALUES ($1, $2, $3, $4, $5, $6, 'PENDING_PAYMENT', $7)
          RETURNING *`,
         [
           `book-${Date.now()}`,
@@ -108,6 +117,7 @@ export async function POST(req: NextRequest) {
           new Date(startTime),
           new Date(endTime),
           tutorID,
+          tuteeId,
           xenditInvoiceId,
         ]
       );
