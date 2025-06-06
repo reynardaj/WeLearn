@@ -6,6 +6,7 @@ import { playfair } from "@/lib/fonts";
 import WeekDatePicker from "@/components/BookingComponents/DatePicker";
 import Picker from "@/components/BookingComponents/ButtonPicker";
 import Button from "@mui/material/Button";
+import { useAuth } from "@clerk/nextjs";
 import { Heading3 } from "../Heading";
 import { TextMd, TextSm } from "../Text";
 
@@ -31,6 +32,7 @@ export default function BookingModal({
   tutorID: string;
   onClose: () => void;
 }) {
+  const { userId } = useAuth();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
@@ -88,7 +90,14 @@ export default function BookingModal({
 
       const { invoiceUrl, externalId } = await paymentRes.json();
 
-      // Create booking after successful payment creation
+      let tuteeId;
+      const response = await fetch(`/api/users/tutee/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        tuteeId = data?.tuteeId;
+      }
+      console.log("tuteeId: ", tuteeId);
+
       const bookingRes = await fetch("/api/booking", {
         method: "POST",
         headers: {
@@ -96,6 +105,7 @@ export default function BookingModal({
         },
         body: JSON.stringify({
           tutorID,
+          tuteeId,
           subject: selectedSubject,
           startTime: `${
             selectedDate.toISOString().split("T")[0]
@@ -103,7 +113,7 @@ export default function BookingModal({
           endTime: `${selectedDate.toISOString().split("T")[0]}T${
             parseInt(selectedTime.split(":")[0]) + 1
           }:${selectedTime.split(":")[1]}:00.000Z`,
-          xenditInvoiceId: externalId, // Use the externalId from Xendit response
+          xenditInvoiceId: externalId,
         }),
       });
 
