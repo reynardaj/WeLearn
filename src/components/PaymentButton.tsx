@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface PaymentButtonProps {
   amount: number;
@@ -9,19 +9,24 @@ interface PaymentButtonProps {
   className?: string;
 }
 
-export default function PaymentButton({ amount, description, buttonText = 'Pay Now', className = '' }: PaymentButtonProps) {
+export default function PaymentButton({
+  amount,
+  description,
+  buttonText = "Pay Now",
+  className = "",
+}: PaymentButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handlePayment = async () => {
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('/api/xendit/create-payment', {
-        method: 'POST',
+      const response = await fetch("/api/xendit/create-payment", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           amount,
@@ -31,20 +36,23 @@ export default function PaymentButton({ amount, description, buttonText = 'Pay N
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to create payment');
+        throw new Error(errorData.error || "Failed to create payment");
       }
 
       const data = await response.json();
-      
-      if (!data.invoice_url) {
-        throw new Error('Invalid response from payment provider');
+
+      if (!data.invoiceUrl) {
+        throw new Error("Invalid response from payment provider");
       }
-      
+
       // Redirect to Xendit payment page
-      window.location.href = data.invoice_url;
+      window.location.href = data.invoiceUrl;
     } catch (err) {
-      console.error('Payment error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred while processing your payment';
+      console.error("Payment error:", err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An error occurred while processing your payment";
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -60,12 +68,10 @@ export default function PaymentButton({ amount, description, buttonText = 'Pay N
         aria-busy={isLoading}
         aria-live="polite"
       >
-        {isLoading ? 'Processing...' : buttonText}
+        {isLoading ? "Processing..." : buttonText}
       </button>
       {error && (
-        <p className="text-red-500 mt-2 text-sm text-center">
-          {error}
-        </p>
+        <p className="text-red-500 mt-2 text-sm text-center">{error}</p>
       )}
     </div>
   );
