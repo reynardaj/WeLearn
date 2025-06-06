@@ -1,6 +1,6 @@
-import { Xendit } from 'xendit-node';
-import { NextRequest, NextResponse } from 'next/server';
-import { CreateInvoiceRequest } from 'xendit-node/invoice/models';
+import { Xendit } from "xendit-node";
+import { NextRequest, NextResponse } from "next/server";
+import { CreateInvoiceRequest } from "xendit-node/invoice/models";
 
 const xendit = new Xendit({
   secretKey: process.env.XENDIT_SECRET_KEY as string,
@@ -16,10 +16,10 @@ interface PaymentRequest {
 export async function POST(req: NextRequest) {
   try {
     const { amount, description } = (await req.json()) as PaymentRequest;
-    
+
     if (!amount || isNaN(amount)) {
       return NextResponse.json(
-        { error: 'Invalid amount provided' },
+        { error: "Invalid amount provided" },
         { status: 400 }
       );
     }
@@ -27,35 +27,40 @@ export async function POST(req: NextRequest) {
     const invoiceData: CreateInvoiceRequest = {
       externalId: `invoice-${Date.now()}`,
       amount: Number(amount),
-      description: description || 'Payment for WeLearn',
-      successRedirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/payment/success`,
-      currency: 'IDR',
+      description: description || "Payment for WeLearn",
+      successRedirectUrl: `${
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+      }/payment/success`,
+      currency: "IDR",
       customer: {
-        givenNames: 'Customer',
-        email: 'customer@example.com'
+        givenNames: "Customer",
+        email: "customer@example.com",
       },
       customerNotificationPreference: {
-        invoicePaid: ['email' as const]
+        invoicePaid: ["email" as const],
       },
       items: [
         {
-          name: description || 'Course Access',
+          name: description || "Course Access",
           price: Number(amount),
-          quantity: 1
-        }
-      ]
+          quantity: 1,
+        },
+      ],
     };
 
     const response = await Invoice.createInvoice({
-      data: invoiceData
+      data: invoiceData,
     });
-    return NextResponse.json(response);
+    
+    // Return the Xendit response along with the externalId
+    return NextResponse.json({
+      ...response,
+      externalId: invoiceData.externalId
+    });
   } catch (error) {
-    console.error('Payment error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+    console.error("Payment error:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
