@@ -1,9 +1,9 @@
-'use client';
+"use client";
 import { Button } from "@/components/button";
 import { TextMd, TextSm } from "@/components/Text";
 import { Heading3, Heading4 } from "@/components/Heading";
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface BookingDetails {
   className: string;
@@ -14,15 +14,17 @@ interface BookingDetails {
 
 export default function PaymentSuccess() {
   const searchParams = useSearchParams();
-  const bookingId = searchParams.get('bookingId');
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
+  const bookingId = searchParams.get("bookingId");
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
       if (!bookingId) {
-        setError('No booking ID provided');
+        setError("No booking ID provided");
         setIsLoading(false);
         return;
       }
@@ -30,18 +32,20 @@ export default function PaymentSuccess() {
       try {
         const response = await fetch(`/api/booking/${bookingId}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch booking details');
+          throw new Error("Failed to fetch booking details");
         }
         const data = await response.json();
         setBookingDetails({
-          className: data.subjectBooked || 'Tutoring Session',
-          tutorName: data.tutorName || 'Your Tutor',
+          className: data.subjectBooked || "Tutoring Session",
+          tutorName: data.tutorName || "Your Tutor",
           dateTime: new Date(data.startTime),
-          status: data.status
+          status: data.status,
         });
       } catch (err) {
-        console.error('Error fetching booking details:', err);
-        setError('Failed to load booking details. Please check your booking history.');
+        console.error("Error fetching booking details:", err);
+        setError(
+          "Failed to load booking details. Please check your booking history."
+        );
       } finally {
         setIsLoading(false);
       }
@@ -51,14 +55,14 @@ export default function PaymentSuccess() {
   }, [bookingId]);
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZoneName: 'short',
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
     }).format(date);
   };
 
@@ -67,7 +71,9 @@ export default function PaymentSuccess() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-md text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
-          <Heading3 className="text-gray-900 mb-2">Loading your booking details...</Heading3>
+          <Heading3 className="text-gray-900 mb-2">
+            Loading your booking details...
+          </Heading3>
         </div>
       </div>
     );
@@ -80,9 +86,12 @@ export default function PaymentSuccess() {
           <div className="text-red-500 text-4xl mb-4">!</div>
           <Heading3 className="text-gray-900 mb-4">Error</Heading3>
           <TextMd className="text-gray-600 mb-6">
-            {error || 'Unable to load booking details.'}
+            {error || "Unable to load booking details."}
           </TextMd>
-          <a href="/bookings" className="inline-block bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition-colors">
+          <a
+            href="/bookings"
+            className="inline-block bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition-colors"
+          >
             View My Bookings
           </a>
         </div>
@@ -96,15 +105,15 @@ export default function PaymentSuccess() {
         <div className="text-center">
           <div className="text-primary text-6xl mb-4">✓</div>
           <Heading3 className="text-text mb-2">
-            {bookingDetails.status === 'PENDING_PAYMENT' ? 'Booking Created!' : 'Payment Successful!'}
+            {bookingDetails.status === "PENDING_PAYMENT"
+              ? "Booking Created!"
+              : "Payment Successful!"}
           </Heading3>
           <TextMd className="text-text">
-            {bookingDetails.status === 'PENDING_PAYMENT' 
-              ? 'Your booking has been created. Please complete the payment to confirm your session.' 
-              : 'Thank you for your booking. Here are your class details:'}
+            Thank you for your booking. Here are your class details
           </TextMd>
         </div>
-        
+
         <div className="mt-6 border-t border-gray-200 pt-6">
           <Heading4 className="pb-4">Booking Summary</Heading4>
           <div className="space-y-2 text-gray-700">
