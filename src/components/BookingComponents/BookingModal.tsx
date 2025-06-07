@@ -56,21 +56,6 @@ export default function BookingModal({
   }, [tutorID, selectedDate]);
 
   const { morning, afternoon, evening } = groupTimes(availableTimes);
-  // useEffect(() => {
-  //   console.log('selecteddate:',selectedDate)
-  //   console.log("selectedTime: ", selectedTime);
-  //     console.log({
-  //       startTime: new Date(`${selectedDate.toISOString().split('T')[0]}T${selectedTime}:00.000Z`).toISOString(),
-  //       endTime: (() => {
-  //         const [hours, minutes] = selectedTime.split(':').map(Number);
-  //         const endDate = new Date(selectedDate);
-  //         endDate.setUTCHours(hours, minutes, 0, 0);
-  //         endDate.setUTCHours(endDate.getUTCHours() + 1); // Add 1 hour
-  //         return endDate.toISOString();
-  //       })(),
-  //     });
-
-  // }, [selectedTime]);
 
   const handleBookingClick = async () => {
     if (!selectedDate || !selectedSubject || !selectedTime) {
@@ -78,18 +63,24 @@ export default function BookingModal({
     }
 
     try {
-      const price = 100000; // Replace with actual price
+      // Fetch tutor's price from the API
+      const priceResponse = await fetch(`/api/tutor/price?tutorID=${tutorID}`);
+      if (!priceResponse.ok) {
+        throw new Error('Failed to fetch tutor price');
+      }
+      const { price } = await priceResponse.json();
 
       // First, create the booking to get the bookingId
       let tuteeId;
       const response = await fetch(`/api/users/tutee/${userId}`);
-      if (response.ok) {
-        const data = await response.json();
-        tuteeId = data?.tuteeId;
+      if (!response.ok) {
+        throw new Error('Failed to fetch tutee ID');
       }
-      // console.log(
-      //   `Booking attempt at ${selectedDate.toLocaleString()} ${selectedTime}`
-      // );
+      const data = await response.json();
+      tuteeId = data?.tuteeId;
+      if (!tuteeId) {
+        throw new Error('Tutee ID not found');
+      }
 
       // Create a temporary booking to get the bookingId
       const bookingRes = await fetch("/api/booking", {
