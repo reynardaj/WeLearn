@@ -56,22 +56,89 @@ export default function BookingModal({
   }, [tutorID, selectedDate]);
 
   const { morning, afternoon, evening } = groupTimes(availableTimes);
+  // useEffect(() => {
+  //   console.log('selecteddate:',selectedDate)
+  //   console.log("selectedTime: ", selectedTime);
+  //     console.log({
+  //       startTime: new Date(`${selectedDate.toISOString().split('T')[0]}T${selectedTime}:00.000Z`).toISOString(),
+  //       endTime: (() => {
+  //         const [hours, minutes] = selectedTime.split(':').map(Number);
+  //         const endDate = new Date(selectedDate);
+  //         endDate.setUTCHours(hours, minutes, 0, 0);
+  //         endDate.setUTCHours(endDate.getUTCHours() + 1); // Add 1 hour
+  //         return endDate.toISOString();
+  //       })(),
+  //     });
+
+  // }, [selectedTime]);
 
   const handleBookingClick = async () => {
     if (!selectedDate || !selectedSubject || !selectedTime) {
-      alert("Please select a date, subject, and time slot");
       return;
     }
 
     try {
-      // First, get the tutor's price
-      const tutorRes = await fetch(`/api/tutor/price?tutorID=${tutorID}`);
-      if (!tutorRes.ok) {
-        throw new Error("Failed to get tutor information");
-      }
-      const { price } = await tutorRes.json();
+      const price = 100000; // Replace with actual price
 
-      // Create payment request
+      // First, create the booking to get the bookingId
+      let tuteeId;
+      const response = await fetch(`/api/users/tutee/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        tuteeId = data?.tuteeId;
+      }
+      // console.log(
+      //   `Booking attempt at ${selectedDate.toLocaleString()} ${selectedTime}`
+      // );
+
+      // Create a temporary booking to get the bookingId
+      const bookingRes = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tutorID,
+          tuteeId,
+          subject: selectedSubject,
+          startTime: (() => {
+            const [hours, minutes] = selectedTime.split(":").map(Number);
+            const startDate = new Date(selectedDate);
+            startDate.setHours(hours, minutes, 0, 0);
+            const startTime = startDate.toISOString();
+            console.log("Calculated start time (ISO):", startTime);
+            return startTime;
+          })(),
+          endTime: (() => {
+            const [hours, minutes] = selectedTime.split(":").map(Number);
+            const endDate = new Date(selectedDate);
+            endDate.setHours(hours, minutes, 0, 0);
+            endDate.setHours(endDate.getHours() + 1); // Add 1 hour in local time
+            const endTime = endDate.toISOString();
+            console.log("Calculated end time (ISO):", endTime);
+            return endTime;
+          })(),
+          xenditInvoiceId: "temp-" + Date.now(), // Temporary ID, will be updated
+        }),
+      });
+
+      if (!bookingRes.ok) {
+        const error = await bookingRes.json();
+        throw new Error(error.message || "Failed to create booking");
+      }
+
+      const bookingResponse = await bookingRes.json();
+
+      const bookingId =
+        bookingResponse.bookingId ||
+        bookingResponse.bookingid ||
+        bookingResponse.BookingID;
+
+      if (!bookingId) {
+        throw new Error("Failed to get booking ID from the server response");
+      }
+
+      // Now create the payment with the bookingId
       const paymentRes = await fetch("/api/xendit/create-payment", {
         method: "POST",
         headers: {
@@ -80,6 +147,7 @@ export default function BookingModal({
         body: JSON.stringify({
           amount: price,
           description: `Tutoring session for ${selectedSubject}`,
+          bookingId: bookingId,
         } as PaymentRequest),
       });
 
@@ -90,36 +158,20 @@ export default function BookingModal({
 
       const { invoiceUrl, externalId } = await paymentRes.json();
 
-      let tuteeId;
-      const response = await fetch(`/api/users/tutee/${userId}`);
-      if (response.ok) {
-        const data = await response.json();
-        tuteeId = data?.tuteeId;
-      }
-      console.log("tuteeId: ", tuteeId);
-
-      const bookingRes = await fetch("/api/booking", {
-        method: "POST",
+      // Update the booking with the actual xenditInvoiceId
+      const updateRes = await fetch(`/api/booking/${bookingId}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          tutorID,
-          tuteeId,
-          subject: selectedSubject,
-          startTime: `${
-            selectedDate.toISOString().split("T")[0]
-          }T${selectedTime}:00.000Z`,
-          endTime: `${selectedDate.toISOString().split("T")[0]}T${
-            parseInt(selectedTime.split(":")[0]) + 1
-          }:${selectedTime.split(":")[1]}:00.000Z`,
           xenditInvoiceId: externalId,
         }),
       });
 
-      if (!bookingRes.ok) {
-        const error = await bookingRes.json();
-        throw new Error(error.message || "Failed to create booking");
+      if (!updateRes.ok) {
+        console.error("Failed to update booking with xendit invoice ID");
+        // Continue anyway as the payment was created successfully
       }
 
       // Redirect to payment page

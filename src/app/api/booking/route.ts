@@ -124,8 +124,11 @@ export async function POST(req: NextRequest) {
 
       await client.query("COMMIT");
 
+      // Return the booking ID with consistent casing
+      const booking = bookingRes.rows[0];
+      
       return NextResponse.json({
-        bookingId: bookingRes.rows[0].bookingid,
+        bookingId: booking.BookingID, // Use the exact case from the database
         status: "PENDING_PAYMENT",
       });
     } catch (error) {
