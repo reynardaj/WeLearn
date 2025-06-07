@@ -11,11 +11,12 @@ const { Invoice } = xendit;
 interface PaymentRequest {
   amount: number;
   description: string;
+  bookingId?: string;
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { amount, description } = (await req.json()) as PaymentRequest;
+    const { amount, description, bookingId } = (await req.json()) as PaymentRequest;
 
     if (!amount || isNaN(amount)) {
       return NextResponse.json(
@@ -30,11 +31,15 @@ export async function POST(req: NextRequest) {
       description: description || "Payment for WeLearn",
       successRedirectUrl: `${
         process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-      }/payment/success`,
+      }/payment/success${bookingId ? `?bookingId=${encodeURIComponent(bookingId)}` : ''}`,
       currency: "IDR",
       customer: {
         givenNames: "Customer",
         email: "customer@example.com",
+      },
+      // Store bookingId in invoice metadata for reference
+      metadata: {
+        bookingId
       },
       customerNotificationPreference: {
         invoicePaid: ["email" as const],
