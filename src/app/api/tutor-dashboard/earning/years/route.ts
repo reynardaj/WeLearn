@@ -1,4 +1,3 @@
-// app/api/tutor-dashboard/performances/years/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
@@ -17,7 +16,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: 'tutorId query parameter is required' }, { status: 400 });
   }
 
-  // Validate dates if they exist
   if (startDateParam && endDateParam && new Date(endDateParam) < new Date(startDateParam)) {
     return NextResponse.json({ message: 'endDate cannot be before startDate' }, { status: 400 });
   }
@@ -25,28 +23,33 @@ export async function GET(req: NextRequest) {
   const client = await pool.connect();
 
   try {
+    const priceQuery = `SELECT price FROM mstutor WHERE tutorid = $1;`;
+    const priceResult = await client.query(priceQuery, [tutorId]);
+    if (priceResult.rows.length === 0) {
+      return NextResponse.json({ message: 'Tutor not found or price not set' }, { status: 404 });
+    }
+    const tutorPrice = parseInt(priceResult.rows[0].price, 10);
+    if (isNaN(tutorPrice) || tutorPrice < 0) {
+        return NextResponse.json({ message: 'Invalid tutor price found' }, { status: 400 });
+    }
+
     const finalQueryParams: (string | number)[] = [tutorId];
     let startYear: number;
     let endYear: number;
-    
     let whereClauseDateFilter = "";
-
+    
     if (startDateParam && endDateParam) {
       startYear = new Date(startDateParam).getFullYear();
       endYear = new Date(endDateParam).getFullYear();
-      // Filter sessions between the exact start and end dates
-      whereClauseDateFilter = `AND b."StartTime" >= $${finalQueryParams.length + 1} AND b."StartTime" <= $${finalQueryParams.length + 2}`;
-      finalQueryParams.push(startDateParam, endDateParam);
+      whereClauseDateFilter = `AND b."StartTime" >= $2 AND b."StartTime" <= $3`;
+      finalQueryParams.push(startDateParam, endDateParam, startYear, endYear);
     } else {
-      // Default to current year and previous 5 years
       endYear = new Date().getFullYear();
       startYear = endYear - 5;
-      // Filter sessions between the start and end of this 6-year period
-      whereClauseDateFilter = `AND EXTRACT(YEAR FROM b."StartTime") BETWEEN $${finalQueryParams.length + 1} AND $${finalQueryParams.length + 2}`;
-      finalQueryParams.push(startYear, endYear);
+      whereClauseDateFilter = `AND EXTRACT(YEAR FROM b."StartTime") BETWEEN $2 AND $3`;
+      finalQueryParams.push(startYear, endYear, startYear, endYear);
     }
 
-    finalQueryParams.push(startYear, endYear); // Add years for the generate_series
     const seriesStartParamIndex = finalQueryParams.length - 1;
     const seriesEndParamIndex = finalQueryParams.length;
 
@@ -60,33 +63,31 @@ export async function GET(req: NextRequest) {
           COUNT(*) AS sessions_count
         FROM booking b
         WHERE b."tutorID" = $1
-          ${whereClauseDateFilter} -- Apply the dynamic date filter
+          ${whereClauseDateFilter}
         GROUP BY 1
       )
       SELECT
-        ty.year_num::text AS name, -- Year as string for 'name'
-        COALESCE(ays.sessions_count, 0) AS sessions
+        ty.year_num::text AS name,
+        COALESCE(ays.sessions_count, 0) AS sessions_count
       FROM target_years ty
       LEFT JOIN actual_yearly_sessions ays ON ty.year_num = ays.session_year
       ORDER BY ty.year_num ASC;
     `;
-    // Note on column casing: Using b."StartTime", b."tutorID".
-    // Adjust if your column names are lowercase (tutorid, starttime).
 
-    const result = await client.query(yearlySessionsQuery, finalQueryParams);
+    const sessionCountsResult = await client.query(yearlySessionsQuery, finalQueryParams);
 
-    const chartData = result.rows.map(row => ({
+    const chartData = sessionCountsResult.rows.map(row => ({
       name: row.name,
-      sessions: parseInt(row.sessions, 10)
+      earning: parseInt(row.sessions_count, 10) * tutorPrice
     }));
 
     return NextResponse.json(chartData, { status: 200 });
 
   } catch (error) {
-    console.error('Error fetching yearly sessions:', error);
+    console.error('Error fetching yearly earnings:', error);
     let errorMessage = 'An unknown error occurred';
     if (error instanceof Error) errorMessage = error.message;
-    return NextResponse.json({ message: 'Error fetching yearly sessions', error: errorMessage }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching yearly earnings', error: errorMessage }, { status: 500 });
   } finally {
     client.release();
   }

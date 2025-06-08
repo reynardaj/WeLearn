@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  LineChart, // Changed from BarChart
-  Line,      // Changed from Bar
+  LineChart,
+  Line,
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -18,11 +18,13 @@ interface ChartDataItem {
   sessions: number;
 }
 
-interface tutorIDs {
+interface MonthlyPerformanceProps  {
   tutorId: string;
+  startDate?: string;
+  endDate?: string;
 }
 
-const DailyPerformance: React.FC<tutorIDs> = ({ tutorId }) => {
+const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId, startDate, endDate }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,34 +36,41 @@ const DailyPerformance: React.FC<tutorIDs> = ({ tutorId }) => {
       return;
     }
 
-    const fetchDailyData = async () => {
+    const fetchMonthlyData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/tutor-dashboard/performances/days?tutorId=${tutorId}`);
+        let apiUrl = `/api/tutor-dashboard/performances/months?tutorId=${tutorId}`;
+        
+        // If a custom date range is selected, pass it to the API
+        if (startDate && endDate) {
+          apiUrl += `&startDate=${startDate}&endDate=${endDate}`;
+        }
+        
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || `Failed to fetch daily performance: ${response.statusText}`);
+          throw new Error(errorData.message || `Failed to fetch monthly performance: ${response.statusText}`);
         }
         const data: ChartDataItem[] = await response.json();
         
         setChartData(data);
 
       } catch (err) {
-        console.error("Fetch daily performance error:", err);
+        console.error("Fetch monthly performance error:", err);
         setError(err instanceof Error ? err.message : "An unknown error occurred.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchDailyData();
-  }, [tutorId]);
+    fetchMonthlyData();
+  }, [tutorId, startDate, endDate]); // Re-fetch when date range props change
 
   if (isLoading) {
     return (
       <div className="w-full h-[300px] flex justify-center items-center">
-        <TextLg>Loading Daily performance...</TextLg>
+        <TextLg>Loading monthly performance...</TextLg>
       </div>
     );
   }
@@ -75,22 +84,23 @@ const DailyPerformance: React.FC<tutorIDs> = ({ tutorId }) => {
     );
   }
 
-  if (chartData.length === 0 && !isLoading) { 
+  // Show this message if no custom range is selected AND the API returns no default data
+  if (chartData.length === 0 && !isLoading) {
     return (
       <div className="w-full h-[300px] flex justify-center items-center text-gray-500">
-        <TextLg>No session data available to display for this week.</TextLg>
+        <TextLg>No session data available for this period.</TextLg>
       </div>
     );
   }
 
-  const currentWeekDate = new Date();
-  const firstDayOfWeek = new Date(currentWeekDate.setDate(currentWeekDate.getDate() - currentWeekDate.getDay() + (currentWeekDate.getDay() === 0 ? -6 : 1) )); // Monday
-  const lastDayOfWeek = new Date(firstDayOfWeek);
-  lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+  // Dynamic title based on whether a custom date range is used
+  const chartTitle = (startDate && endDate) 
+    ? "Monthly Performance for Selected Range"
+    : `Monthly Performance for ${new Date().getFullYear()}`;
 
   return (
     <div className="w-full h-[100%]">
-      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">Daily Session Performance</h2>
+      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">{chartTitle}</h2>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={chartData}
@@ -113,15 +123,16 @@ const DailyPerformance: React.FC<tutorIDs> = ({ tutorId }) => {
             contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', borderColor: '#ccc' }}
             labelStyle={{ fontWeight: 'bold', color: '#333' }}
             itemStyle={{ color: '#1F65A6' }}
+            formatter={(value: number) => [`${value} sessions`, "Sessions"]}
           />
-          <Line // Changed from Bar
-            type="monotone" // For a smooth line, similar to your example image
+          <Line
+            type="monotone"
             dataKey="sessions" 
-            name="Sessions" // Name for the legend and tooltip
-            stroke="#1F65A6" // Line color
-            strokeWidth={2.5}  // Line thickness
-            dot={{ r: 5, stroke: '#1F65A6', strokeWidth: 1, fill: '#fff' }} // Style for points on the line
-            activeDot={{ r: 7, stroke: '#1F65A6', strokeWidth: 2, fill: '#fff' }} // Style for hovered points
+            name="Sessions"
+            stroke="#1F65A6"
+            strokeWidth={2.5}
+            dot={{ r: 5, stroke: '#1F65A6', strokeWidth: 1, fill: '#fff' }}
+            activeDot={{ r: 7, stroke: '#1F65A6', strokeWidth: 2, fill: '#fff' }}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -129,4 +140,4 @@ const DailyPerformance: React.FC<tutorIDs> = ({ tutorId }) => {
   );
 };
 
-export default DailyPerformance;
+export default MonthlyPerformance;

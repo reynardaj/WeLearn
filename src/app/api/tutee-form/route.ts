@@ -1,8 +1,6 @@
-// app/api/tutee-form/route.ts  (for App Router)  
 import { NextRequest, NextResponse } from 'next/server';  
 import { Pool } from 'pg';  
 
-// Create a connection pool  
 const pool = new Pool({  
   connectionString: process.env.DATABASE_URL,  
   ssl: {  
@@ -17,8 +15,7 @@ export async function POST(req: NextRequest) {
 
   try {   
     console.log('Received body:', JSON.stringify(body, null, 2));  
-
-    // Validate required fields  
+ 
     if (!body.education) {  
       return NextResponse.json({  
         message: 'Education is required',  
@@ -36,13 +33,11 @@ export async function POST(req: NextRequest) {
     
     const tuteeId = tuteeResult.rows[0].tuteeid;  
     console.log('Inserted TuteeForm with ID:', tuteeId);  
-
-    // More detailed error handling for each insertion  
+ 
     if (body.subjects && body.subjects.length > 0) {  
       console.log('Attempting to insert subjects:', body.subjects);  
       for (const subject of body.subjects) {  
-        try {  
-          // Verify subject exists or insert  
+        try {   
           const subjectResult = await client.query(  
             `INSERT INTO subjects (subjects, subjectsid)  
              VALUES ($1, gen_random_uuid())   
@@ -51,7 +46,6 @@ export async function POST(req: NextRequest) {
             [subject]  
           );  
     
-          // Find the subject's ID  
           const existingSubject = await client.query(  
             `SELECT subjectsid FROM subjects WHERE subjects = $1`,  
             [subject]  
@@ -63,8 +57,7 @@ export async function POST(req: NextRequest) {
             console.error(`Could not find SubjectsID for ${subject}`);  
             continue;  
           }  
-    
-          // Insert into tuteesubject  
+      
           await client.query(  
             `INSERT INTO tuteesubjects (subjectsid, tuteeid)  
              VALUES ($1, $2)`,  
@@ -79,12 +72,10 @@ export async function POST(req: NextRequest) {
       }  
     }    
     
-    // Insert Days (if any)  
     if (body.days && body.days.length > 0) {  
       console.log('Attempting to insert days:', body.days);  
       for (const day of body.days) {   
         try {  
-          // Ensure the day exists  
           const dayResult = await client.query(  
             `INSERT INTO days (days, daysid)  
              VALUES ($1, gen_random_uuid())  
@@ -93,7 +84,6 @@ export async function POST(req: NextRequest) {
             [day]  
           );  
     
-          // Get the DaysID  
           const existingDay = await client.query(  
             `SELECT daysid FROM days WHERE days = $1`,  
             [day]  
@@ -119,12 +109,10 @@ export async function POST(req: NextRequest) {
       }  
     }  
 
-    // Insert Times (if any)  
     if (body.times && body.times.length > 0) {  
       console.log('Attempting to insert times:', body.times);  
       for (const time of body.times) {   
         try {  
-          // Ensure the time exists  
           const timeResult = await client.query(  
             `INSERT INTO times (times, timesid)  
              VALUES ($1, gen_random_uuid())   
@@ -133,7 +121,6 @@ export async function POST(req: NextRequest) {
             [time]  
           );  
     
-          // Get the TimesID  
           const existingTime = await client.query(  
             `SELECT timesid FROM times WHERE times = $1`,  
             [time]  

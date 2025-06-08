@@ -19,6 +19,7 @@ const navItems: NavItem[] = [
   { name: "Finance", icon: "/assets/finance.png", path: "finance", fullPath: "/dashboard/tutor/finance" },
   { name: "Availability", icon: "/assets/availability.png", path: "availability", fullPath: "/dashboard/tutor/availability" },
   { name: "Messaging", icon: "/assets/messaging.png", path: "messaging", fullPath: "/dashboard/tutor/message" },
+  { name: "Pro", icon: "/assets/pro.png", path: "pro", fullPath: "/dashboard/tutor/pro" },
 ];
 
 const DashboardPath: React.FC = () => {

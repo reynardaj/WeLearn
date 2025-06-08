@@ -18,14 +18,18 @@ interface ChartDataItem {
   sessions: number;
 }
 
-interface MonthlyPerformanceProps {
+interface DailyPerformanceProps  {
   tutorId: string;
+  startDate: string;
+  endDate: string;
 }
 
-const YearlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
+const DailyPerformance: React.FC<DailyPerformanceProps > = ({ tutorId, startDate, endDate }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [effectiveStartDate, setEffectiveStartDate] = useState<string | undefined>(startDate);
+  const [effectiveEndDate, setEffectiveEndDate] = useState<string | undefined>(endDate);
 
   useEffect(() => {
     if (!tutorId) {
@@ -34,38 +38,49 @@ const YearlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
       return;
     }
 
-    const fetchMonthlyData = async () => {
+    const fetchDailyData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/tutor-dashboard/performances/years?tutorId=${tutorId}`);
+        let apiUrl = `/api/tutor-dashboard/performances/days?tutorId=${tutorId}`;
+        if (effectiveStartDate && effectiveEndDate) {
+         apiUrl += `&startDate=${effectiveStartDate}&endDate=${effectiveEndDate}`;
+        } else if (effectiveStartDate) {
+           apiUrl += `&startDate=${effectiveStartDate}`;
+        }
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || `Failed to fetch monthly performance: ${response.statusText}`);
+          throw new Error(errorData.message || `Failed to fetch daily performance: ${response.statusText}`);
         }
         const data: ChartDataItem[] = await response.json();
         
-        if (data.length === 0) {
-          setChartData([]);
-        } else {
-          setChartData(data);
-        }
+        setChartData(data);
 
       } catch (err) {
-        console.error("Fetch monthly performance error:", err);
+        console.error("Fetch daily performance error:", err);
         setError(err instanceof Error ? err.message : "An unknown error occurred.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchMonthlyData();
-  }, [tutorId]);
+    fetchDailyData();
+  }, [tutorId, effectiveStartDate, effectiveEndDate]); // Re-fetch if dates change
+
+  // Update effective dates when props change
+  useEffect(() => {
+    setEffectiveStartDate(startDate);
+  }, [startDate]);
+
+  useEffect(() => {
+    setEffectiveEndDate(endDate);
+  }, [endDate]);
 
   if (isLoading) {
     return (
       <div className="w-full h-[300px] flex justify-center items-center">
-        <TextLg>Loading yearly performance...</TextLg>
+        <TextLg>Loading Daily performance...</TextLg>
       </div>
     );
   }
@@ -73,25 +88,29 @@ const YearlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
   if (error) {
     return (
       <div className="w-full h-[300px] flex flex-col justify-center items-center text-red-500 p-4">
-        <TextLg>Error loading data:</TextLg>
         <TextMd>{error}</TextMd>
       </div>
     );
   }
 
-  if (chartData.length === 0) {
+  if (chartData.length === 0 && !isLoading) { 
     return (
       <div className="w-full h-[300px] flex justify-center items-center text-gray-500">
-        <TextLg>No session data available for this period.</TextLg>
+        <TextLg>No session data available to display for this week.</TextLg>
       </div>
     );
   }
 
+  const currentWeekDate = new Date();
+  const firstDayOfWeek = new Date(currentWeekDate.setDate(currentWeekDate.getDate() - currentWeekDate.getDay() + (currentWeekDate.getDay() === 0 ? -6 : 1) )); // Monday
+  const lastDayOfWeek = new Date(firstDayOfWeek);
+  lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+
   return (
     <div className="w-full h-[100%]">
-      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">Yearly Session Performance</h2>
+      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">Daily Session Performance</h2>
       <ResponsiveContainer width="100%" height="90%">
-        <LineChart // Changed from BarChart
+        <LineChart
           data={chartData}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
@@ -128,4 +147,4 @@ const YearlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
   );
 };
 
-export default YearlyPerformance;
+export default DailyPerformance;

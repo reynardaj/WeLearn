@@ -1,30 +1,33 @@
-// components/MonthlyPerformance.tsx
+// components/WeeklyPerformance.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { 
-  LineChart, // Changed from BarChart
-  Line,      // Changed from Bar
+  LineChart,
+  Line,
   XAxis, 
   YAxis, 
   CartesianGrid, 
-  Tooltip,
+  Tooltip, 
   ResponsiveContainer
 } from 'recharts';
 import { TextLg, TextMd } from "@/components/Text";
 
 interface ChartDataItem {
-  name: string;    // e.g., "Jan 2024"
+  name: string;
   sessions: number;
 }
 
-interface MonthlyPerformanceProps {
+// Corrected interface name
+interface WeeklyPerformanceProps  {
   tutorId: string;
+  startDate?: string;
+  endDate?: string;
 }
 
-const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
+const WeeklyPerformance: React.FC<WeeklyPerformanceProps> = ({ tutorId, startDate, endDate }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading true
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,38 +37,41 @@ const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
       return;
     }
 
-    const fetchMonthlyData = async () => {
+    const fetchWeeklyData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/tutor-dashboard/performances/months?tutorId=${tutorId}`);
+        let apiUrl = `/api/tutor-dashboard/performances/weeks?tutorId=${tutorId}`;
+        
+        // If start and end dates are provided, add them to the API query
+        if (startDate && endDate) {
+          apiUrl += `&startDate=${startDate}&endDate=${endDate}`;
+        }
+        
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || `Failed to fetch monthly performance: ${response.statusText}`);
+          throw new Error(errorData.message || `Failed to fetch weekly performance: ${response.statusText}`);
         }
         const data: ChartDataItem[] = await response.json();
         
-        if (data.length === 0) {
-          setChartData([]);
-        } else {
-          setChartData(data);
-        }
+        setChartData(data);
 
       } catch (err) {
-        console.error("Fetch monthly performance error:", err);
+        console.error("Fetch weekly performance error:", err);
         setError(err instanceof Error ? err.message : "An unknown error occurred.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchMonthlyData();
-  }, [tutorId]);
+    fetchWeeklyData();
+  }, [tutorId, startDate, endDate]); // Re-fetch when props change
 
   if (isLoading) {
     return (
       <div className="w-full h-[300px] flex justify-center items-center">
-        <TextLg>Loading monthly performance...</TextLg>
+        <TextLg>Loading Weekly performance...</TextLg>
       </div>
     );
   }
@@ -73,13 +79,14 @@ const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
   if (error) {
     return (
       <div className="w-full h-[300px] flex flex-col justify-center items-center text-red-500 p-4">
-        <TextLg>Error loading data:</TextLg>
+        {/* Simplified error display */}
+        <TextLg>Error loading data</TextLg>
         <TextMd>{error}</TextMd>
       </div>
     );
   }
 
-  if (chartData.length === 0) {
+  if (chartData.length === 0 && !isLoading) {
     return (
       <div className="w-full h-[300px] flex justify-center items-center text-gray-500">
         <TextLg>No session data available for this period.</TextLg>
@@ -87,11 +94,17 @@ const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
     );
   }
 
+  // Dynamic title based on whether a custom date range is used
+  const chartTitle = (startDate && endDate) 
+    ? "Weekly Performance for Selected Range"
+    : `Weekly Performance for ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`;
+
+
   return (
     <div className="w-full h-[100%]">
-      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">Monthly Session Performance</h2>
+      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">{chartTitle}</h2>
       <ResponsiveContainer width="100%" height="90%">
-        <LineChart // Changed from BarChart
+        <LineChart
           data={chartData}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
@@ -99,9 +112,9 @@ const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
             dataKey="name" 
             angle={-30}
             textAnchor="end" 
-            height={50}
+            height={60}
             interval={0} 
-            tick={{ fontSize: 12, fill: '#666' }} 
+            tick={{ fontSize: 10, fill: '#666' }}
           />
           <YAxis 
             allowDecimals={false} 
@@ -112,15 +125,17 @@ const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
             contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px', borderColor: '#ccc' }}
             labelStyle={{ fontWeight: 'bold', color: '#333' }}
             itemStyle={{ color: '#1F65A6' }}
+            formatter={(value: number) => [`${value} sessions`, "Sessions"]}
           />
-          <Line // Changed from Bar
-            type="monotone" // For a smooth line, similar to your example image
+          {/* <Legend />  <-- REMOVED as requested */ }
+          <Line
+            type="monotone"
             dataKey="sessions" 
-            name="Sessions" // Name for the legend and tooltip
-            stroke="#1F65A6" // Line color
-            strokeWidth={2.5}  // Line thickness
-            dot={{ r: 5, stroke: '#1F65A6', strokeWidth: 1, fill: '#fff' }} // Style for points on the line
-            activeDot={{ r: 7, stroke: '#1F65A6', strokeWidth: 2, fill: '#fff' }} // Style for hovered points
+            name="Sessions"
+            stroke="#1F65A6"
+            strokeWidth={2.5}
+            dot={{ r: 5, stroke: '#1F65A6', strokeWidth: 1, fill: '#fff' }}
+            activeDot={{ r: 7, stroke: '#1F65A6', strokeWidth: 2, fill: '#fff' }}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -128,4 +143,5 @@ const MonthlyPerformance: React.FC<MonthlyPerformanceProps> = ({ tutorId }) => {
   );
 };
 
-export default MonthlyPerformance;
+// Corrected the export to match the component name
+export default WeeklyPerformance;

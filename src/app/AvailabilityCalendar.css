@@ -1,0 +1,102 @@
+/* AvailabilityCalendar.css */
+
+/* Main calendar container */
+.availability-calendar {
+    width: 100%;
+    border: 1px solid #e5e7eb; /* Light border for the whole calendar */
+    border-radius: 0.75rem; /* rounded-xl */
+    font-family: inherit;
+    background-color: white;
+}
+
+/* Navigation bar (Month/Year + Arrows) */
+.availability-calendar .react-calendar__navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5em;
+}
+
+.availability-calendar .react-calendar__navigation button {
+    background: none;
+    border: none;
+    font-size: 1.25em;
+    cursor: pointer;
+    color: #4b5563; /* Gray-600 */
+    padding: 0.25rem;
+    border-radius: 9999px; /* rounded-full */
+}
+
+.availability-calendar .react-calendar__navigation button:hover {
+    background-color: #f3f4f6; /* gray-100 */
+}
+
+
+.availability-calendar .react-calendar__navigation__label {
+    font-weight: 600; /* semibold */
+    font-size: 1em;
+    color: #1f2937; /* gray-800 */
+}
+
+.availability-calendar .react-calendar__month-view__weekdays__weekday {
+    text-align: center;
+    font-weight: 500; /* medium */
+    font-size: 0.8em;
+    padding: 0.5em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+
+.availability-calendar .react-calendar__month-view__weekdays__weekday abbr {
+    text-decoration: none;
+}
+
+/* All Date Tiles */
+.availability-calendar .react-calendar__tile {
+    display: flex;
+    flex-direction: column;
+    /* **FIX 3: Center content horizontally and vertically** */
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Center text as well */
+    height: 120px;
+    padding: 6px;
+    background: none;
+    border: none; /* **FIX 3: Removed individual tile borders** */
+    border-radius: 0.5rem; /* Add some rounding for hover effects */
+    transition: background-color 0.2s ease-in-out;
+}
+.availability-calendar .react-calendar__tile:hover {
+    background-color: #f9fafb; /* Light gray on hover */
+}
+
+
+/* Today's date */
+.availability-calendar .react-calendar__tile--now {
+    background-color: #eff6ff; /* blue-50 */
+}
+.availability-calendar .react-calendar__tile--now:hover {
+    background-color: #dbeafe;
+}
+
+/* Neighboring month days */
+.availability-calendar .react-calendar__tile--neighboringMonth {
+    color: #d1d5db; /* gray-300 */
+}
+
+/* The custom content container inside a tile */
+.calendar-tile-content {
+    width: 100%;
+    margin-top: 4px;
+}
+
+/* The list of time slots inside a tile */
+.calendar-tile-content .time-slots {
+    font-size: 0.75rem; /* 12px */
+    color: #4b5563;   /* gray-600 */
+    line-height: 1.4;
+    margin-top: 4px;
+    max-height: 60px; /* Limit height and allow scroll if needed */
+    overflow-y: auto;
+}

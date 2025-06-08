@@ -11,22 +11,24 @@ interface PerformanceSectionProps {
 type PerformancePeriod = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
  
 const PerformanceSection: React.FC<PerformanceSectionProps> = ({ tutorId }) => {
-  const [activePeriod, setActivePeriod] = useState<PerformancePeriod>('Daily'); // Default to Daily
+  const [activePeriod, setActivePeriod] = useState<PerformancePeriod>('Daily');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
   const renderPerformanceContent = () => {
     switch (activePeriod) {
       case 'Daily':
-        return <DailyPerformance tutorId={tutorId} />;
+        return <DailyPerformance tutorId={tutorId} startDate={startDate} endDate={endDate} />;
       case 'Weekly':
-        return <WeeklyPerformance tutorId={tutorId} />;
+        return <WeeklyPerformance tutorId={tutorId} startDate={startDate} endDate={endDate}/>;
       case 'Monthly':
-        return <MonthlyPerformance tutorId={tutorId} />;
+        return <MonthlyPerformance tutorId={tutorId} startDate={startDate} endDate={endDate}/>;
       case 'Yearly':
-        return <YearlyPerformance tutorId={tutorId} />;
+        return <YearlyPerformance tutorId={tutorId} startDate={startDate} endDate={endDate}/>;
       default:
         // Should not happen, but good to have a fallback
         console.warn(`Unknown period: ${activePeriod}, defaulting to Daily.`);
-        return <DailyPerformance tutorId={tutorId} />;
+        return <DailyPerformance tutorId={tutorId} startDate={startDate} endDate={endDate}/>;
     }
   };
 
@@ -49,7 +51,11 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({ tutorId }) => {
             <div
               key={period}
               className={getPeriodButtonClasses(period)}
-              onClick={() => setActivePeriod(period)}
+              onClick={() => {
+                setActivePeriod(period);
+                setStartDate('');
+                setEndDate('');
+              }}
               role="button"
               tabIndex={0}
               onKeyPress={(e) => e.key === 'Enter' && setActivePeriod(period)}
@@ -60,11 +66,23 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({ tutorId }) => {
         </div>
         <div className="w-[45%] flex items-center justify-around text-base text-gray-600">
           <div className="flex items-center w-[40%]">
-            <input type="date" id="startDate" className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-[100%]"/>
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full text-sm"
+            />
           </div>
           <div className="">to</div>
           <div className="flex items-center w-[40%]">
-            <input type="date" id="endDate" className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-[100%]"/>
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-full text-sm"
+            />
           </div>
         </div>
       </div>
