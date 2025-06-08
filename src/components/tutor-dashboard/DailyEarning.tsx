@@ -1,7 +1,6 @@
-// components/tutor-dashboard-performance/DailyEarning.tsx
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   LineChart,
   Line,
@@ -20,7 +19,7 @@ interface ChartDataItem {
 
 interface EarningChartProps {
   tutorId: string;
-  startDate?: string;
+  startDate?: string; // These are passed from EarningOverview now
   endDate?: string;
 }
 
@@ -41,9 +40,8 @@ const DailyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDate
       setError(null);
       try {
         let apiUrl = `/api/tutor-dashboard/earning/days?tutorId=${tutorId}`;
-        
-        if (startDate && endDate && (new Date(endDate) >= new Date(startDate))) {
-            apiUrl += `&startDate=${startDate}&endDate=${endDate}`;
+        if (startDate && endDate) {
+          apiUrl += `&startDate=${startDate}&endDate=${endDate}`;
         }
         
         const response = await fetch(apiUrl);
@@ -63,6 +61,37 @@ const DailyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDate
 
     fetchDailyEarnings();
   }, [tutorId, startDate, endDate]);
+
+  // **FIX: Logic to calculate dynamic domain and ticks for the Y-axis**
+  const yAxisConfig = useMemo(() => {
+    if (chartData.length === 0) {
+        // Default config when there's no data
+        return {
+            domain: [0, 500000],
+            ticks: [0, 100000, 200000, 300000, 400000, 500000]
+        };
+    }
+
+    const maxEarning = Math.max(...chartData.map(item => item.earning), 0);
+    
+    // If max earning is 0, set a sensible default, e.g., 100k
+    if (maxEarning === 0) {
+        return {
+            domain: [0, 100000],
+            ticks: [0, 25000, 50000, 75000, 100000]
+        };
+    }
+
+    // Calculate a "nice" upper limit for the domain, e.g., rounding up to the next 50k or 100k
+    const topDomain = Math.ceil(maxEarning / 100000) * 100000;
+    
+    // Generate 5 tick intervals based on the new domain
+    const ticks = [0, topDomain * 0.25, topDomain * 0.5, topDomain * 0.75, topDomain];
+
+    return { domain: [0, topDomain], ticks };
+
+  }, [chartData]);
+
 
   if (isLoading) {
     return (
@@ -111,21 +140,21 @@ const DailyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDate
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          // FIX: Increased left margin to give Y-axis label more space
-          margin={{ top: 5, right: 30, left: 15, bottom: 5 }} 
+          margin={{ top: 5, right: 30, left: 35, bottom: 5 }} 
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
           <XAxis 
             dataKey="name" 
             angle={-30}
             textAnchor="end" 
-            height={70}
+            height={60}
             interval={0} 
             tick={{ fontSize: 11, fill: '#555' }} 
           />
           <YAxis 
-            domain={[0, 500000]}
-            ticks={[0, 100000, 200000, 300000, 400000, 500000]}
+            // **FIX**: Using dynamic domain and ticks
+            domain={yAxisConfig.domain}
+            ticks={yAxisConfig.ticks}
             tickFormatter={(value) => `Rp${value / 1000}k`}
             tick={{ fontSize: 14, fill: '#666' }}
           />

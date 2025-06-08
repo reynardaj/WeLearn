@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   LineChart,
   Line,
@@ -62,6 +62,20 @@ const WeeklyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
 
     fetchWeeklyEarnings();
   }, [tutorId, startDate, endDate]);
+  
+  const yAxisConfig = useMemo(() => {
+    if (chartData.length === 0) {
+        return { domain: [0, 1000000], ticks: [0, 250000, 500000, 750000, 1000000] };
+    }
+    const maxEarning = Math.max(...chartData.map(item => item.earning), 0);
+    if (maxEarning === 0) {
+        return { domain: [0, 100000], ticks: [0, 25000, 50000, 75000, 100000] };
+    }
+    const topDomain = Math.ceil(maxEarning / 250000) * 250000;
+    const ticks = [0, topDomain * 0.25, topDomain * 0.5, topDomain * 0.75, topDomain];
+    return { domain: [0, topDomain], ticks };
+  }, [chartData]);
+
 
   if (isLoading) {
     return (
@@ -100,7 +114,7 @@ const WeeklyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          margin={{ top: 5, right: 30, left: 15, bottom: 5 }} 
+          margin={{ top: 5, right: 30, left: 35, bottom: 5 }} 
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
           <XAxis 
@@ -112,9 +126,12 @@ const WeeklyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
             tick={{ fontSize: 10, fill: '#555' }} 
           />
           <YAxis 
-            domain={[0, 500000]} // Domain might need to be larger for weekly totals
-            ticks={[0, 100000, 200000, 300000, 400000, 500000]}
-            tickFormatter={(value) => `Rp ${value / 1000}k`}
+            domain={yAxisConfig.domain}
+            ticks={yAxisConfig.ticks}
+            tickFormatter={(value) => {
+              if (value >= 1000000) return `Rp${value / 1000000}M`;
+              return `Rp${value / 1000}k`;
+            }}
             tick={{ fontSize: 14, fill: '#666' }}
           />
           <Tooltip

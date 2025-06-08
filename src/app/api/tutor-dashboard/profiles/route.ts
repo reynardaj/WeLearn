@@ -1,7 +1,5 @@
-// app/api/tutor-dashboard/profile/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
-
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -10,6 +8,7 @@ const pool = new Pool({
   },
 });
 
+// --- GET Request (Updated to fetch profileimg) ---
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const tutorId = searchParams.get('tutorId');
@@ -21,18 +20,18 @@ export async function GET(req: NextRequest) {
   const client = await pool.connect();
 
   try {
-    // 1. Fetch main tutor details
     const tutorDetailsQuery = `
       SELECT 
-        tutorId, 
-        firstName, 
-        lastName, 
+        tutorid, 
+        firstname, 
+        lastname, 
         institution, 
         price, 
         description, 
-        experience 
+        experience,
+        profileimg -- **ADDED THIS LINE**
       FROM MsTutor 
-      WHERE tutorId = $1
+      WHERE tutorid = $1
     `;
     const tutorDetailsResult = await client.query(tutorDetailsQuery, [tutorId]);
 
@@ -41,7 +40,9 @@ export async function GET(req: NextRequest) {
     }
     const tutor = tutorDetailsResult.rows[0];
 
-    // 2. Fetch tutor's subjects
+    // ... (rest of your GET logic for subjects and availability remains the same) ...
+    
+    // Fetch tutor's subjects
     const tutorSubjectsQuery = `
       SELECT s.subjectsId, s.subjects 
       FROM Subjects s
@@ -51,25 +52,23 @@ export async function GET(req: NextRequest) {
     const tutorSubjectsResult = await client.query(tutorSubjectsQuery, [tutorId]);
     const subjects = tutorSubjectsResult.rows;
 
-    // 3. Fetch tutor's availability (only the day)
+    // Fetch tutor's availability
     const tutorAvailabilityQuery = `
       SELECT DISTINCT day
       FROM TutorAvailability 
       WHERE tutorId = $1
       ORDER BY day
     `;
-    // Note: 'day' is an INTEGER. You might want to map this to day names (e.g., 0 for Sunday, 1 for Monday) in the frontend.
     const tutorAvailabilityResult = await client.query(tutorAvailabilityQuery, [tutorId]);
-    // The result will be an array of objects like [{day: 0}, {day: 1}, ...]
     const availability = tutorAvailabilityResult.rows; 
 
     // Combine all data
     const profileData = {
       ...tutor,
       subjects,
-      availability, // This will now be an array of objects, each with a 'day' property
+      availability,
     };
-    console.log(NextResponse.json(profileData))
+    
     return NextResponse.json(profileData, { status: 200 });
 
   } catch (error) {
@@ -79,4 +78,46 @@ export async function GET(req: NextRequest) {
   } finally {
     client.release();
   }
+}
+
+// --- POST Request (New method to handle updates) ---
+export async function POST(req: NextRequest) {
+    const body = await req.json();
+    const { tutorId, firstname, lastname, description } = body;
+
+    if (!tutorId) {
+        return NextResponse.json({ message: 'tutorId is required' }, { status: 400 });
+    }
+
+    const client = await pool.connect();
+    try {
+        let query;
+        let queryParams;
+
+        // Determine if we are updating name, description, or both
+        if (firstname !== undefined && lastname !== undefined) {
+            query = `UPDATE mstutor SET firstname = $1, lastname = $2 WHERE tutorid = $3 RETURNING *;`;
+            queryParams = [firstname, lastname, tutorId];
+        } else if (description !== undefined) {
+            query = `UPDATE mstutor SET description = $1 WHERE tutorid = $2 RETURNING *;`;
+            queryParams = [description, tutorId];
+        } else {
+            return NextResponse.json({ message: 'No valid fields to update' }, { status: 400 });
+        }
+
+        const result = await client.query(query, queryParams);
+
+        if (result.rows.length === 0) {
+            return NextResponse.json({ message: 'Tutor not found' }, { status: 404 });
+        }
+
+        return NextResponse.json({ message: 'Profile updated successfully', updatedProfile: result.rows[0] }, { status: 200 });
+
+    } catch (error) {
+        console.error('Error updating tutor profile:', error);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        return NextResponse.json({ message: 'Error updating tutor profile', error: errorMessage }, { status: 500 });
+    } finally {
+        client.release();
+    }
 }

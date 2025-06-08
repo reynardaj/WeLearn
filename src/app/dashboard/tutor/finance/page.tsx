@@ -1,5 +1,4 @@
 "use client";
-// import { Heading2, Heading3 } from "@/components/Heading"; // Assuming these exist
 import { TextMd, TextLg } from "@/components/Text"; // Assuming this exists
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar"; // Assuming this exists
 import React, { useState, useEffect } from "react";

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   LineChart,
   Line,
@@ -62,6 +62,20 @@ const YearlyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
 
     fetchYearlyEarnings();
   }, [tutorId, startDate, endDate]);
+  
+  const yAxisConfig = useMemo(() => {
+    if (chartData.length === 0) {
+        return { domain: [0, 10000000], ticks: [0, 2500000, 5000000, 7500000, 10000000] };
+    }
+    const maxEarning = Math.max(...chartData.map(item => item.earning), 0);
+    if (maxEarning === 0) {
+        return { domain: [0, 1000000], ticks: [0, 250000, 500000, 750000, 1000000] };
+    }
+    const topDomain = Math.ceil(maxEarning / 5000000) * 5000000;
+    const ticks = [0, topDomain * 0.25, topDomain * 0.5, topDomain * 0.75, topDomain];
+    return { domain: [0, topDomain], ticks };
+  }, [chartData]);
+
 
   if (isLoading) {
     return (
@@ -90,7 +104,7 @@ const YearlyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
   
   const chartTitle = (startDate && endDate)
     ? `Yearly Earnings for Selected Range`
-    : `Yearly Earnings (Last 6 Years)`;
+    : `Yearly Earnings (Last 5 Years)`;
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -100,7 +114,7 @@ const YearlyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          margin={{ top: 5, right: 30, left: 25, bottom: 5 }} 
+          margin={{ top: 5, right: 30, left: 35, bottom: 5 }} 
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
           <XAxis 
@@ -108,13 +122,13 @@ const YearlyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
             angle={0}
             textAnchor="middle" 
             height={30}
-            interval={0} 
+            interval="preserveStartEnd" 
             tick={{ fontSize: 12, fill: '#666' }} 
           />
           <YAxis 
-            domain={[0, 1000000]} // Domain might need to be larger for monthly totals
-            ticks={[0, 200000, 400000, 600000, 800000, 1000000]}
-            tickFormatter={(value) => `Rp${value / 1000}k`}
+            domain={yAxisConfig.domain}
+            ticks={yAxisConfig.ticks}
+            tickFormatter={(value) => `Rp${value / 1000000}M`}
             tick={{ fontSize: 14, fill: '#666' }}
           />
           <Tooltip
