@@ -169,7 +169,7 @@ export default function PaymentSuccess() {
             </div>
           </div>
         </div>
-        <Button variant="primary" className="w-full ">
+        <Button variant="primary" className="w-full" onClick={() => window.open(bookingDetails.joinUrl, "_blank")}>
           Go to Session
         </Button>
       </div>
