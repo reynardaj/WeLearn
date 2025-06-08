@@ -10,6 +10,8 @@ interface BookingDetails {
   tutorName: string;
   dateTime: Date;
   status?: string;
+  joinUrl?: string;
+  startUrl?: string;
 }
 
 export default function PaymentSuccess() {
@@ -53,6 +55,42 @@ export default function PaymentSuccess() {
 
     fetchBookingDetails();
   }, [bookingId]);
+
+  // New effect: once bookingDetails is loaded and we don’t yet have URLs, generate them
+  useEffect(() => {
+  if (bookingDetails && bookingId && !bookingDetails.joinUrl) {
+    (async () => {
+      try {
+        const res = await fetch(`/api/booking/${bookingId}/zoom`, {
+          method: "POST",
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error(
+            "🚨 /zoom endpoint returned",
+            res.status,
+            text
+          );
+          throw new Error("Zoom link generation failed");
+        }
+
+        const data = await res.json();
+        setBookingDetails((b) =>
+          b
+            ? {
+                ...b,
+                joinUrl: data.join_url,
+                startUrl: data.start_url,
+              }
+            : b
+        );
+      } catch (err) {
+        console.error("Zoom link generation error:", err);
+      }
+    })();
+  }
+}, [bookingDetails, bookingId]);
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-US", {
