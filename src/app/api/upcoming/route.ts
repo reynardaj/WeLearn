@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     const client = await pool.connect();
 
     const res = await client.query(
-      `SELECT "BookingID", "SubjectBooked", "StartTime", "EndTime"
+      `SELECT "BookingID", "SubjectBooked", "StartTime", "EndTime", "Join_URL"
        FROM "booking"
        WHERE "tuteeID" = $1 AND "StartTime" >= NOW()
        ORDER BY "StartTime" ASC`,
@@ -34,7 +34,8 @@ export async function GET(req: NextRequest) {
           day: '2-digit', month: 'long', year: 'numeric'
         }),
         time: `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
-        subject: row.SubjectBooked
+        subject: row.SubjectBooked,
+        joinUrl: row.Join_URL
       };
     });
 

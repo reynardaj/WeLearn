@@ -1,34 +1,55 @@
 "use client";
 import { playfair } from '@/lib/fonts';
-import Button from '@mui/material/Button';
+import { Button } from "@/components/button";
 import { useEffect, useState } from 'react';
 import { Heading1, Heading2, Heading3, Heading4 } from '@/components/Heading';
-import { TextSm } from '@/components/Text';
+import { TextMd, TextSm } from '@/components/Text';
+import { useAuth } from '@clerk/nextjs';
 
 type Session = {
   id: string;
   date: string;
   time: string;
   subject: string;
+  joinUrl: string;
 };
 
 export default function UpcomingSession({ onCloseAction }: { onCloseAction: () => void }) {
+  const { userId } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-  fetch('/api/upcoming?tuteeID=b52d9970-d390-42f3-b01e-0a79e8ceb9f1')
-    .then(res => {
-      console.log("✅ API status:", res.status);
-      return res.json();  // may throw
-    })
-    .then(data => {
-      console.log("✅ Raw data from API:", data);
-      setSessions(data.sessions || []);
-    })
-    .catch(err => {
-      console.error("❌ Fetch or JSON parse error:", err);
-    });
-}, []);
+    useEffect(() => {
+    if (!userId) return; // clerk not ready yet
+
+    let cancelled = false;
+
+    async function load() {
+      try {
+        // 1) fetch the tuteeId from your Postgres lookup
+        const tRes = await fetch(`/api/users/tutee/${userId}`);
+        if (!tRes.ok) throw new Error("Couldn’t load tutee ID");
+        const { tuteeId } = await tRes.json();
+
+        // 2) fetch upcoming sessions with that tuteeId query param
+        const uRes = await fetch(`/api/upcoming?tuteeID=${tuteeId}`);
+        if (!uRes.ok) throw new Error("Couldn’t load upcoming sessions");
+        const { sessions } = await uRes.json();
+
+        if (!cancelled) setSessions(sessions || []);
+      } catch (err: any) {
+        console.error(err);
+        if (!cancelled) setError(err.message);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+
 
   const grouped = sessions.reduce((acc, session) => {
     acc[session.date] = acc[session.date] || [];
@@ -60,18 +81,13 @@ export default function UpcomingSession({ onCloseAction }: { onCloseAction: () =
                     <TextSm>{s.subject}</TextSm>
                   </div>
                   <div>
-                    <Button 
-                      variant="outlined"
-                      sx={{
-                        fontSize: "12px",
-                        color: "black",
-                        borderRadius: "8px",
-                        border: '1px solid #d7d7d9',
-                        padding: '3px',
-                      }}
+                    <button
+                      type={"button"}
+                      className={`w-auto h-5 px-4 py-3 rounded-[8px] border-1 inline-flex justify-center items-center gap-2.5 cursor-pointer`}
+                      onClick={() => window.open(s.joinUrl, "_blank")}
                     >
-                      Join
-                    </Button>
+                      <TextSm>Join</TextSm>
+                    </button>
                   </div>
                 </div>
               ))}
