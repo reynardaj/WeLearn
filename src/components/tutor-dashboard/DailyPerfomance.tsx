@@ -101,14 +101,23 @@ const DailyPerformance: React.FC<DailyPerformanceProps > = ({ tutorId, startDate
     );
   }
 
-  const currentWeekDate = new Date();
-  const firstDayOfWeek = new Date(currentWeekDate.setDate(currentWeekDate.getDate() - currentWeekDate.getDay() + (currentWeekDate.getDay() === 0 ? -6 : 1) )); // Monday
-  const lastDayOfWeek = new Date(firstDayOfWeek);
-  lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+  let chartTitle = "Daily Earnings";
+  const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+
+  if (startDate && endDate) {
+    chartTitle = `Daily Session: ${formatDate(new Date(startDate + 'T00:00:00'))} - ${formatDate(new Date(endDate + 'T00:00:00'))}`;
+  } else {
+    const currentWeekDate = new Date();
+    const firstDayOfWeek = new Date(new Date().setDate(currentWeekDate.getDate() - currentWeekDate.getDay() + (currentWeekDate.getDay() === 0 ? -6 : 1)));
+    const lastDayOfWeek = new Date(firstDayOfWeek);
+    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+    chartTitle = `Daily Session: ${formatDate(firstDayOfWeek)} - ${formatDate(lastDayOfWeek)}, ${firstDayOfWeek.getFullYear()}`;
+  }
 
   return (
     <div className="w-full h-[100%]">
-      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">Daily Session Performance</h2>
+      <TextLg className="text-xl font-semibold text-gray-700 mb-2 text-center">{chartTitle}</TextLg>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={chartData}

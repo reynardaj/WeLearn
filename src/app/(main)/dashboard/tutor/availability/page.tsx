@@ -2,7 +2,8 @@
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
 import React, { useState, useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
-import '../../../../AvailabilityCalendar.css'; 
+import '../../../../AvailabilityCalendar.css';
+import { Heading3 } from "@/components/Heading";
 
 // --- Types and Interfaces ---
 interface TimeSlot {
@@ -169,7 +170,7 @@ export default function AvailabilityPage() {
           </div>
           <div className="w-[85%] h-[85%] flex flex-col">
             <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
-              
+              Loading...
             </div>
           </div>
         </div>
@@ -197,8 +198,8 @@ export default function AvailabilityPage() {
             {viewMode === 'list' && (
               <div className="w-1/2 h-full flex flex-col transition-all duration-300">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold text-gray-800">Weekly Hours</h2>
-                  <button onClick={handleSave} disabled={isSaving} className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75">
+                  <Heading3 className="text-2xl font-bold text-gray-800">Weekly Hours</Heading3>
+                  <button onClick={handleSave} disabled={isSaving} className="px-4 py-2 bg-[#1F65A6] text-white font-semibold rounded-lg shadow-md">
                       {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
@@ -206,7 +207,7 @@ export default function AvailabilityPage() {
                   {availability.map((day) => (
                     <div key={day.day}>
                       <div className="flex items-center mb-2">
-                        <input type="checkbox" id={`day-${day.day}`} checked={day.isActive} onChange={() => handleDayToggle(day.day)} className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                        <input type="checkbox" id={`day-${day.day}`} checked={day.isActive} onChange={() => handleDayToggle(day.day)} className="h-5 w-5 rounded border-gray-300" />
                         <label htmlFor={`day-${day.day}`} className="ml-3 text-lg font-medium text-gray-700">{day.name}</label>
                       </div>
                       {day.isActive && (
@@ -219,7 +220,7 @@ export default function AvailabilityPage() {
                               <button onClick={() => removeSlot(day.day, slot.id)} className="text-red-500 hover:text-red-700 p-1"><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clipRule="evenodd" /></svg></button>
                             </div>
                           ))}
-                          <button onClick={() => addSlot(day.day)} className="text-sm text-indigo-600 hover:text-indigo-800 font-semibold mt-2">+ Add more</button>
+                          <button onClick={() => addSlot(day.day)} className="text-sm text-[#1F65A6] font-semibold mt-2">+ Add more</button>
                         </div>
                       )}
                     </div>

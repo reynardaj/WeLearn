@@ -83,7 +83,7 @@ const FeedbackSection: React.FC<FeedbackSectionProps> = ({ tutorId }) => {
     return (
       <div className="w-full h-auto p-4 text-gray-500">
         <TextLg>Rating Overview</TextLg>
-        <TextMd className="mt-2">No feedback available yet for this tutor.</TextMd>
+        <TextMd className="mt-2">No feedback / review so far.</TextMd>
       </div>
     );
   }
@@ -166,20 +166,6 @@ const FeedbackSection: React.FC<FeedbackSectionProps> = ({ tutorId }) => {
                 </div>
                 <TextSm className="text-gray-600 leading-relaxed">{feedback.comment}</TextSm>
               </div>
-              
-              // <div key={index} className='h-auto bg-gray-50 border-b border-gray-200 '>
-              //   <div className='h-auto flex py-2'>
-              //      <div className="flex items-center">
-              //        <TextMd className="font-semibold mr-3">
-              //          {feedback.tuteeFirstName} {feedback.tuteeLastName}
-              //        </TextMd>
-              //        <div className="text-yellow-400 text-sm">
-              //          {renderStars(feedback.rating)}
-              //        </div>
-              //      </div>
-              //   </div>
-              //   <TextSm className="h-auto leading-relaxed">{feedback.comment}</TextSm>
-              // </div>
             ))
           ) : (
             <TextMd className="text-gray-500">No recent feedback to display.</TextMd>

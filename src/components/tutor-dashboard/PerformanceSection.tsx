@@ -6,7 +6,7 @@ import MonthlyPerformance from './MonthlyPerformance';
 import YearlyPerformance from './YearlyPerformance';
 
 interface PerformanceSectionProps {
-  tutorId: string; // It's better to pass tutorId as a prop
+  tutorId: string;
 }
 type PerformancePeriod = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
  
@@ -33,19 +33,19 @@ const PerformanceSection: React.FC<PerformanceSectionProps> = ({ tutorId }) => {
   };
 
   const getPeriodButtonClasses = (period: PerformancePeriod): string => {
-    const baseClasses = "w-[30%] h-[80%] flex justify-center items-center rounded-2xl shadow-lg border-2 py-2 cursor-pointer hover:bg-gray-100 transition-colors text-sm sm:text-base";
+    const baseClasses = "w-[30%] h-[80%] flex justify-center items-center rounded-2xl shadow-lg border-2 py-2 cursor-pointer transition-colors text-sm sm:text-base";
     if (activePeriod === period) {
-      return `${baseClasses} bg-indigo-600 text-white border-indigo-700 hover:bg-indigo-700`; // Active period style
+      return `${baseClasses} bg-[#1F65A6] text-white hover:bg-[#1F65A6]`;
     }
-    return `${baseClasses} bg-white border-[#E5E5E5] text-gray-700`; // Inactive period style
+    return `${baseClasses} bg-white border-[#E5E5E5] text-gray-700`;
   };
 
   return (
-    <div className="w-full h-[100%]">
+    <div className="w-full h-[100%] overflow-y-auto no-scrollbar">
       <div className="h-auto flex items-center">
         <TextLg>Performance Review</TextLg>
       </div>
-      <div className="h-auto mt-3 mb-6 flex flex-row justify-between items-center">
+      <div className="h-auto mt-3 mb-6 flex flex-row justify-between items-center ">
         <div className="w-[45%] flex justify-between items-center space-x-2">
           {(['Daily', 'Weekly', 'Monthly', 'Yearly'] as PerformancePeriod[]).map((period) => (
             <div

@@ -33,11 +33,11 @@ const EarningOverview: React.FC<EarningProps> = ({ tutorId }) => {
   };
 
   const getPeriodButtonClasses = (period: PerformancePeriod): string => {
-    const baseClasses = "w-[30%] h-[80%] flex justify-center items-center rounded-2xl shadow-lg border-2 py-2 cursor-pointer hover:bg-gray-100 transition-colors text-sm sm:text-base";
+    const baseClasses = "w-[30%] h-[80%] flex justify-center items-center rounded-2xl shadow-lg border-2 py-2 cursor-pointer transition-colors text-sm sm:text-base";
     if (activePeriod === period) {
-      return `${baseClasses} bg-indigo-600 text-white border-indigo-700 hover:bg-indigo-700`;
+      return `${baseClasses} bg-[#1F65A6] text-white`;
     }
-    return `${baseClasses} bg-white border-[#E5E5E5] text-gray-700`;
+    return `${baseClasses} bg-white text-gray-700`;
   };
 
   return (
@@ -50,7 +50,6 @@ const EarningOverview: React.FC<EarningProps> = ({ tutorId }) => {
               className={getPeriodButtonClasses(period)}
               onClick={() => {
                 setActivePeriod(period);
-                // Reset dates when changing the period view
                 setStartDate('');
                 setEndDate('');
               }}
@@ -73,7 +72,7 @@ const EarningOverview: React.FC<EarningProps> = ({ tutorId }) => {
               id="startDate"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-[100%]"
+              className="p-2 border border-gray-300 rounded-md shadow-sm w-[100%]"
             />
           </div>
           <div className="">to</div>
@@ -83,7 +82,7 @@ const EarningOverview: React.FC<EarningProps> = ({ tutorId }) => {
               id="endDate"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-[100%]"
+              className="p-2 border border-gray-300 rounded-md shadow-sm w-[100%]"
             />
           </div>
         </div>

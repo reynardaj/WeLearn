@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { VscSend } from "react-icons/vsc";
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
-import { Heading1, Heading4 } from '@/components/Heading';
+import { Heading4 } from '@/components/Heading';
 import { TextSm } from '@/components/Text';
 
 // --- Helper Component for Contact List ---
@@ -17,12 +17,12 @@ interface ContactProps {
 const ContactItem: React.FC<ContactProps> = ({ name, lastMessage, selected, profileimg, onClick }) => (
   <div
     onClick={onClick}
-    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors duration-200 ${selected ? 'bg-indigo-100' : 'hover:bg-gray-100'}`}
+    className={`flex items-center gap-3 p-3 py-5 rounded-xl shadow-lg cursor-pointer transition-colors duration-200 ${selected ? 'bg-[#F0FAF9]' : 'hover:bg-[#F0FAF9]'}`}
   >
     <img
       src={profileimg}
       alt={name}
-      className='object-cover h-12 w-12 rounded-full border-2 border-white shadow-sm'
+      className='object-cover h-12 w-12 rounded-full border-2 border-white shadow-sm bg-white'
       onError={(e) => { e.currentTarget.src = 'https://placehold.co/100x100/EBF8F8/4A5568?text=??'; }}
     />
     <div className='flex-1 overflow-hidden'>
@@ -57,7 +57,6 @@ export default function MessagePage() {
   const [isLoading, setIsLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Hardcoded tutor ID. In a real app, get this from auth.
   const tutorID = '998083f8-869a-44e8-b2eb-798aa9900274';
 
   const scrollToBottom = () => {
@@ -66,6 +65,7 @@ export default function MessagePage() {
 
   useEffect(scrollToBottom, [messages]);
 
+  // Fetch contacts (tutees) for the tutor
   const fetchContacts = async () => {
     try {
       const res = await fetch(`/api/tutor-dashboard/conversations?tutorID=${tutorID}`);
@@ -75,9 +75,6 @@ export default function MessagePage() {
         new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
       );
       setContacts(data);
-      if (!activeConv && data.length > 0) {
-        setActiveConv(data[0].conversationId);
-      }
     } catch (err) {
       console.error('Failed fetching contacts', err);
     } finally {
@@ -85,12 +82,25 @@ export default function MessagePage() {
     }
   };
 
+  // Fetch contacts on load and set up polling
   useEffect(() => {
     fetchContacts();
     const interval = setInterval(fetchContacts, 5000);
     return () => clearInterval(interval);
   }, [tutorID]);
 
+  // **THE FIX IS HERE:** This useEffect now handles setting the
+  // initial active conversation. It only runs when the `contacts`
+  // array changes, and crucially, it only sets the state if `activeConv`
+  // is currently empty. It won't override a user's selection.
+  useEffect(() => {
+    if (!activeConv && contacts.length > 0) {
+      setActiveConv(contacts[0].conversationId);
+    }
+  }, [contacts, activeConv]);
+
+
+  // Fetch messages for the active conversation
   const fetchMessages = async () => {
     if (!activeConv) return;
     try {
@@ -102,6 +112,7 @@ export default function MessagePage() {
     }
   };
 
+  // Fetch messages when active conversation changes and set up polling
   useEffect(() => {
     if (activeConv) {
         fetchMessages();
@@ -110,11 +121,12 @@ export default function MessagePage() {
     }
   }, [activeConv]);
 
+  // Handle sending a message
   const handleSend = async () => {
     if (!draft.trim() || !activeConv) return;
     const optimisticMessage: Msg = {
       messageID: `temp-${Date.now()}`,
-      senderIsTutor: true, // Tutor is sending
+      senderIsTutor: true,
       content: draft.trim(),
       sentAt: new Date().toISOString(),
     };
@@ -129,7 +141,7 @@ export default function MessagePage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             conversationId: activeConv,
-            senderIsTutor: true, // Tutor is sending
+            senderIsTutor: true,
             content: currentDraft,
           }),
         });
@@ -158,10 +170,9 @@ export default function MessagePage() {
         <DashboardClick/>
       </div>
       <div className="w-[85%] h-[85%] flex flex-col">
-        <div className="w-[90%] h-full justify-center bg-white rounded-2xl shadow-lg flex p-4 gap-4">
+        <div className="w-[90%] h-full bg-white rounded-2xl shadow-lg  justify-center flex p-4 gap-4">
           
           <div className="w-full md:w-[35%] lg:w-[30%] h-full flex flex-col gap-4">
-            <Heading1>Messaging</Heading1>
             {isLoading ? (
                 <div className="text-center text-gray-500">Loading contacts...</div>
             ) : (
@@ -181,7 +192,7 @@ export default function MessagePage() {
           </div>
 
           <div className="w-full md:w-[65%] lg:w-[70%] h-full flex flex-col gap-3">
-            <div className="flex gap-3 items-center p-2 border-b border-gray-200">
+            <div className="flex gap-3 items-center p-2 border-b border-[gray-200]">
               {currentContact ? (
                 <>
                   <img
@@ -190,21 +201,21 @@ export default function MessagePage() {
                     className='object-cover h-12 w-12 rounded-full'
                     onError={(e) => { e.currentTarget.src = 'https://placehold.co/100x100/EBF8F8/4A5568?text=??'; }}
                   />
-                  <Heading4>{currentContact.name}</Heading4>
+                  <Heading4 >{currentContact.name}</Heading4>
                 </>
               ) : (
                 <Heading4>Select a conversation</Heading4>
               )}
             </div>
 
-            <div className="flex-1 bg-gray-50 rounded-2xl p-6 overflow-y-auto flex flex-col gap-4">
+            <div className="flex-1 bg-white rounded-2xl p-6 overflow-y-auto flex flex-col gap-4">
               {messages.map((m) => (
                 <div
                   key={m.messageID}
                   className={`max-w-[70%] w-fit p-3 rounded-xl mb-1 ${
                     m.senderIsTutor
-                      ? 'self-start bg-indigo-600 text-white' // Tutor's message is on the LEFT
-                      : 'self-end bg-gray-200 text-gray-800' // Tutee's message is on the RIGHT
+                      ? 'self-start bg-[#1F65A6] text-white'
+                      : 'self-end bg-gray-200 text-gray-800'
                   }`}
                 >
                   {m.content}
@@ -223,7 +234,7 @@ export default function MessagePage() {
                 disabled={!activeConv}
                 className="flex-1 bg-transparent outline-none border-none px-2 text-gray-800 disabled:bg-gray-100"
               />
-              <button onClick={handleSend} disabled={!activeConv || !draft.trim()} className="ml-2 cursor-pointer p-2 rounded-full bg-indigo-600 text-white disabled:bg-gray-300 transition-colors">
+              <button onClick={handleSend} disabled={!activeConv || !draft.trim()} className="ml-2 cursor-pointer p-2 rounded-full bg-[#1F65A6] text-white disabled:bg-gray-300 transition-colors">
                 <VscSend className="text-xl" />
               </button>
             </div>

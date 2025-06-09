@@ -215,3 +215,16 @@ h1, h2, h3, h4, h5 {
   justify-content: space-between;
   margin-bottom: 0.8em;
 }
+
+.react-calendar__tile--now {
+  background-color: #1F65A6 !important; /* Your blue color */
+  color: white !important; /* Make the number white so it's readable */
+  border-radius: 0.75rem;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #1F65A6 !important; /* Your blue color */
+  color: white !important; /* Make the number white on hover too */
+  border-radius: 0.75rem;
+}

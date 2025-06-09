@@ -104,13 +104,13 @@ const YearlyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDat
   
   const chartTitle = (startDate && endDate)
     ? `Yearly Earnings for Selected Range`
-    : `Yearly Earnings (Last 5 Years)`;
+    : `Yearly Earnings (Last 6 Years)`;
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center flex-shrink-0">
+      <TextLg className="text-xl font-semibold text-gray-700 mb-2 text-center flex-shrink-0">
         {chartTitle}
-      </h2>
+      </TextLg>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}

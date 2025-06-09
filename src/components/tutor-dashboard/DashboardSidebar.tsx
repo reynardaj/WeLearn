@@ -22,7 +22,7 @@ const navItems: NavItem[] = [
   { name: "Pro", icon: "/assets/pro.png", path: "pro", fullPath: "/dashboard/tutor/pro" },
 ];
 
-const DashboardPath: React.FC = () => {
+const DashboardSidebar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname(); // Get the current URL pathname
 
@@ -32,10 +32,7 @@ const DashboardPath: React.FC = () => {
   // Effect to update selectedItemName based on the current pathname
   useEffect(() => {
     const currentNavItem = navItems.find(item => {
-      // For the root dashboard path, we need an exact match.
-      // For other paths, we check if the pathname starts with the item's fullPath.
-      // This handles cases like /dashboard/tutor/profile/edit still highlighting "Profile".
-      if (item.path === "") { // Root dashboard case
+      if (item.path === "") {
         return pathname === item.fullPath;
       }
       return pathname.startsWith(item.fullPath);
@@ -89,4 +86,4 @@ const DashboardPath: React.FC = () => {
   );
 };
 
-export default DashboardPath;
+export default DashboardSidebar;

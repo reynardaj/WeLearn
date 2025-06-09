@@ -134,9 +134,9 @@ const DailyEarning: React.FC<EarningChartProps> = ({ tutorId, startDate, endDate
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center flex-shrink-0">
+      <TextLg className="text-xl font-semibold text-gray-700 mb-2 text-center flex-shrink-0">
         {chartTitle}
-      </h2>
+      </TextLg>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}

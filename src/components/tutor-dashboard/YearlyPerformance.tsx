@@ -97,7 +97,7 @@ const YearlyPerformance: React.FC<YearlyPerformanceProps> = ({ tutorId, startDat
 
   return (
     <div className="w-full h-[100%]">
-      <h2 className="text-xl font-semibold text-gray-700 mb-2 text-center">{chartTitle}</h2>
+      <TextLg className="text-xl font-semibold text-gray-700 mb-2 text-center">{chartTitle}</TextLg>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={chartData}

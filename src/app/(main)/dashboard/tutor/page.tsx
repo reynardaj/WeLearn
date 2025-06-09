@@ -1,7 +1,6 @@
-// Your Page (e.g., app/dashboard/page.tsx)
 "use client";
 import { Heading2 } from "@/components/Heading"; 
-import { TextMd, TextSm } from "@/components/Text"; 
+import { TextLg, TextMd, TextSm } from "@/components/Text"; 
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
 import Calendar from 'react-calendar';
 import React , {useState, useEffect} from "react";
@@ -23,7 +22,6 @@ interface SelectedDaySession {
   tuteeName: string;
 }
 
-// TIMEZONE FIX: This helper formats a date into YYYY-MM-DD without timezone conversion
 const toYYYYMMDD = (date: Date): string => {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -31,23 +29,20 @@ const toYYYYMMDD = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-export default function Register() { // Consider renaming if this is a dashboard page
+export default function TutorDashboard() {
   const tutorId = "09171b87-6212-4f26-9408-627d6ba00969";
 
   const [summaryStats, setSummaryStats] = useState<SummaryStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
 
-  // State for the dynamic session list
   const [selectedDaySessions, setSelectedDaySessions] = useState<SelectedDaySession[]>([]);
   const [isLoadingSelectedDay, setIsLoadingSelectedDay] = useState(false); // Only loads on click
   const [selectedDayError, setSelectedDayError] = useState<string | null>(null);
   
-  // State for calendar view and markers
   const [activeCalendarViewDate, setActiveCalendarViewDate] = useState<Date>(new Date());
   const [sessionMarkerDates, setSessionMarkerDates] = useState<string[]>([]);
   
-  // Effect for summary stats
   useEffect(() => {
     if (!tutorId) {
       setIsLoadingStats(false);
@@ -71,7 +66,6 @@ export default function Register() { // Consider renaming if this is a dashboard
     fetchSummaryStats();
   }, [tutorId]);
 
-  // Effect for fetching calendar session markers when the view (month/year) changes
   useEffect(() => {
     if (!tutorId || !activeCalendarViewDate) return;
 
@@ -91,9 +85,8 @@ export default function Register() { // Consider renaming if this is a dashboard
     fetchCalendarMarkers();
   }, [tutorId, activeCalendarViewDate]);
 
-  // Handler for when a user clicks a date on the calendar
   const handleDateClick = async (date: Date) => {
-    setSelectedDaySessions([]); // Clear previous sessions
+    setSelectedDaySessions([]);
     setIsLoadingSelectedDay(true);
     setSelectedDayError(null);
     const dateString = toYYYYMMDD(date);
@@ -119,30 +112,29 @@ export default function Register() { // Consider renaming if this is a dashboard
         <DashboardClick/>
       </div>
       <div className="w-[60%] h-[85%] flex flex-col">
-        {/* --- REVERTED TO YOUR ORIGINAL STRUCTURE AND CLASSES --- */}
-        <div className="w-[100%] h-[100%] bg-white rounded-2xl shadow-lg flex flex-col items-center justify-center overflow-y-auto no-scrollbar">
+        <div className="w-[100%] h-[100%] bg-white rounded-2xl shadow-lg flex flex-col items-center justify-center">
             <div className="w-[90%] h-auto flex justify-center items-center">
               <div className="w-[25%] h-[100%] flex flex-col justify-center items-center border-r-2 border-[#B8B8B8]">
-                <div>Total Sessions</div>
+                <TextMd>Total Sessions</TextMd>
                 <div>
                   {isLoadingStats ? "..." : statsError ? "N/A" : summaryStats?.totalSessions ?? '0'}
                 </div>
               </div>
               <div className="w-[25%] h-[100%] flex flex-col justify-center items-center border-r-2 border-[#B8B8B8]">
-                <div>Total Earning</div>
+                <TextMd>Total Earning</TextMd>
                 <div>
                   {isLoadingStats ? "..." : statsError ? "N/A" : `Rp ${summaryStats?.totalEarning.toLocaleString() ?? '0'}`}
                 </div>
               </div>
               <div className="w-[25%] h-[100%] flex flex-col justify-center items-center border-r-2 border-[#B8B8B8]">
-                <div>Average Rating</div>
+                <TextMd>Average Rating</TextMd>
                 <div>
                   {isLoadingStats ? "..." : statsError ? "N/A" : summaryStats?.averageRating.toFixed(1) ?? '0.0'}
                   <span>/5</span>
                 </div>
               </div>
               <div className="w-[25%] h-[100%] flex flex-col justify-center items-center">
-                <div>Unique Students</div>
+                <TextMd>Unique Students</TextMd>
                 <div>
                   {isLoadingStats ? "..." : statsError ? "N/A" : summaryStats?.uniqueStudents ?? '0'}
                 </div>
@@ -160,7 +152,6 @@ export default function Register() { // Consider renaming if this is a dashboard
         </div>
       </div>
       <div className="w-[25%] h-[85%] flex flex-col items-center">
-        {/* --- REVERTED TO YOUR ORIGINAL STRUCTURE AND CLASSES --- */}
         <div className="w-[90%] h-[100%] bg-white rounded-2xl shadow-lg flex flex-col items-center justify-evenly">
           <div className="w-[90%] h-auto flex items-center justify-center">
             <Calendar
@@ -172,7 +163,7 @@ export default function Register() { // Consider renaming if this is a dashboard
               className="w-[90%] border-none react-calendar-override"
               prev2Label={null}
               next2Label={null}
-              navigationLabel={({ label }) => ( <div className="flex items-center justify-center font-semibold">{label}</div> )}
+              navigationLabel={({ label }) => ( <TextLg className="flex items-center justify-center font-semibold">{label}</TextLg> )}
               prevLabel={ <div className="text-gray-600 flex items-center justify-center">←</div> }
               nextLabel={ <div className="text-gray-600 flex items-center justify-center">→</div> }
               onActiveStartDateChange={({ activeStartDate }) => {
@@ -190,11 +181,10 @@ export default function Register() { // Consider renaming if this is a dashboard
             />
           </div>
           <div className="w-[90%] h-[45%]">
-            <div className="h-[10%] pb-2">
+            <TextMd className="h-[10%] pb-2">
               Upcoming
-            </div>
+            </TextMd>
             <div className="h-[90%] w-[100%] overflow-y-auto no-scrollbar">
-              {/* --- DYNAMIC SESSION LIST LOGIC --- */}
               {isLoadingSelectedDay ? (
                 <div className="p-3 text-center text-gray-500">Loading sessions...</div>
               ) : selectedDayError ? (
