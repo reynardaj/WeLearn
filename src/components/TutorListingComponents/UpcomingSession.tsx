@@ -19,19 +19,17 @@ export default function UpcomingSession({ onCloseAction }: { onCloseAction: () =
   const [sessions, setSessions] = useState<Session[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-    if (!userId) return; // clerk not ready yet
+  useEffect(() => {
+    if (!userId) return;
 
     let cancelled = false;
 
     async function load() {
       try {
-        // 1) fetch the tuteeId from your Postgres lookup
         const tRes = await fetch(`/api/users/tutee/${userId}`);
         if (!tRes.ok) throw new Error("Couldn’t load tutee ID");
         const { tuteeId } = await tRes.json();
 
-        // 2) fetch upcoming sessions with that tuteeId query param
         const uRes = await fetch(`/api/upcoming?tuteeID=${tuteeId}`);
         if (!uRes.ok) throw new Error("Couldn’t load upcoming sessions");
         const { sessions } = await uRes.json();
