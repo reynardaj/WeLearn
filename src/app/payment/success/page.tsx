@@ -3,13 +3,15 @@ import { Button } from "@/components/button";
 import { TextMd, TextSm } from "@/components/Text";
 import { Heading3, Heading4 } from "@/components/Heading";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface BookingDetails {
   className: string;
   tutorName: string;
   dateTime: Date;
   status?: string;
+  joinUrl?: string;
+  startUrl?: string;
 }
 
 export default function PaymentSuccess() {
@@ -20,6 +22,8 @@ export default function PaymentSuccess() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isGeneratingLink, setIsGeneratingLink] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
@@ -53,6 +57,51 @@ export default function PaymentSuccess() {
 
     fetchBookingDetails();
   }, [bookingId]);
+
+  // New effect: once bookingDetails is loaded and we don’t yet have URLs, generate them
+  useEffect(() => {
+  if (bookingDetails && bookingId && !bookingDetails.joinUrl) {
+    setIsGeneratingLink(true);
+    (async () => {
+      try {
+        const res = await fetch(`/api/booking/${bookingId}/zoom`, {
+          method: "POST",
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error(
+            "🚨 /zoom endpoint returned",
+            res.status,
+            text
+          );
+          throw new Error("Zoom link generation failed");
+        }
+
+        const data = await res.json();
+        setBookingDetails((b) =>
+          b
+            ? {
+                ...b,
+                joinUrl: data.join_url,
+                startUrl: data.start_url,
+              }
+            : b
+        );
+      } catch (err) {
+        console.error("Zoom link generation error:", err);
+      } finally {
+        setIsGeneratingLink(false);
+      }
+    })();
+  }
+}, [bookingDetails, bookingId]);
+
+const handleJoin = () => {
+    if (!bookingDetails?.joinUrl) return;
+    window.open(bookingDetails.joinUrl, "_blank");
+    router.push("/tutor-listing"); 
+  };
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("en-US", {
@@ -131,8 +180,13 @@ export default function PaymentSuccess() {
             </div>
           </div>
         </div>
-        <Button variant="primary" className="w-full ">
-          Go to Session
+        <Button 
+          variant="primary" 
+          className="w-full" 
+          onClick={handleJoin}
+          disabled={isGeneratingLink}
+        >
+          {isGeneratingLink ? "Generating link..." : "Go To Session"}
         </Button>
       </div>
     </div>
