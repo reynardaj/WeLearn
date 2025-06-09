@@ -20,11 +20,12 @@ interface Props {
   university: string;
   availability: AvailabilitySlot[];
   rating: number;
+  isPro: boolean;
   profileImage: string;
   onBook: (tutorID: string) => void;
 }
 
-export default function TutorList({ tutorID, name, subjects, price, university, availability, rating, profileImage, onBook }: Props) {
+export default function TutorList({ tutorID, name, subjects, price, university, availability, rating, isPro, profileImage, onBook }: Props) {
   const router = useRouter(); 
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -53,7 +54,19 @@ export default function TutorList({ tutorID, name, subjects, price, university, 
 
       {/* Tutor Information */}
       <div className='flex-1 flex flex-col w-full border-b-2 border-gray-300 pb-4'>
-        <Heading3>{name}</Heading3>
+        <div className='flex gap-2 items-center'>
+          <Heading3>
+            {name}
+          </Heading3>
+          { isPro && (
+            <div className='bg-[#F0FAF9] px-2 py-1 rounded-full border-2 border-[#B8B8B8]'>
+              <TextSm>
+                Pro Tutor
+              </TextSm>
+            </div>
+          )}
+          
+        </div>
         <div onClick={goToProfile} className='flex flex-col cursor-pointer'>
             <TextMd>{subjects.join(', ')}</TextMd>
             <TextMd>{price.toLocaleString('id-ID')} / hour</TextMd>
