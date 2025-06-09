@@ -256,7 +256,7 @@ export default function Page() {
         <div className='flex flex-col gap-5 bg-white h-[90%] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
           <TextMd>{filteredTutors.length} Tutors Match Your Needs</TextMd>
           <div className='flex flex-col gap-5'>
-            {tutors.map(tutor => (
+            {filteredTutors.map(tutor => (
               <TutorList
                 profileImage={tutor.profileimg} 
                 key={tutor.tutorid}
