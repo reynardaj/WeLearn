@@ -166,13 +166,7 @@ export default function TuteeForm3() {
                     {time}  
                   </div>  
                 ))}  
-              </div>   
-              <div   
-                onClick={handleSkip}   
-                className="w-[80%] bg-[#F4B660] rounded-xl p-3 flex justify-center items-center cursor-pointer"  
-              >  
-                <TextMd>Skip question</TextMd>  
-              </div>  
+              </div> 
           </div>  
           <div className="flex justify-center sm:justify-end items-center mt-4 px-6">  
             <div   
