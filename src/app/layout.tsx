@@ -17,7 +17,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className="antialiased flex items-center justify-center min-h-screen">
-          <main>
+          <main className="w-full">
             <Providers>
               <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
             </Providers>
