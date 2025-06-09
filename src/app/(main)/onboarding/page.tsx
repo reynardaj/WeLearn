@@ -3,6 +3,8 @@ import * as React from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { completeOnboarding } from "./_actions";
+import { Heading3 } from "@/components/Heading";
+import { TextMd } from "@/components/Text";
 
 export default function RoleSelector() {
   const [error, setError] = React.useState("");
@@ -32,9 +34,7 @@ export default function RoleSelector() {
       if (onboardingRes?.message) {
         console.log("Onboarding complete, reloading user and redirecting...");
         await user?.reload();
-        router.push(
-          role === "mentor" ? "/tutor-form" : "/tutee-form"
-        );
+        router.push(role === "mentor" ? "/tutor-form" : "/tutee-form");
       }
 
       if (onboardingRes?.error) {
@@ -56,21 +56,19 @@ export default function RoleSelector() {
         >
           &times;
         </button>
-        <h2 className="text-3xl font-semibold text-center mb-8">
-          Select your role
-        </h2>
+        <Heading3 className="text-center mb-4">Select your role</Heading3>
         <div className="space-y-6">
           <button
-            className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-white border hover:shadow-lg text-blue-700 text-lg font-semibold"
+            className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-white border hover:shadow-lg text-lg font-semibold"
             onClick={() => handleRoleSelect("mentor")}
           >
-            🎓 Tutor
+            🎓 <TextMd>Tutor</TextMd>
           </button>
           <button
-            className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-white border hover:shadow-lg text-blue-700 text-lg font-semibold"
+            className="flex items-center justify-center gap-3 w-full px-6 py-4 rounded-xl bg-white border hover:shadow-lg text-lg font-semibold"
             onClick={() => handleRoleSelect("mentee")}
           >
-            👤 Tutee
+            👤 <TextMd>Tutee</TextMd>
           </button>
         </div>
         {error && (

@@ -50,7 +50,6 @@ export default function ClientLayoutWrapper({
   return (
     <main>
       <SignedOut>
-        <SignInButton />
         {children}
       </SignedOut>
 

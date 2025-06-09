@@ -63,16 +63,16 @@ export default function LandingPage() {
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <Button
             variant="primary"
-            onClick={() => (window.location.href = "/sign-up")}
+            onClick={() => (window.location.href = "/sign-in")}
           >
-            Sign Up
+            Sign In
           </Button>
           <TextMd className="text-text">or</TextMd>
           <Button
             variant="primary"
-            onClick={() => (window.location.href = "/sign-in")}
+            onClick={() => (window.location.href = "/sign-up")}
           >
-            Sign In
+            Sign Up
           </Button>
         </div>
       </section>
@@ -243,16 +243,16 @@ export default function LandingPage() {
         <div className="flex flex-wrap justify-center items-center gap-4">
           <Button
             variant="secondary"
-            onClick={() => (window.location.href = "/sign-up")}
+            onClick={() => (window.location.href = "/sign-in")}
           >
-            Sign Up
+            Sign In
           </Button>
           <span className="text-white">or</span>
           <Button
             variant="secondary"
-            onClick={() => (window.location.href = "/sign-in")}
+            onClick={() => (window.location.href = "/sign-up")}
           >
-            Sign In
+            Sign Up
           </Button>
         </div>
       </section>
