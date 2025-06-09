@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     const res = await client.query(
       `SELECT "BookingID", "SubjectBooked", "StartTime", "EndTime", "Join_URL"
        FROM "booking"
-       WHERE "tuteeID" = $1 AND DATE("StartTime") = CURRENT_DATE
+       WHERE "tuteeID" = $1 AND "EndTime" >= NOW()
        ORDER BY "StartTime" ASC`,
       [tuteeID]
     );
