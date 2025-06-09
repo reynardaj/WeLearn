@@ -48,7 +48,7 @@ export default function page() {
       .then((data) => setTutor(data));
   }, [tutorID]);
 
-  if (!tutor) return <div>Loading...</div>;
+  if (!tutor) return <div className='justfify-center items-center'>Loading...</div>;
 
   const ratingCounts = [0, 0, 0, 0, 0];
 

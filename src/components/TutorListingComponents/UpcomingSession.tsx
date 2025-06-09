@@ -18,6 +18,7 @@ export default function UpcomingSession({ onCloseAction }: { onCloseAction: () =
   const { userId } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -25,6 +26,7 @@ export default function UpcomingSession({ onCloseAction }: { onCloseAction: () =
     let cancelled = false;
 
     async function load() {
+      setLoading(true);
       try {
         const tRes = await fetch(`/api/users/tutee/${userId}`);
         if (!tRes.ok) throw new Error("Couldn’t load tutee ID");
@@ -39,6 +41,7 @@ export default function UpcomingSession({ onCloseAction }: { onCloseAction: () =
         console.error(err);
         if (!cancelled) setError(err.message);
       }
+      setLoading(false);
     }
 
     load();
@@ -62,36 +65,43 @@ export default function UpcomingSession({ onCloseAction }: { onCloseAction: () =
           &times;
         </button>
         <Heading4>Upcoming</Heading4>
-
-        {Object.keys(grouped).length === 0 ? (
-          <TextSm>No upcoming sessions.</TextSm>
-        ) : (
-          Object.entries(grouped).map(([date, items]) => (
-            <div key={date} className="mb-4">
-              <TextSm>{date}</TextSm>
-              <hr className="mb-2 border-gray-300" />
-              {items.map((s, i) => (
-                <div key={i} className="flex items-start justify-between mb-3 text-sm gap-4">
-                  <div className="w-[80px] text-left whitespace-nowrap">
-                    <TextSm>{s.time}</TextSm>
+        {
+          loading ? (
+            <div>Loading...</div>
+          ) : (
+            <>
+              {Object.keys(grouped).length === 0 ? (
+                <TextSm>No upcoming sessions.</TextSm>
+              ) : (
+                Object.entries(grouped).map(([date, items]) => (
+                  <div key={date} className="mb-4">
+                    <TextSm>{date}</TextSm>
+                    <hr className="mb-2 border-gray-300" />
+                    {items.map((s, i) => (
+                      <div key={i} className="flex items-start justify-between mb-3 text-sm gap-4">
+                        <div className="w-[80px] text-left whitespace-nowrap">
+                          <TextSm>{s.time}</TextSm>
+                        </div>
+                        <div className="flex-1 text-[#5C5C5C] text-center break-words">
+                          <TextSm>{s.subject}</TextSm>
+                        </div>
+                        <div>
+                          <button
+                            type={"button"}
+                            className={`w-auto h-5 px-4 py-3 rounded-[8px] border-1 inline-flex justify-center items-center gap-2.5 cursor-pointer`}
+                            onClick={() => window.open(s.joinUrl, "_blank")}
+                          >
+                            <TextSm>Join</TextSm>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex-1 text-[#5C5C5C] text-center break-words">
-                    <TextSm>{s.subject}</TextSm>
-                  </div>
-                  <div>
-                    <button
-                      type={"button"}
-                      className={`w-auto h-5 px-4 py-3 rounded-[8px] border-1 inline-flex justify-center items-center gap-2.5 cursor-pointer`}
-                      onClick={() => window.open(s.joinUrl, "_blank")}
-                    >
-                      <TextSm>Join</TextSm>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))
-        )}
+                ))
+              )}
+            </>
+          )
+        }
       </div>
     </div>
   );

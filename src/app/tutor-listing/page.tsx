@@ -44,10 +44,13 @@ export default function Page() {
   const { userId } = useAuth();
   const [tuteeID, setTuteeID] = useState<string | null>(null);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (!userId) return;
 
     async function fetchTutee() {
+      setLoading(true);
       try {
         const tRes = await fetch(`/api/users/tutee/${userId}`);
         if (!tRes.ok) throw new Error("Couldn't load tutee ID");
@@ -55,6 +58,8 @@ export default function Page() {
         setTuteeID(tuteeId);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -65,6 +70,7 @@ export default function Page() {
     if (!tuteeID) return;
 
     async function fetchTutors() {
+      setLoading(true);
       try {
         const res = await fetch(`/api/tutor-listing?tuteeID=${tuteeID}`);
         if (!res.ok) throw new Error("Couldn't load tutors");
@@ -72,6 +78,8 @@ export default function Page() {
         setTutors(tutors || []);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -254,36 +262,44 @@ export default function Page() {
         </div>
 
         <div className='flex flex-col gap-5 bg-white h-[90%] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
-          <TextMd>{filteredTutors.length} Tutors Match Your Needs</TextMd>
-          <div className='flex flex-col gap-5'>
-            {filteredTutors.map(tutor => (
-              <TutorList
-                profileImage={tutor.profileimg} 
-                key={tutor.tutorid}
-                tutorID={tutor.tutorid}
-                name={`${tutor.firstname} ${tutor.lastname}`}
-                subjects={tutor.subjects || []}
-                price={tutor.price}
-                availability={tutor.availability || []}
-                university={tutor.institution}
-                rating={tutor.rating || 0}
-                isPro={tutor.isPro}
-                onBook={(id) => {
-                  setSelectedTutorID(id);
-                  setShowModal(true);
-                }}
-              />
-            ))}
-          </div>
-          {showModal && selectedTutorID && (
-            <BookingModal
-              tutorID={selectedTutorID}
-              onClose={() => {
-                setShowModal(false);
-                setSelectedTutorID(null);
-              }}
-            />
-          )}
+          {
+            loading ? (
+              <TextMd>Loading...</TextMd>
+            ) : (
+              <>
+                <TextMd>{filteredTutors.length} Tutors Match Your Needs</TextMd>
+                <div className='flex flex-col gap-5'>
+                  {filteredTutors.map(tutor => (
+                    <TutorList
+                      profileImage={tutor.profileimg} 
+                      key={tutor.tutorid}
+                      tutorID={tutor.tutorid}
+                      name={`${tutor.firstname} ${tutor.lastname}`}
+                      subjects={tutor.subjects || []}
+                      price={tutor.price}
+                      availability={tutor.availability || []}
+                      university={tutor.institution}
+                      rating={tutor.rating || 0}
+                      isPro={tutor.isPro}
+                      onBook={(id) => {
+                        setSelectedTutorID(id);
+                        setShowModal(true);
+                      }}
+                    />
+                  ))}
+                </div>
+                {showModal && selectedTutorID && (
+                  <BookingModal
+                    tutorID={selectedTutorID}
+                    onClose={() => {
+                      setShowModal(false);
+                      setSelectedTutorID(null);
+                    }}
+                  />
+                )}
+              </>
+            )
+          }
         </div>
       </div>
     </div>
