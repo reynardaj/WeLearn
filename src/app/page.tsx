@@ -32,15 +32,13 @@ export default function LandingPage() {
           <Heading4>WeLearn</Heading4>
         </div>
         <div className="hidden md:flex space-x-2 items-center">
-          <Button variant="ghost">Become a tutor</Button>
-          <div className="border-l border-gray-300 h-6" />
-          <Button variant="ghost">Find tutors</Button>
+          <Button variant="ghost" onClick={() => (window.location.href = "/sign-in")}>Sign In</Button>
           <Button
             variant="primary"
             className="rounded-md"
-            onClick={() => (window.location.href = "/sign-in")}
+            onClick={() => (window.location.href = "/sign-up")}
           >
-            Sign In
+            Sign Up
           </Button>
         </div>
       </div>

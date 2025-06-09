@@ -4,7 +4,8 @@ import { Heading2 } from "@/components/Heading";
 import { TextMd, TextSm } from "@/components/Text"; 
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
 import Calendar from 'react-calendar';
-import React , {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
 import 'react-calendar/dist/Calendar.css';
 import AnalyticsTabs from '@/components/tutor-dashboard/AnalyticTab';
 
@@ -31,21 +32,97 @@ const toYYYYMMDD = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-export default function Register() { // Consider renaming if this is a dashboard page
-  const tutorId = "09171b87-6212-4f26-9408-627d6ba00969";
+// function useTutorData(userId: string | null) {
+//   const [tutorId, setTutorId] = useState<string | null>(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
 
+//   useEffect(() => {
+//     if (!userId) {
+//       setError("User not authenticated");
+//       setIsLoading(false);
+//       return;
+//     }
+
+//     const fetchTutorId = async () => {
+//       try {
+//         const response = await fetch(`/api/users/tutor/${userId}`);
+//         if (!response.ok) {
+//           throw new Error('Failed to fetch tutor ID');
+//         }
+//         const data = await response.json();
+//         setTutorId(data.tutorId);
+//       } catch (err) {
+//         console.error('Error fetching tutor ID:', err);
+//         setError('Failed to load tutor data');
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchTutorId();
+//   }, [userId]);
+
+//   return { tutorId, isLoading, error };
+// }
+
+export default function Register() {
+  // Authentication
+  // const { userId } = useAuth();
+  
+  // // Tutor data
+  // const { tutorId, isLoading, error } = useTutorData(userId);
+  
+  // Stats state
   const [summaryStats, setSummaryStats] = useState<SummaryStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
-
-  // State for the dynamic session list
+  
+  // Session list state
   const [selectedDaySessions, setSelectedDaySessions] = useState<SelectedDaySession[]>([]);
-  const [isLoadingSelectedDay, setIsLoadingSelectedDay] = useState(false); // Only loads on click
+  const [isLoadingSelectedDay, setIsLoadingSelectedDay] = useState(false);
   const [selectedDayError, setSelectedDayError] = useState<string | null>(null);
   
-  // State for calendar view and markers
+  // Calendar state
   const [activeCalendarViewDate, setActiveCalendarViewDate] = useState<Date>(new Date());
   const [sessionMarkerDates, setSessionMarkerDates] = useState<string[]>([]);
+  const tutorId="44ea634a-4135-4077-a44f-fff4bb395d88"
+  // // Derived state
+  // const isAuthenticated = !!userId;
+  // const hasTutorData = !!tutorId;
+
+
+  // // Render loading state
+  // if (isLoading) {
+  //   return (
+  //     <div className="h-screen w-full flex items-center justify-center">
+  //       <div>Loading...</div>
+  //     </div>
+  //   );
+  // }
+
+  // // Render error state
+  // if (!isAuthenticated) {
+  //   return (
+  //     <div className="h-screen w-full flex items-center justify-center">
+  //       <div className="text-red-500">
+  //         User not authenticated. Please log in.
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  // // Render error state for tutor data
+  // if (error || !hasTutorData) {
+  //   return (
+  //     <div className="h-screen w-full flex items-center justify-center">
+  //       <div className="text-red-500">
+  //         {error || 'Tutor ID not found. Please ensure you are registered as a tutor.'}
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   
   // Effect for summary stats
   useEffect(() => {
@@ -113,13 +190,42 @@ export default function Register() { // Consider renaming if this is a dashboard
     }
   };
 
+  // // Render loading state
+  // if (isDataLoading) {
+  //   return (
+  //     <div className="h-screen w-full flex items-center justify-center">
+  //       <div>Loading...</div>
+  //     </div>
+  //   );
+  // }
+
+  // // Render error states
+  // if (!isAuthenticated) {
+  //   return (
+  //     <div className="h-screen w-full flex items-center justify-center">
+  //       <div className="text-red-500">
+  //         User not authenticated. Please log in.
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  // if (tutorError || !hasTutorData) {
+  //   return (
+  //     <div className="h-screen w-full flex items-center justify-center">
+  //       <div className="text-red-500">
+  //         {tutorError || 'Tutor ID not found. Please ensure you are registered as a tutor.'}
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   return (
     <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
       <div className="w-[15%] h-[85%] flex flex-col items-center">
         <DashboardClick/>
       </div>
       <div className="w-[60%] h-[85%] flex flex-col">
-        {/* --- REVERTED TO YOUR ORIGINAL STRUCTURE AND CLASSES --- */}
         <div className="w-[100%] h-[100%] bg-white rounded-2xl shadow-lg flex flex-col items-center justify-center overflow-y-auto no-scrollbar">
             <div className="w-[90%] h-auto flex justify-center items-center">
               <div className="w-[25%] h-[100%] flex flex-col justify-center items-center border-r-2 border-[#B8B8B8]">
