@@ -1,0 +1,1 @@
+export type TabName = 'performance' | 'sessions' | 'feedback';
