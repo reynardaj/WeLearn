@@ -55,7 +55,9 @@ export default function ClientLayoutWrapper({
       </SignedOut>
 
       <SignedIn>
-        <UserButton />
+        <div className="fixed top-4 right-4 z-50">
+          <UserButton/>
+        </div>
         {children}
       </SignedIn>
     </main>
