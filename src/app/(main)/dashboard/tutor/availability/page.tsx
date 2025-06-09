@@ -2,7 +2,7 @@
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
 import React, { useState, useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
-import '../../../AvailabilityCalendar.css'; 
+import '@/app/AvailabilityCalender.css'; 
 
 // --- Types and Interfaces ---
 interface TimeSlot {
