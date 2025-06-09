@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
     const { rating, comment, tutorID } = await req.json();
 
     // Per your instruction, the logged-in user's ID is the tuteeID.
-    const tuteeID = userId;
-    const mockTutorID = "998083f8-869a-44e8-b2eb-798aa9900274";
+    // const tuteeID = userId;
+    const tuteeID = "user_2uyxdPRL9UmC1JY1RPjYGWhjpPF";
     const mockReviewID = crypto.randomUUID();
 
     // 3. Insert the review using the direct tuteeID.
