@@ -13,6 +13,7 @@ import { Button } from "@/components/button";
 import { HiOutlineCalendarDays } from "react-icons/hi2";
 import { Heading1, Heading2, Heading3 } from '@/components/Heading';
 import { TextSm, TextMd } from '@/components/Text';
+import { useAuth } from '@clerk/nextjs';
 
 const FilterTag = ({ label, onRemove }: { label: string, onRemove: () => void }) => (
   <div className="border border-[#a3a3a3] text-[13px] rounded-full px-3 flex items-center gap-1">
@@ -40,12 +41,50 @@ export default function Page() {
 
   const [showUpcoming, setShowUpcoming] = useState(false);
 
+  const { userId } = useAuth();
+  const [tuteeID, setTuteeID] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch('/api/tutor-listing')
-      .then(res => res.json())
-      .then(data => setTutors(data.tutors || []));
-  }, []);
+    if (!userId) return;
+
+    async function fetchTutee() {
+      setLoading(true);
+      try {
+        const tRes = await fetch(`/api/users/tutee/${userId}`);
+        if (!tRes.ok) throw new Error("Couldn't load tutee ID");
+        const { tuteeId } = await tRes.json();
+        setTuteeID(tuteeId);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTutee();
+  }, [userId]);
+
+  useEffect(() => {
+    if (!tuteeID) return;
+
+    async function fetchTutors() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/tutor-listing?tuteeID=${tuteeID}`);
+        if (!res.ok) throw new Error("Couldn't load tutors");
+        const { tutors } = await res.json();
+        setTutors(tutors || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchTutors();
+  }, [tuteeID]);
 
   const toggleValue = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
     setList(prev =>
@@ -223,35 +262,44 @@ export default function Page() {
         </div>
 
         <div className='flex flex-col gap-5 bg-white h-[90%] rounded-2xl shadow-md mt-4 p-4 lg:pl-6 overflow-y-auto pr-5 scrollbar-hover'>
-          <TextMd>{filteredTutors.length} Tutors Match Your Needs</TextMd>
-          <div className='flex flex-col gap-5'>
-            {filteredTutors.map(tutor => (
-              <TutorList
-                profileImage={tutor.profileimg} 
-                key={tutor.tutorid}
-                tutorID={tutor.tutorid}
-                name={`${tutor.firstname} ${tutor.lastname}`}
-                subjects={tutor.subjects || []}
-                price={tutor.price}
-                availability={tutor.availability || []}
-                university={tutor.institution}
-                rating={tutor.rating || 0}
-                onBook={(id) => {
-                  setSelectedTutorID(id);
-                  setShowModal(true);
-                }}
-              />
-            ))}
-          </div>
-          {showModal && selectedTutorID && (
-            <BookingModal
-              tutorID={selectedTutorID}
-              onClose={() => {
-                setShowModal(false);
-                setSelectedTutorID(null);
-              }}
-            />
-          )}
+          {
+            loading ? (
+              <TextMd>Loading...</TextMd>
+            ) : (
+              <>
+                <TextMd>{filteredTutors.length} Tutors Match Your Needs</TextMd>
+                <div className='flex flex-col gap-5'>
+                  {filteredTutors.map(tutor => (
+                    <TutorList
+                      profileImage={tutor.profileimg} 
+                      key={tutor.tutorid}
+                      tutorID={tutor.tutorid}
+                      name={`${tutor.firstname} ${tutor.lastname}`}
+                      subjects={tutor.subjects || []}
+                      price={tutor.price}
+                      availability={tutor.availability || []}
+                      university={tutor.institution}
+                      rating={tutor.rating || 0}
+                      isPro={tutor.isPro}
+                      onBook={(id) => {
+                        setSelectedTutorID(id);
+                        setShowModal(true);
+                      }}
+                    />
+                  ))}
+                </div>
+                {showModal && selectedTutorID && (
+                  <BookingModal
+                    tutorID={selectedTutorID}
+                    onClose={() => {
+                      setShowModal(false);
+                      setSelectedTutorID(null);
+                    }}
+                  />
+                )}
+              </>
+            )
+          }
         </div>
       </div>
     </div>

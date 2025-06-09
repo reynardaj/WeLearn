@@ -128,12 +128,6 @@ export default function TuteeForm2() {
                 <span>{educationLevel}</span>  
               </div>  
             ))}  
-            </div>  
-            <div   
-              onClick={handleSkip}   
-              className="w-[80%] bg-[#F4B660] rounded-xl p-3 flex justify-center items-center cursor-pointer"  
-            >  
-              <TextMd>Skip question</TextMd>  
             </div>   
           </div>  
           <div className="h-[10%] flex justify-center md:justify-end items-start md:pr-25">  

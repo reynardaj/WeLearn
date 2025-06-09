@@ -5,11 +5,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { useTuteeForm } from "@/contexts/TuteeFormContext";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function TuteeForm4() {
   const { formData, updateFormData } = useTuteeForm();  
-  // const router = useRouter();  
+  const router = useRouter();
 
   const handleSubmit = async () => {  
     try {  
@@ -60,7 +60,9 @@ export default function TuteeForm4() {
       
       // Optional: Show user-friendly error message  
       alert(error instanceof Error ? error.message : 'Submission failed');  
-    }  
+    } finally {
+      router.push("/tutor-listing");
+    }
   };   
 
   const [mounted, setMounted] = useState(false);  
