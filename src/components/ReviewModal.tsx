@@ -1,6 +1,6 @@
 // components/ReviewModal.tsx
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface ReviewModalProps {
   tutorID: string;
@@ -9,9 +9,39 @@ interface ReviewModalProps {
   onSubmit?: (data: { tutorID: string; rating: number; comment: string }) => void;
 }
 
+interface TutorData {
+  firstname: string;
+  subjects?: string[];
+  profileimg?: string;
+}
+
 export default function ReviewModal({ tutorID, isOpen, onClose, onSubmit }: ReviewModalProps) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [tutor, setTutor] = useState<TutorData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTutorData = async () => {
+      if (!tutorID) return;
+      
+      try {
+        const response = await fetch(`/api/tutor-profile?tutorID=${tutorID}`);
+        if (!response.ok) throw new Error('Failed to fetch tutor data');
+        
+        const data = await response.json();
+        setTutor(data);
+      } catch (error) {
+        console.error('Error fetching tutor data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      fetchTutorData();
+    }
+  }, [tutorID, isOpen]);
 
   if (!isOpen) return null;
 
@@ -34,10 +64,24 @@ export default function ReviewModal({ tutorID, isOpen, onClose, onSubmit }: Revi
         </button>
 
         <div className="flex space-x-4 mb-4">
-          <div className="w-20 h-20 bg-gray-300 rounded-lg" /> {/* profile pic placeholder */}
+          <div className="w-20 h-20 bg-gray-300 rounded-lg overflow-hidden">
+            {tutor?.profileimg ? (
+              <img 
+                src={tutor.profileimg} 
+                alt={tutor.firstname}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                {tutor?.firstname?.[0] || 'T'}
+              </div>
+            )}
+          </div>
           <div>
-            <h2 className="text-xl font-bold">Reynard</h2>
-            <p className="text-gray-700">Algorithm & Programming</p>
+            <h2 className="text-xl font-bold">{tutor?.firstname || 'Tutor'}</h2>
+            <p className="text-gray-700">
+              {tutor?.subjects?.join(', ') || 'No subjects listed'}
+            </p>
           </div>
         </div>
 

@@ -99,7 +99,7 @@ export default function PaymentSuccess() {
 
 const handleJoin = () => {
     if (!bookingDetails?.joinUrl) return;
-    window.open(bookingDetails.joinUrl, "_blank");
+    // window.open(bookingDetails.joinUrl, "_blank");
     router.push("/tutor-listing"); 
   };
 
@@ -186,7 +186,7 @@ const handleJoin = () => {
           onClick={handleJoin}
           disabled={isGeneratingLink}
         >
-          {isGeneratingLink ? "Generating link..." : "Go To Session"}
+          {isGeneratingLink ? "Generating link..." : "Back to Dashboard"}
         </Button>
       </div>
     </div>
