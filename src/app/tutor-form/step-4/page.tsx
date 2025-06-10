@@ -250,7 +250,7 @@ export default function SetAvailabilityPage() {
       }
       // Optionally clear localStorage after successful submission
       localStorage.removeItem("tutorFormData");
-      router.push("/tutor-listing"); // Harus diganti ke route tutor listing (yoel)
+      router.push("/dashboard/tutor");
     } catch (error) {
       console.error("Error submitting form:", error);
     }

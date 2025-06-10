@@ -1,24 +1,63 @@
 // components/ReviewModal.tsx
-'use client';
-import React, { useState } from 'react';
+"use client";
+import React, { useState, useEffect } from "react";
 
 interface ReviewModalProps {
   tutorID: string;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: (data: { tutorID: string; rating: number; comment: string }) => void;
+  onSubmit?: (data: {
+    tutorID: string;
+    rating: number;
+    comment: string;
+  }) => void;
 }
 
-export default function ReviewModal({ tutorID, isOpen, onClose, onSubmit }: ReviewModalProps) {
+interface TutorData {
+  firstname: string;
+  subjects?: string[];
+  profileimg?: string;
+}
+
+export default function ReviewModal({
+  tutorID,
+  isOpen,
+  onClose,
+  onSubmit,
+}: ReviewModalProps) {
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
+  const [tutor, setTutor] = useState<TutorData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTutorData = async () => {
+      if (!tutorID) return;
+
+      try {
+        const response = await fetch(`/api/tutor-profile?tutorID=${tutorID}`);
+        if (!response.ok) throw new Error("Failed to fetch tutor data");
+
+        const data = await response.json();
+        setTutor(data);
+      } catch (error) {
+        console.error("Error fetching tutor data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      fetchTutorData();
+    }
+  }, [tutorID, isOpen]);
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
     if (onSubmit) onSubmit({ tutorID, rating, comment });
     setRating(0);
-    setComment('');
+    setComment("");
     onClose();
   };
 
@@ -34,21 +73,37 @@ export default function ReviewModal({ tutorID, isOpen, onClose, onSubmit }: Revi
         </button>
 
         <div className="flex space-x-4 mb-4">
-          <div className="w-20 h-20 bg-gray-300 rounded-lg" /> {/* profile pic placeholder */}
+          <div className="w-20 h-20 bg-gray-300 rounded-lg overflow-hidden">
+            {tutor?.profileimg ? (
+              <img
+                src={tutor.profileimg}
+                alt={tutor.firstname}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                {tutor?.firstname?.[0] || "T"}
+              </div>
+            )}
+          </div>
           <div>
-            <h2 className="text-xl font-bold">Reynard</h2>
-            <p className="text-gray-700">Algorithm & Programming</p>
+            <h2 className="text-xl font-bold">
+              {tutor?.firstname || "Loading..."}
+            </h2>
+            <p className="text-gray-700">
+              {tutor?.subjects?.join(", ") || "Loading..."}
+            </p>
           </div>
         </div>
 
         <div className="flex space-x-1 mb-4">
-          {[1,2,3,4,5].map((star) => (
+          {[1, 2, 3, 4, 5].map((star) => (
             <button key={star} onClick={() => setRating(star)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
                 viewBox="0 0 20 20"
-                fill={star <= rating ? '#f4b660' : '#d1d5db'}
+                fill={star <= rating ? "#f4b660" : "#d1d5db"}
               >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 00.95.69h4.163c.969 0 1.371 1.24.588 1.81l-3.37 2.447a1 1 0 00-.364 1.118l1.287 3.955c.3.921-.755 1.688-1.54 1.118l-3.37-2.447a1 1 0 00-1.175 0l-3.37 2.447c-.785.57-1.84-.197-1.54-1.118l1.287-3.955a1 1 0 00-.364-1.118L2.07 9.382c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.955z" />
               </svg>
@@ -72,7 +127,7 @@ export default function ReviewModal({ tutorID, isOpen, onClose, onSubmit }: Revi
           </button>
           <button
             onClick={handleSubmit}
-            disabled={rating === 0 || comment.trim() === ''}
+            disabled={rating === 0 || comment.trim() === ""}
             className="px-4 py-2 rounded-lg bg-[#1f65a6] text-white disabled:opacity-50"
           >
             Continue

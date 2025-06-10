@@ -32,15 +32,18 @@ export default function LandingPage() {
           <Heading4>WeLearn</Heading4>
         </div>
         <div className="hidden md:flex space-x-2 items-center">
-          <Button variant="ghost">Become a tutor</Button>
-          <div className="border-l border-gray-300 h-6" />
-          <Button variant="ghost">Find tutors</Button>
           <Button
-            variant="primary"
-            className="rounded-md"
+            variant="ghost"
             onClick={() => (window.location.href = "/sign-in")}
           >
             Sign In
+          </Button>
+          <Button
+            variant="primary"
+            className="rounded-md"
+            onClick={() => (window.location.href = "/sign-up")}
+          >
+            Sign Up
           </Button>
         </div>
       </div>
@@ -58,9 +61,19 @@ export default function LandingPage() {
           like you.
         </Subtitle>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Button variant="primary">Become a Tutor</Button>
+          <Button
+            variant="primary"
+            onClick={() => (window.location.href = "/sign-in")}
+          >
+            Sign In
+          </Button>
           <TextMd className="text-text">or</TextMd>
-          <Button variant="primary">Find a Tutor</Button>
+          <Button
+            variant="primary"
+            onClick={() => (window.location.href = "/sign-up")}
+          >
+            Sign Up
+          </Button>
         </div>
       </section>
 
@@ -228,9 +241,19 @@ export default function LandingPage() {
           Sign up today and join the WeLearn community.
         </TextLg>
         <div className="flex flex-wrap justify-center items-center gap-4">
-          <Button variant="secondary">Become a tutor</Button>
+          <Button
+            variant="secondary"
+            onClick={() => (window.location.href = "/sign-in")}
+          >
+            Sign In
+          </Button>
           <span className="text-white">or</span>
-          <Button variant="secondary">Find a tutor</Button>
+          <Button
+            variant="secondary"
+            onClick={() => (window.location.href = "/sign-up")}
+          >
+            Sign Up
+          </Button>
         </div>
       </section>
 
