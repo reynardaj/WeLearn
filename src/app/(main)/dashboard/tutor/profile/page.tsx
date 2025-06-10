@@ -4,6 +4,7 @@ import { TextMd } from "@/components/Text";
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useAuth } from "@clerk/nextjs"; // Import Clerk's useAuth hook
 
 // --- Interfaces ---
 interface Subject {
@@ -21,14 +22,13 @@ interface TutorProfileData {
   lastname: string;
   institution: string | null;
   price: number | null;
-  description: string ;
+  description: string;
   experience: string | null;
   profileimg: string | null;
   subjects: Subject[];
   availability: AvailabilityDay[];
 }
 
-// **NEW**: Interface for the update payload
 interface UpdatePayload {
   tutorId: string;
   firstname?: string;
@@ -43,29 +43,67 @@ const getDayName = (dayNumber: number): string => {
   return "Unknown Day";
 }
 
-export default function Profile() {
+export default function ProfilePage() {
+  // --- STATE MANAGEMENT ---
+  // Clerk Auth State
+  const { userId } = useAuth();
+
+  // State for our internal IDs and data
+  const [tutorId, setTutorId] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<TutorProfileData | null>(null);
+  
+  // Combined loading and error states
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // State for managing edits
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedData, setEditedData] = useState<Partial<TutorProfileData>>({});
 
+
+  // --- DATA FETCHING ---
+
+  // Step 1: Fetch internal tutorId using the Clerk userId
   useEffect(() => {
-    const fetchProfile = async () => {
+    if (!userId) {
+      // Still waiting for Clerk to provide userId
+      return;
+    }
+    
+    const fetchTutorId = async () => {
       setIsLoading(true);
       setError(null);
-      const currentTutorId = "4ec7678e-5e45-4653-bac3-28dd57fc5a25"; 
-
-      if (!currentTutorId) {
-        setError("Tutor ID is not available.");
-        setIsLoading(false);
-        return; 
-      }
-
       try {
-        const response = await fetch(`/api/tutor-dashboard/profiles?tutorId=${currentTutorId}`);
+        const response = await fetch(`/api/users/tutor/${userId}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "You are not registered as a tutor.");
+        }
+        const data = await response.json();
+        setTutorId(data.tutorId); // This will trigger the next useEffect
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+        setIsLoading(false); // Stop loading on error
+      }
+    };
+
+    fetchTutorId();
+  }, [userId]);
+
+
+  // Step 2: Fetch the full profile data once we have the internal tutorId
+  useEffect(() => {
+    if (!tutorId) {
+      // Waiting for the tutorId to be fetched
+      return;
+    }
+
+    const fetchProfile = async () => {
+      // setIsLoading(true) is already set by the previous effect
+      setError(null);
+      try {
+        const response = await fetch(`/api/tutor-dashboard/profiles?tutorId=${tutorId}`);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to fetch profile');
@@ -76,11 +114,15 @@ export default function Profile() {
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unknown error occurred.");
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // Final loading state is set here
       }
     };
+
     fetchProfile();
-  }, []);
+  }, [tutorId]); // This effect depends on tutorId
+
+
+  // --- EVENT HANDLERS ---
 
   const handleEditClick = (section: 'name' | 'description') => {
     setEditedData(profileData || {});
@@ -95,15 +137,12 @@ export default function Profile() {
   };
 
   const handleSave = async (section: 'name' | 'description') => {
-    const tutorId = profileData?.tutorid;
     if (!tutorId) {
       alert("Error: Tutor ID is missing.");
       return;
     }
 
-    // **FIX**: Using the specific UpdatePayload type instead of 'any'
     const payload: UpdatePayload = { tutorId };
-
     if (section === 'name') {
       payload.firstname = editedData.firstname;
       payload.lastname = editedData.lastname;
@@ -138,43 +177,53 @@ export default function Profile() {
     setEditedData(prev => ({ ...prev, [name]: value }));
   };
 
-  if (isLoading)return (
-    <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
-      <div className="w-[15%] h-[85%] flex flex-col items-center">
-        <DashboardClick/>
-      </div>
-      <div className="w-[85%] h-[85%] flex flex-col">
-        <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
-          <TextMd>Loading profile...</TextMd> {/* Loading message */}
-        </div>
-      </div>
-    </div>
-  );
 
-  if (error) return (
-    <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
-      <div className="w-[15%] h-[85%] flex flex-col items-center">
-        <DashboardClick/>
-      </div>
-      <div className="w-[85%] h-[85%] flex flex-col">
-        <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
-          <TextMd>Error: {error}</TextMd> {/* Error message */}
+  // --- RENDER LOGIC ---
+
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
+        <div className="w-[15%] h-[85%] flex flex-col items-center">
+          <DashboardClick/>
+        </div>
+        <div className="w-[85%] h-[85%] flex flex-col">
+          <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
+            <TextMd>Loading profile...</TextMd>
+          </div>
         </div>
       </div>
-    </div>
-  );
-  if (!profileData) return (
-    <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
-      <div className="w-[15%] h-[85%] flex flex-col items-center">
-        <DashboardClick/>
-      </div>
-      <div className="w-[85%] h-[85%] flex flex-col">
-        <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
-          <TextMd>No profile data found</TextMd>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
+        <div className="w-[15%] h-[85%] flex flex-col items-center">
+          <DashboardClick/>
+        </div>
+        <div className="w-[85%] h-[85%] flex flex-col">
+          <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
+            <TextMd>Error: {error}</TextMd>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+  
+  if (!profileData) {
+      return (
+          <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
+              <div className="w-[15%] h-[85%] flex flex-col items-center">
+                  <DashboardClick/>
+              </div>
+              <div className="w-[85%] h-[85%] flex flex-col">
+                  <div className="w-[90%] h-[100%] justify-center bg-white rounded-2xl shadow-lg flex flex-col items-center">
+                      <TextMd>No profile data found.</TextMd>
+                  </div>
+              </div>
+          </div>
+      );
+  }
 
 
   return (

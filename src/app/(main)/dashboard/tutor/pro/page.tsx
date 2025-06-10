@@ -2,10 +2,62 @@
 import { Heading2, Heading3 } from "@/components/Heading"; // Assuming these exist
 import { TextMd, TextSm } from "@/components/Text"; // Assuming this exists
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar"; // Assuming this exists
+import React, { useState,useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
 // import React, { useState, useEffect } from "react";
 import Image from "next/image"; // For displaying profile image
 
-export default function Pro() {
+export default function ProPage() {
+  const { userId } = useAuth(); 
+  
+  // State to hold the internal tutorId from your database
+  const [tutorId, setTutorId] = useState<string | null>(null);
+  
+  // State for loading and errors related to fetching the ID
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only run this if the Clerk userId is available
+    if (!userId) {
+        setIsLoading(false);
+        // This isn't an error, just waiting for auth
+        return;
+    }
+
+    async function fetchTutorId() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`/api/users/tutor/${userId}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Couldn't load tutor profile.");
+        }
+        const data = await response.json();
+        setTutorId(data.tutorId); // Set the fetched tutorId into state
+      } catch (err) {
+        console.error(err);
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchTutorId();
+  }, [userId]); // This effect runs whenever the userId changes
+
+  if (isLoading) {
+    return <div className="flex h-screen w-full items-center justify-center">Loading user data...</div>;
+  }
+  if (error) {
+    return <div className="flex h-screen w-full items-center justify-center text-red-500">Error: {error}</div>;
+  }
+  // If the tutorId is still not found after loading, it means they are not a tutor
+  if (!tutorId) {
+      return <div className="flex h-screen w-full items-center justify-center">You are not registered as a tutor.</div>
+  }
+
   return (
     <div className="h-screen w-full flex bg-[#F0FAF9] items-center">
       <div className="w-[15%] h-[85%] flex flex-col items-center">

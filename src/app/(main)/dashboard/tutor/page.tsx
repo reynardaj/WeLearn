@@ -3,10 +3,10 @@ import { Heading2 } from "@/components/Heading";
 import { TextLg, TextMd, TextSm } from "@/components/Text"; 
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
 import Calendar from 'react-calendar';
-import React, { useState, useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
+import React , {useState, useEffect} from "react";
 import 'react-calendar/dist/Calendar.css';
 import AnalyticsTabs from '@/components/tutor-dashboard/AnalyticTab';
+import { useAuth } from "@clerk/nextjs";
 
 interface SummaryStats {
   totalSessions: number;
@@ -30,99 +30,58 @@ const toYYYYMMDD = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-// function useTutorData(userId: string | null) {
-//   const [tutorId, setTutorId] = useState<string | null>(null);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
+export default function TutorDashboard() {
 
-//   useEffect(() => {
-//     if (!userId) {
-//       setError("User not authenticated");
-//       setIsLoading(false);
-//       return;
-//     }
-
-//     const fetchTutorId = async () => {
-//       try {
-//         const response = await fetch(`/api/users/tutor/${userId}`);
-//         if (!response.ok) {
-//           throw new Error('Failed to fetch tutor ID');
-//         }
-//         const data = await response.json();
-//         setTutorId(data.tutorId);
-//       } catch (err) {
-//         console.error('Error fetching tutor ID:', err);
-//         setError('Failed to load tutor data');
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     fetchTutorId();
-//   }, [userId]);
-
-//   return { tutorId, isLoading, error };
-// }
-
-export default function Register() {
-  // Authentication
-  // const { userId } = useAuth();
-  
-  // // Tutor data
-  // const { tutorId, isLoading, error } = useTutorData(userId);
-  
-  // Stats state 
   const [summaryStats, setSummaryStats] = useState<SummaryStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
-  
-  // Session list state
+
   const [selectedDaySessions, setSelectedDaySessions] = useState<SelectedDaySession[]>([]);
-  const [isLoadingSelectedDay, setIsLoadingSelectedDay] = useState(false);
+  const [isLoadingSelectedDay, setIsLoadingSelectedDay] = useState(false); // Only loads on click
   const [selectedDayError, setSelectedDayError] = useState<string | null>(null);
   
-  // Calendar state 
   const [activeCalendarViewDate, setActiveCalendarViewDate] = useState<Date>(new Date());
   const [sessionMarkerDates, setSessionMarkerDates] = useState<string[]>([]);
-  const tutorId="09171b87-6212-4f26-9408-627d6ba00969"
-  // // Derived state
-  // const isAuthenticated = !!userId;
-  // const hasTutorData = !!tutorId;
-
-
-  // // Render loading state
-  // if (isLoading) {
-  //   return (
-  //     <div className="h-screen w-full flex items-center justify-center">
-  //       <div>Loading...</div>
-  //     </div>
-  //   );
-  // }
-
-  // // Render error state
-  // if (!isAuthenticated) {
-  //   return (
-  //     <div className="h-screen w-full flex items-center justify-center">
-  //       <div className="text-red-500">
-  //         User not authenticated. Please log in.
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // // Render error state for tutor data
-  // if (error || !hasTutorData) {
-  //   return (
-  //     <div className="h-screen w-full flex items-center justify-center">
-  //       <div className="text-red-500">
-  //         {error || 'Tutor ID not found. Please ensure you are registered as a tutor.'}
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   
-  // Effect for summary stats
+  const { userId } = useAuth(); 
+
+  // State to hold the internal tutorId from your database
+  const [tutorId, setTutorId] = useState<string | null>(null);
+  
+  // State for loading and errors related to fetching the ID
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only run this if the Clerk userId is available
+    if (!userId) {
+        setIsLoading(false);
+        // This isn't an error, just waiting for auth
+        return;
+    }
+
+    async function fetchTutorId() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`/api/users/tutor/${userId}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Couldn't load tutor profile.");
+        }
+        const data = await response.json();
+        setTutorId(data.tutorId); // Set the fetched tutorId into state
+      } catch (err) {
+        console.error(err);
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchTutorId();
+  }, [userId]); // This effect runs whenever the userId changes
+
   useEffect(() => {
     if (!tutorId) {
       setIsLoadingStats(false);
@@ -186,35 +145,16 @@ export default function Register() {
     }
   };
 
-  // // Render loading state
-  // if (isDataLoading) {
-  //   return (
-  //     <div className="h-screen w-full flex items-center justify-center">
-  //       <div>Loading...</div>
-  //     </div>
-  //   );
-  // }
-
-  // // Render error states
-  // if (!isAuthenticated) {
-  //   return (
-  //     <div className="h-screen w-full flex items-center justify-center">
-  //       <div className="text-red-500">
-  //         User not authenticated. Please log in.
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // if (tutorError || !hasTutorData) {
-  //   return (
-  //     <div className="h-screen w-full flex items-center justify-center">
-  //       <div className="text-red-500">
-  //         {tutorError || 'Tutor ID not found. Please ensure you are registered as a tutor.'}
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return <div className="flex h-screen w-full items-center justify-center">Loading user data...</div>;
+  }
+  if (error) {
+    return <div className="flex h-screen w-full items-center justify-center text-red-500">Error: {error}</div>;
+  }
+  // If the tutorId is still not found after loading, it means they are not a tutor
+  if (!tutorId) {
+      return <div className="flex h-screen w-full items-center justify-center">You are not registered as a tutor.</div>
+  }
 
   return (
     <div className="h-screen w-full flex bg-[#F0FAF9] items-center">

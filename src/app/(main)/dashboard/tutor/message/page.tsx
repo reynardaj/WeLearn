@@ -2,8 +2,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { VscSend } from "react-icons/vsc";
 import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
-import { Heading1, Heading4 } from "@/components/Heading";
+import { Heading4 } from "@/components/Heading";
 import { TextSm } from "@/components/Text";
+import { useAuth } from "@clerk/nextjs";
 
 // --- Helper Component for Contact List ---
 interface ContactProps {
@@ -62,9 +63,8 @@ export default function MessagePage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const tutorID = '998083f8-869a-44e8-b2eb-798aa9900274';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -72,11 +72,47 @@ export default function MessagePage() {
 
   useEffect(scrollToBottom, [messages]);
 
+  const { userId } = useAuth(); 
+  
+    // State to hold the internal tutorId from your database
+    const [tutorId, setTutorId] = useState<string | null>(null);
+  
+    useEffect(() => {
+      // Only run this if the Clerk userId is available
+      if (!userId) {
+          setIsLoading(false);
+          // This isn't an error, just waiting for auth
+          return;
+      }
+  
+      async function fetchTutorId() {
+        setIsLoading(true);
+        setError(null);
+        try {
+          const response = await fetch(`/api/users/tutor/${userId}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Couldn't load tutor profile.");
+          }
+          const data = await response.json();
+          setTutorId(data.tutorId); // Set the fetched tutorId into state
+        } catch (err) {
+          console.error(err);
+          setError(err instanceof Error ? err.message : "An unknown error occurred");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+  
+      fetchTutorId();
+    }, [userId]); // This effect runs whenever the userId changes
+  
+
   // Fetch contacts (tutees) for the tutor
   const fetchContacts = async () => {
     try {
       const res = await fetch(
-        `/api/tutor-dashboard/conversations?tutorID=${tutorID}`
+        `/api/tutor-dashboard/conversations?tutorID=${tutorId}`
       );
       if (!res.ok) throw new Error("Failed to fetch contacts");
       const data: Contact[] = await res.json();
@@ -98,7 +134,7 @@ export default function MessagePage() {
     fetchContacts();
     const interval = setInterval(fetchContacts, 5000);
     return () => clearInterval(interval);
-  }, [tutorID]);
+  }, [tutorId]);
 
   // **THE FIX IS HERE:** This useEffect now handles setting the
   // initial active conversation. It only runs when the `contacts`
