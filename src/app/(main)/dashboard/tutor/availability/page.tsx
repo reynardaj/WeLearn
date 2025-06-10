@@ -3,7 +3,7 @@ import DashboardClick from "@/components/tutor-dashboard/DashboardSidebar";
 import React, { useState, useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
 import '../../../../AvailabilityCalendar.css';
-import { Heading3 } from "@/components/Heading";
+import { useAuth } from "@clerk/nextjs";
 
 // --- Types and Interfaces ---
 interface TimeSlot {
@@ -26,8 +26,6 @@ interface DisplayAvailability {
 
 // --- Main Component ---
 export default function AvailabilityPage() {
-  const tutorId = "998083f8-869a-44e8-b2eb-798aa9900274";
-
   // --- State Management ---
   const [availability, setAvailability] = useState<DayAvailability[]>([
     {
@@ -88,6 +86,44 @@ export default function AvailabilityPage() {
     }
     return options;
   }, []);
+
+  const { userId } = useAuth(); 
+  
+    // State to hold the internal tutorId from your database
+    const [tutorId, setTutorId] = useState<string | null>(null);
+    
+    // State for loading and errors related to fetching the ID
+  
+    useEffect(() => {
+      // Only run this if the Clerk userId is available
+      if (!userId) {
+          setIsLoading(false);
+          // This isn't an error, just waiting for auth
+          return;
+      }
+  
+      async function fetchTutorId() {
+        setIsLoading(true);
+        setError(null);
+        try {
+          const response = await fetch(`/api/users/tutor/${userId}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Couldn't load tutor profile.");
+          }
+          const data = await response.json();
+          setTutorId(data.tutorId); // Set the fetched tutorId into state
+        } catch (err) {
+          console.error(err);
+          setError(err instanceof Error ? err.message : "An unknown error occurred");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+  
+      fetchTutorId();
+    }, [userId]); // This effect runs whenever the userId changes
+  
 
   useEffect(() => {
     const fetchAvailability = async () => {
