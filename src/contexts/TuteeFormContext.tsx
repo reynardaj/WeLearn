@@ -4,6 +4,8 @@
 import React, { createContext, useState, useContext } from 'react';  
 
 interface TuteeFormData {  
+  firstName?: string;
+  lastName?: string;
   subjects?: string[];  
   education?: string | null;  
   days?: string[];  

@@ -33,10 +33,6 @@ export default function TuteeForm() {
     router.push('/tutee-form/tutee-form2');  
   };  
 
-  const handleSkip = () => {  
-    updateFormData({ subjects: [] }); // Set subjects to empty array if skipped  
-    router.push('/tutee-form/tutee-form2');  
-  };  
 
   return (  
     <div className="h-screen w-full flex">  
