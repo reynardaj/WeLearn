@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
 import '../../../../AvailabilityCalendar.css';
 import { useAuth } from "@clerk/nextjs";
+import { Heading2, Heading3 } from "@/components/Heading";
 
 // --- Types and Interfaces ---
 interface TimeSlot {
@@ -342,7 +343,7 @@ export default function AvailabilityPage() {
   const CalendarIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className="h-4 w-4 text-blue-500"
+      className="h-4 w-4 text-primary"
       viewBox="0 0 20 20"
       fill="currentColor"
     >
@@ -359,18 +360,16 @@ export default function AvailabilityPage() {
       <div className="w-[15%] h-[85%] flex flex-col items-center">
         <DashboardClick />
       </div>
-      <div className="w-[85%] h-[85%] flex flex-col">
+      <div className="w-[85%] h-[85%] flex flex-col ">
         <div className="w-[95%] h-full bg-white rounded-2xl shadow-lg flex p-6 gap-8">
           {viewMode === "list" && (
             <div className="w-1/2 h-full flex flex-col transition-all duration-300">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Weekly Hours
-                </h2>
+                <Heading3>Weekly Hours</Heading3>
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-75"
+                  className="px-4 py-2 bg-primary text-white font-semibold rounded-lg shadow-md hover:bg-primary/80 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/80 focus:ring-opacity-75"
                 >
                   {isSaving ? "Saving..." : "Save Changes"}
                 </button>
@@ -379,13 +378,28 @@ export default function AvailabilityPage() {
                 {availability.map((day) => (
                   <div key={day.day}>
                     <div className="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        id={`day-${day.day}`}
-                        checked={day.isActive}
-                        onChange={() => handleDayToggle(day.day)}
-                        className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                      />
+                      <div className="relative flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`day-${day.day}`}
+                          checked={day.isActive}
+                          onChange={() => handleDayToggle(day.day)}
+                          className="h-5 w-5 appearance-none rounded border-2 border-gray-300 bg-white checked:border-primary checked:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                        />
+                        {day.isActive && (
+                          <svg
+                            className="pointer-events-none absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
                       <label
                         htmlFor={`day-${day.day}`}
                         className="ml-3 text-lg font-medium text-gray-700"
@@ -460,7 +474,7 @@ export default function AvailabilityPage() {
                         ))}
                         <button
                           onClick={() => addSlot(day.day)}
-                          className="text-sm text-indigo-600 hover:text-indigo-800 font-semibold mt-2"
+                          className="text-sm text-primary hover:text-primary/80 font-semibold mt-2"
                         >
                           + Add more
                         </button>
@@ -479,13 +493,13 @@ export default function AvailabilityPage() {
             } h-full flex flex-col transition-all duration-300`}
           >
             <div className="flex justify-between items-center mb-6">
-              <h2
+              <Heading3
                 className={`text-2xl font-bold text-gray-800 transition-opacity ${
                   viewMode === "calendar" ? "opacity-0" : "opacity-100"
                 }`}
               >
                 Date Specific Hours
-              </h2>
+              </Heading3>
               <ViewToggle />
             </div>
             <div className="flex-grow overflow-y-auto pr-2">

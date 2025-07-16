@@ -15,29 +15,26 @@ type UserRole = "mentor" | "mentee";
 export default clerkMiddleware(async (auth, req) => {
   const { userId, redirectToSignIn } = await auth();
   const client = await clerkClient();
-  if (isPublicRoute(req)) {
-    return NextResponse.next();
-  }
   let user;
   if (userId) {
     user = await client.users.getUser(userId);
   }
   const userRole = user?.publicMetadata?.role as UserRole | undefined;
-
+  
   const signInRoleRedirects = {
-    mentor: "/tutor-form",
-    mentee: "/tutee-form",
+    mentor: "/dashboard/tutor",
+    mentee: "/tutor-listing",
   };
-  const isSignInCallback = req.nextUrl.pathname === "/sign-in";
-  console.log("isSignInCallback: ", isSignInCallback);
-  console.log("userRole: ", userRole);
+  const isSignInCallback = req.nextUrl.pathname === '/';
   if (isSignInCallback && userRole) {
-    console.log("redirecting to ", signInRoleRedirects[userRole]);
     return NextResponse.redirect(
       new URL(signInRoleRedirects[userRole], req.url)
     );
   }
-
+  
+  if (isPublicRoute(req)) {
+    return NextResponse.next();
+  }
   // TODO: implement protected routes
   // // Protect mentor routes
   // if (isMentorRoute(req)) {
@@ -75,7 +72,6 @@ export default clerkMiddleware(async (auth, req) => {
   return NextResponse.next();
 });
 
-// Updated matcher configuration to include API routes
 export const config = {
   matcher: [
     "/((?!.*\\..*|_next).*)", // Existing matcher

@@ -8,9 +8,9 @@ const pool = new Pool({
 
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
-  const { userId } = params;
+  const { userId } = await Promise.resolve(context.params);
 
   if (!userId) {
     return NextResponse.json(
@@ -37,7 +37,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       tutorId: result.rows[0].tutorid 
     });
   } catch (error) {
