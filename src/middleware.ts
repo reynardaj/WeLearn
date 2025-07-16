@@ -6,9 +6,26 @@ import {
 import { NextResponse } from "next/server";
 
 // ini harus diadjust ke route yang sesuai
-const isMentorRoute = createRouteMatcher(["/mentor-dashboard(.*)"]);
-const isMenteeRoute = createRouteMatcher(["/mentee-dashboard(.*)"]);
-const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)", "/sign-up(.*)"]);
+const isMentorRoute = createRouteMatcher([
+  "/dashboard/tutor(.*)",
+  "/tutor-form(.*)",
+]);
+
+const isMenteeRoute = createRouteMatcher([
+  "/dashboard/mentee(.*)",
+  "/tutor-listing(.*)",
+  "/tutee-form(.*)",
+  "/tutor-profile(.*)",
+  "/booking(.*)",
+  "/message(.*)",
+  "/payment(.*)",
+]);
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/onboarding(.*)",
+]);
 
 type UserRole = "mentor" | "mentee";
 
@@ -20,53 +37,52 @@ export default clerkMiddleware(async (auth, req) => {
     user = await client.users.getUser(userId);
   }
   const userRole = user?.publicMetadata?.role as UserRole | undefined;
-  
+
   const signInRoleRedirects = {
     mentor: "/dashboard/tutor",
     mentee: "/tutor-listing",
   };
-  const isSignInCallback = req.nextUrl.pathname === '/';
+  const isSignInCallback = req.nextUrl.pathname === "/";
   if (isSignInCallback && userRole) {
     return NextResponse.redirect(
       new URL(signInRoleRedirects[userRole], req.url)
     );
   }
-  
+
   if (isPublicRoute(req)) {
     return NextResponse.next();
   }
-  // TODO: implement protected routes
-  // // Protect mentor routes
-  // if (isMentorRoute(req)) {
-  //   if (!userId) {
-  //     return redirectToSignIn({ returnBackUrl: req.url });
-  //   }
+  // Protect mentor routes
+  if (isMentorRoute(req)) {
+    if (!userId) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
 
-  //   if (userRole !== "mentor") {
-  //     // Redirect authenticated users with wrong role to appropriate dashboard
-  //     if (userRole === "mentee") {
-  //       return NextResponse.redirect(new URL("/mentee-dashboard", req.url));
-  //     }
-  //     // Or redirect to a "no access" page
-  //     return NextResponse.redirect(new URL("/unauthorized", req.url));
-  //   }
-  // }
+    if (userRole !== "mentor") {
+      // Redirect authenticated users with wrong role to appropriate dashboard
+      if (userRole === "mentee") {
+        return NextResponse.redirect(new URL("/tutor-listing", req.url));
+      }
+      // Or redirect to a "no access" page
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+  }
 
-  // // Protect mentee routes
-  // if (isMenteeRoute(req)) {
-  //   if (!userId) {
-  //     return redirectToSignIn({ returnBackUrl: req.url });
-  //   }
+  // Protect mentee routes
+  if (isMenteeRoute(req)) {
+    if (!userId) {
+      return redirectToSignIn({ returnBackUrl: req.url });
+    }
 
-  //   if (userRole !== "mentee") {
-  //     // Redirect authenticated users with wrong role to appropriate dashboard
-  //     if (userRole === "mentor") {
-  //       return NextResponse.redirect(new URL("/mentor-dashboard", req.url));
-  //     }
-  //     // Or redirect to a "no access" page
-  //     return NextResponse.redirect(new URL("/unauthorized", req.url));
-  //   }
-  // }
+    if (userRole !== "mentee") {
+      // Redirect authenticated users with wrong role to appropriate dashboard
+      if (userRole === "mentor") {
+        return NextResponse.redirect(new URL("/dashboard/tutor", req.url));
+      }
+      // Or redirect to a "no access" page
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+  }
 
   // Allow all other routes (including '/') to be accessed publicly
   return NextResponse.next();
