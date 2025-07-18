@@ -13,10 +13,7 @@ export async function GET(
   const { userId } = await Promise.resolve(context.params);
 
   if (!userId) {
-    return NextResponse.json(
-      { error: "User ID is required" }, 
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
   }
 
   try {
@@ -31,17 +28,14 @@ export async function GET(
     client.release();
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { error: "Tutor not found" }, 
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Tutor not found" }, { status: 404 });
     }
 
     return NextResponse.json({
-      tutorId: result.rows[0].tutorid 
+      tutorId: result.rows[0].tutorid,
     });
   } catch (error) {
-    console.error("Error fetching tutor ID:", error);
+    console.error("Error fetching tutor ID:", error); 
     return NextResponse.json(
       { error: "Failed to fetch tutor ID" },
       { status: 500 }

@@ -17,6 +17,24 @@ export default function ProPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleSubscribe = async () => {
+    const response = await fetch('/api/xendit/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      setError('Failed to create subscription');
+      return;
+    }
+
+    const { invoiceUrl } = await response.json();
+    window.location.href = invoiceUrl;
+    
+  }
+
   useEffect(() => {
     // Only run this if the Clerk userId is available
     if (!userId) {
@@ -104,9 +122,9 @@ export default function ProPage() {
                   <TextMd>Enhanced profile visibility with priority listing</TextMd>
                 </div>
               </div>
-              <div className="h-[15%] w-[70%] flex justify-center items-center bg-[#1F65A6] rounded-lg">
+              <button onClick={() => handleSubscribe()} className="cursor-pointer h-[15%] w-[70%] flex justify-center items-center bg-[#1F65A6] rounded-lg">
                 <TextSm className="text-white">Choose plan</TextSm>
-              </div>
+              </button>
             </div>
           </div>
         </div>
