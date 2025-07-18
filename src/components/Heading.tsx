@@ -14,10 +14,10 @@ export const Title: React.FC<HeadingProps> = ({ className, children }) => {
     <h1
       className={clsx(
         playfair.className,
-        "text-text font-normal mb-6",
+        "text-text font-normal mb-6 text-[3rem] md:text-[4rem]",
         className
       )}
-      style={{ fontSize: "4rem", lineHeight: "1" }} // 64px
+      style={{ lineHeight: "1" }} // 64px
     >
       {children}
     </h1>
@@ -28,8 +28,12 @@ export const Title: React.FC<HeadingProps> = ({ className, children }) => {
 export const Subtitle: React.FC<HeadingProps> = ({ className, children }) => {
   return (
     <h2
-      className={clsx(openSans.className, "text-text font-normal", className)}
-      style={{ fontSize: "2.5rem", lineHeight: 1.35 }}
+      className={clsx(
+        openSans.className,
+        "text-text font-normal text-[2rem] md:text-[1.5rem]",
+        className
+      )}
+      style={{ lineHeight: 1.35 }}
     >
       {children}
     </h2>
