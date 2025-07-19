@@ -34,7 +34,8 @@ export async function GET(req: NextRequest) {
 
     const generateTimeSlots = (start: string, end: string): string[] => {
       const slots: string[] = [];
-      let [sh, sm] = start.split(":").map(Number);
+      let [sh] = start.split(":").map(Number);
+      const [_, sm] = start.split(":").map(Number);
       const [eh, em] = end.split(":").map(Number);
 
       while (sh < eh || (sh === eh && sm < em)) {

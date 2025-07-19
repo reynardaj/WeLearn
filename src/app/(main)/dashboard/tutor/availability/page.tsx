@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
 import '../../../../AvailabilityCalendar.css';
 import { useAuth } from "@clerk/nextjs";
-import { Heading2, Heading3 } from "@/components/Heading";
+import { Heading3 } from "@/components/Heading";
 
 // --- Types and Interfaces ---
 interface TimeSlot {

@@ -1,5 +1,4 @@
 import { Title } from "@/components/Heading";
-import { SignedIn, SignedOut, SignIn, UserButton } from "@clerk/clerk-react";
 
 export default function Home() {
   return (

@@ -63,7 +63,6 @@ export default function MessagePage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -87,7 +86,6 @@ export default function MessagePage() {
   
       async function fetchTutorId() {
         setIsLoading(true);
-        setError(null);
         try {
           const response = await fetch(`/api/users/tutor/${userId}`);
           if (!response.ok) {
@@ -98,7 +96,6 @@ export default function MessagePage() {
           setTutorId(data.tutorId); // Set the fetched tutorId into state
         } catch (err) {
           console.error(err);
-          setError(err instanceof Error ? err.message : "An unknown error occurred");
         } finally {
           setIsLoading(false);
         }

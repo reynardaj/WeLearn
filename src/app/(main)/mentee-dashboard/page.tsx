@@ -49,9 +49,9 @@ export default function TestReviewPage() {
       console.log('Review submitted successfully!');
       handleClose();
 
-    } catch (err: any) {
+    } catch (err: Error | unknown ) {
       console.error('Submission error:', err);
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setIsSubmitting(false);
     }
