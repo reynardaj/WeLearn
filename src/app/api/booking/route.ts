@@ -34,15 +34,15 @@ export async function GET(req: NextRequest) {
 
     const generateTimeSlots = (start: string, end: string): string[] => {
       const slots: string[] = [];
-      let [sh] = start.split(":").map(Number);
-      const [_, sm] = start.split(":").map(Number);
+      const [sh, sm] = start.split(":").map(Number);
       const [eh, em] = end.split(":").map(Number);
+      let currentHour = sh;
 
-      while (sh < eh || (sh === eh && sm < em)) {
-        const hour = String(sh).padStart(2, "0");
+      while (currentHour < eh || (currentHour === eh && sm < em)) {
+        const hour = String(currentHour).padStart(2, "0");
         const minute = String(sm).padStart(2, "0");
         slots.push(`${hour}:${minute}`);
-        sh += 1;
+        currentHour += 1;
       }
 
       return slots;

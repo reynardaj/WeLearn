@@ -1,17 +1,12 @@
-import { Xendit } from "xendit-node";
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/lib/db";
-
-const xendit = new Xendit({
-  secretKey: process.env.XENDIT_SECRET_KEY as string,
-});
 
 interface WebhookPayload {
   id: string;
   external_id: string;
   status: "PENDING" | "PAID" | "EXPIRED" | "FAILED";
   // Add other fields you expect in the webhook payload
-  [key: string]: any;
+  [key: string]: string;
 }
 
 export async function POST(req: NextRequest) {

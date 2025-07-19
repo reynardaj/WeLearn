@@ -36,10 +36,9 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: Error | unknown) {
     console.error("DATABASE INSERTION ERROR:", {
-      message: error.message,
-      detail: error.detail,
+      message: error instanceof Error ? error.message : "Unknown error",
     });
 
     return NextResponse.json(

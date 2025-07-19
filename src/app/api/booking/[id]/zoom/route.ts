@@ -64,14 +64,11 @@ export async function POST(
       { join_url: joinUrl, start_url: startUrl },
       { status: 200 }
     );
-  } catch (err: any) {
+  } catch (err: Error | unknown) {
     console.error("🔥 Error in /api/booking/[id]/zoom:", err);
     // if it’s a Zoom‐side error we can forward it:
     const message =
-        err.message ||
-        (await request
-            .text()
-            .catch(() => "Unknown server error"));
+        err instanceof Error ? err.message : "Unknown server error";
     return NextResponse.json({ error: message }, { status: 500 });
   } finally {
     if (client) client.release();

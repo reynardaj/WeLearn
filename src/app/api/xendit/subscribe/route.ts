@@ -8,18 +8,8 @@ const xendit = new Xendit({
 // Using the Invoice client for subscription as per Xendit's SDK structure
 const { Invoice  } = xendit;
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
-    // const { customerId } = (await req.json()) as {
-    //   customerId: string;
-    // };
-
-    // if (!customerId) {
-    //   return NextResponse.json(
-    //     { error: "Invalid request body" },
-    //     { status: 400 }
-    //   );
-    // }
 
     const now = new Date();
     const anchorDate = new Date(now);
