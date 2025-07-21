@@ -8,8 +8,8 @@ import { TextMd } from "@/components/Text";
 import { useRouter } from "next/navigation";
 import ProfileImageUpload from "@/components/form/ProfileImageUpload";
 import CertificatesUpload from "@/components/form/CertificatesUpload";
-import SubjectInput from "@/components/Subject-input";
-import { Option } from "@/components/Subject-input";
+import {SubjectInput} from "@/components/subject-input";
+import { Option } from "@/components/subject-input";
 import { getFormData, saveFormData } from "@/utils/localStorage";
 
 interface FormData {

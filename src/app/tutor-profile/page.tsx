@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { playfair } from "@/lib/fonts";
 import Rating from "@/components/TutorListingComponents/rating";
 import Stack from "@mui/material/Stack";
@@ -33,7 +33,7 @@ interface TutorData {
   reviews: Review[];
 }
 
-export default function page() {
+function TutorProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tutorID = searchParams.get("tutorID");
@@ -248,5 +248,19 @@ export default function page() {
         }}
       />
     </div>
+  );
+}
+
+export default function TutorProfilePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      }
+    >
+      <TutorProfileContent />
+    </Suspense>
   );
 }

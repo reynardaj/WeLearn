@@ -2,7 +2,7 @@
 import { Button } from "@/components/button";
 import { TextMd, TextSm } from "@/components/Text";
 import { Heading3, Heading4 } from "@/components/Heading";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 interface BookingDetails {
@@ -14,7 +14,7 @@ interface BookingDetails {
   startUrl?: string;
 }
 
-export default function PaymentSuccess() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("bookingId");
   const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(
@@ -47,9 +47,7 @@ export default function PaymentSuccess() {
         });
       } catch (err) {
         console.error("Error fetching booking details:", err);
-        setError(
-          "Failed to load booking details. Please check your booking history."
-        );
+        setError("Failed to load booking details. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -58,49 +56,44 @@ export default function PaymentSuccess() {
     fetchBookingDetails();
   }, [bookingId]);
 
-  // New effect: once bookingDetails is loaded and we don’t yet have URLs, generate them
   useEffect(() => {
-  if (bookingDetails && bookingId && !bookingDetails.joinUrl) {
-    setIsGeneratingLink(true);
-    (async () => {
-      try {
-        const res = await fetch(`/api/booking/${bookingId}/zoom`, {
-          method: "POST",
-        });
+    if (bookingDetails && bookingId && !bookingDetails.joinUrl) {
+      setIsGeneratingLink(true);
+      (async () => {
+        try {
+          const res = await fetch(`/api/booking/${bookingId}/zoom`, {
+            method: "POST",
+          });
 
-        if (!res.ok) {
-          const text = await res.text();
-          console.error(
-            "🚨 /zoom endpoint returned",
-            res.status,
-            text
+          if (!res.ok) {
+            const text = await res.text();
+            console.error(" /zoom endpoint returned", res.status, text);
+            throw new Error("Zoom link generation failed");
+          }
+
+          const data = await res.json();
+          setBookingDetails((b) =>
+            b
+              ? {
+                  ...b,
+                  joinUrl: data.join_url,
+                  startUrl: data.start_url,
+                }
+              : b
           );
-          throw new Error("Zoom link generation failed");
+        } catch (err) {
+          console.error("Zoom link generation error:", err);
+        } finally {
+          setIsGeneratingLink(false);
         }
+      })();
+    }
+  }, [bookingDetails, bookingId]);
 
-        const data = await res.json();
-        setBookingDetails((b) =>
-          b
-            ? {
-                ...b,
-                joinUrl: data.join_url,
-                startUrl: data.start_url,
-              }
-            : b
-        );
-      } catch (err) {
-        console.error("Zoom link generation error:", err);
-      } finally {
-        setIsGeneratingLink(false);
-      }
-    })();
-  }
-}, [bookingDetails, bookingId]);
-
-const handleJoin = () => {
+  const handleJoin = () => {
     if (!bookingDetails?.joinUrl) return;
     // window.open(bookingDetails.joinUrl, "_blank");
-    router.push("/tutor-listing"); 
+    router.push("/tutor-listing");
   };
 
   const formatDate = (date: Date) => {
@@ -190,5 +183,13 @@ const handleJoin = () => {
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccess() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

@@ -17,7 +17,7 @@ interface SubjectInputProps {
   placeholder?: string;
 }
 
-const SubjectInput: React.FC<SubjectInputProps> = ({
+export const SubjectInput: React.FC<SubjectInputProps> = ({
   options,
   value,
   onChange,
@@ -95,5 +95,3 @@ const SubjectInput: React.FC<SubjectInputProps> = ({
     </div>
   );
 };
-
-export default SubjectInput;
